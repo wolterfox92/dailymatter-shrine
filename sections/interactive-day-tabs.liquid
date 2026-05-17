@@ -1,0 +1,822 @@
+{%- liquid
+  assign sid           = section.id
+  assign eyebrow       = section.settings.eyebrow
+  assign heading       = section.settings.heading
+  assign heading_size  = section.settings.heading_size
+  assign outer_bg      = section.settings.outer_bg_color
+  assign panel_bg      = section.settings.panel_bg_color
+  assign active_tab_bg = section.settings.active_tab_bg_color
+  assign text_color    = section.settings.text_color
+  assign image_pos     = section.settings.image_position
+  assign pt            = section.settings.padding_top
+  assign pb            = section.settings.padding_bottom
+
+  assign default_tab = section.settings.default_tab_index | minus: 1
+  if default_tab >= section.blocks.size or default_tab < 0
+    assign default_tab = 0
+  endif
+-%}
+
+{%- style -%}
+  /* ── Section padding (mobile * 0.75, full on desktop) ────────── */
+  .idt-section-{{ sid }} {
+    background-color: {{ outer_bg }};
+    padding-top: {{ pt | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ pb | times: 0.75 | round: 0 }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .idt-section-{{ sid }} {
+      padding-top: {{ pt }}px;
+      padding-bottom: {{ pb }}px;
+    }
+  }
+
+  /* ── Panel background & radius ───────────────────────────────── */
+  .idt-panel-{{ sid }} {
+    background-color: {{ panel_bg }};
+    color: {{ text_color }};
+  }
+
+  /* ── Active tab pill color ───────────────────────────────────── */
+  .idt-section-{{ sid }} .idt-active-pill {
+    background-color: {{ active_tab_bg }};
+  }
+
+  /* ── Tab container background (mobile + desktop) ─────────────── */
+  .idt-section-{{ sid }} .idt-tabs--mobile,
+  .idt-section-{{ sid }} .idt-tabs--desktop {
+    background-color: {{ section.settings.tabs_container_bg_color }};
+  }
+
+  /* ── Desktop: grid layout ────────────────────────────────────── */
+  @media screen and (min-width: 750px) {
+    .idt-panel-{{ sid }} {
+      grid-template-areas:
+        {%- if image_pos == 'left' -%}
+          "media  idt-head"
+          "media  idt-controls";
+        {%- else -%}
+          "idt-head  media"
+          "idt-controls  media";
+        {%- endif -%}
+    }
+  }
+{%- endstyle -%}
+
+<day-tabs
+  id="idt-{{ sid }}"
+  class="idt-section idt-section-{{ sid }} content-for-grouping animate-section animate--hidden {{ section.settings.visibility }}"
+  data-section="{{ sid }}"
+>
+
+  {%- if section.settings.display_id -%}
+    <copy-button class="section-id-btn button" data-content="#shopify-section-{{ sid }}" data-success="false">
+      <span class="copy-text">Click to copy section ID</span>
+      <span class="copy-success">ID copied successfully!</span>
+    </copy-button>
+  {%- endif -%}
+
+  <div class="idt-inner page-width">
+
+    {%- if section.blocks.size == 0 -%}
+      {%- if request.design_mode -%}
+        <div class="idt-empty-state">
+          <p>Add tab blocks to get started.</p>
+        </div>
+      {%- endif -%}
+    {%- else -%}
+
+      <div class="idt-panel idt-panel-{{ sid }}">
+
+        {{- '<!-- Head: eyebrow + heading ─ first in DOM so it leads on mobile -->' -}}
+        <div class="idt-head" role="presentation">
+          {%- if eyebrow != blank -%}
+            <p class="idt-eyebrow caption-with-letter-spacing animate-item animate-item--child index-0">{{ eyebrow }}</p>
+          {%- endif -%}
+          {%- if heading != blank -%}
+            <h2 class="idt-heading {{ heading_size }} animate-item animate-item--child index-1">
+              {{- heading -}}
+            </h2>
+          {%- endif -%}
+        </div>
+
+        {{- '<!-- Mobile tab nav ─ between heading and image on mobile, hidden on desktop -->' -}}
+        {%- if section.blocks.size > 1 -%}
+          <div
+            class="idt-tabs idt-tabs--mobile animate-item animate-item--child index-2"
+            role="tablist"
+            aria-label="{{ heading | escape }}"
+          >
+            <span class="idt-active-pill" aria-hidden="true"></span>
+            {%- for block in section.blocks -%}
+              {%- assign is_active = false -%}
+              {%- if forloop.index0 == default_tab -%}{%- assign is_active = true -%}{%- endif -%}
+              <button
+                class="idt-tab-btn{%- if is_active %} idt-tab-btn--active{%- endif %}"
+                role="tab"
+                data-index="{{ forloop.index0 }}"
+                aria-selected="{{ is_active | json }}"
+                aria-controls="idt-tabpanel-{{ sid }}-{{ forloop.index0 }}"
+                {{ block.shopify_attributes }}
+              >{{- block.settings.tab_label | escape -}}</button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+        {{- '<!-- Media column: images ─ right on desktop -->' -}}
+        <div class="idt-media animate-item animate-item--child index-3" role="presentation">
+
+          {%- for block in section.blocks -%}
+            {%- assign is_active = false -%}
+            {%- if forloop.index0 == default_tab -%}{%- assign is_active = true -%}{%- endif -%}
+
+            <div
+              class="idt-media__item{%- unless is_active %} idt-hidden{%- endunless %}"
+              data-index="{{ forloop.index0 }}"
+              id="idt-tabpanel-{{ sid }}-{{ forloop.index0 }}"
+              role="tabpanel"
+              tabindex="0"
+              aria-label="{{ block.settings.tab_label | escape }}"
+            >
+              {%- if block.settings.image != blank -%}
+                {%- capture img_sizes -%}
+                  (min-width: {{ settings.page_width }}px) {{ settings.page_width | divided_by: 2 }}px,
+                  (min-width: 750px) 50vw,
+                  100vw
+                {%- endcapture -%}
+                {%- assign img_alt = block.settings.image_alt -%}
+                {%- if img_alt == blank -%}{%- assign img_alt = block.settings.tab_label -%}{%- endif -%}
+                {{
+                  block.settings.image
+                  | image_url: width: 1200
+                  | image_tag:
+                    loading: 'lazy',
+                    sizes: img_sizes,
+                    widths: '375, 550, 750, 900, 1100, 1200',
+                    alt: img_alt,
+                    class: 'idt-img'
+                }}
+              {%- else -%}
+                <div class="idt-img-placeholder">
+                  {{ 'lifestyle-1' | placeholder_svg_tag: 'idt-img idt-img--placeholder' }}
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+
+        </div>
+
+        {{- '<!-- Controls column: desktop tabs + subtitle ─ left bottom on desktop -->' -}}
+        <div class="idt-controls animate-item animate-item--child index-4" role="presentation">
+
+          {%- if section.blocks.size > 1 -%}
+            <div
+              class="idt-tabs idt-tabs--desktop"
+              role="tablist"
+              aria-label="{{ heading | escape }}"
+            >
+              <span class="idt-active-pill" aria-hidden="true"></span>
+              {%- for block in section.blocks -%}
+                {%- assign is_active = false -%}
+                {%- if forloop.index0 == default_tab -%}{%- assign is_active = true -%}{%- endif -%}
+                <button
+                  class="idt-tab-btn{%- if is_active %} idt-tab-btn--active{%- endif %}"
+                  role="tab"
+                  data-index="{{ forloop.index0 }}"
+                  aria-selected="{{ is_active | json }}"
+                  aria-controls="idt-tabpanel-{{ sid }}-{{ forloop.index0 }}"
+                  {{ block.shopify_attributes }}
+                >{{- block.settings.tab_label | escape -}}</button>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+
+          <div class="idt-subtitles" aria-live="polite" aria-atomic="true">
+            {%- for block in section.blocks -%}
+              {%- assign is_active = false -%}
+              {%- if forloop.index0 == default_tab -%}{%- assign is_active = true -%}{%- endif -%}
+              {%- if block.settings.subtitle != blank -%}
+                <p
+                  class="idt-subtitle text-body{%- unless is_active %} idt-hidden{%- endunless %}"
+                  data-index="{{ forloop.index0 }}"
+                >{{ block.settings.subtitle }}</p>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+        </div>
+
+      </div>
+    {%- endif -%}
+
+  </div>
+</day-tabs>
+
+<style>
+  /* ================================================================
+     Interactive Day Tabs — static component styles
+     All selectors are scoped to [data-section] or .idt-* prefixed
+     to avoid collisions with other sections.
+  ================================================================ */
+
+  /* ── Outer wrapper ─────────────────────────────────────── */
+  .idt-section {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .idt-inner {
+    /* page-width already applies max-width + auto margins + 1.5rem padding */
+  }
+
+  /* ── Rounded panel ─────────────────────────────────────── */
+  .idt-panel {
+    border-radius: 24px;
+    padding: 28px 24px 32px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* ── Eyebrow ───────────────────────────────────────────── */
+  /* font-size, letter-spacing, text-transform handled by .caption-with-letter-spacing */
+  .idt-eyebrow {
+    margin: 0 0 10px;
+    font-weight: 700;
+    opacity: 0.6;
+    color: currentColor;
+  }
+
+  /* ── Heading ───────────────────────────────────────────── */
+  .idt-heading {
+    margin: 0;
+    color: currentColor;
+  }
+
+  /* ── Media column ──────────────────────────────────────── */
+  .idt-media {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 16 / 10;
+  }
+
+  .idt-media__item {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .idt-media__item.idt-hidden {
+    display: none;
+  }
+
+  .idt-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 0;
+  }
+
+  .idt-img-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.06);
+  }
+
+  .idt-img--placeholder {
+    width: 60%;
+    height: 60%;
+    opacity: 0.3;
+  }
+
+  /* ── Mobile tab nav ─ sits below heading, above image ─── */
+  .idt-tabs--mobile {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 4px;
+    border-radius: 100px;
+    padding: 8px;
+    width: 100%;             /* fill available width so buttons don't overflow */
+    box-sizing: border-box;
+    overflow: hidden;        /* clip pill to border-radius boundary */
+  }
+
+  /* Equal-width buttons on mobile so the pill always has room on both sides */
+  .idt-tabs--mobile .idt-tab-btn {
+    flex: 1;
+    min-width: 0;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  /* ── Desktop tab pills ─────────────────────────────────── */
+  .idt-tabs--desktop {
+    display: none; /* revealed in the media query below */
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 4px;
+    border-radius: 100px;
+    padding: 8px;
+    width: fit-content;
+    max-width: 100%;
+    overflow: hidden;        /* clip pill to border-radius boundary */
+  }
+
+  /* ── Tab containers need relative positioning for the pill ── */
+  .idt-tabs {
+    position: relative;
+  }
+
+  /* ── Sliding pill (absolutely positioned background) ───────── */
+  .idt-active-pill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-radius: 100px;
+    pointer-events: none;
+    z-index: 0;
+    /* background-color set via per-section <style> above */
+    transition: left 0.22s ease, top 0.22s ease,
+                width 0.22s ease, height 0.22s ease;
+  }
+
+  /* ── Shared tab button styles ──────────────────────────── */
+  .idt-tab-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 18px;
+    border-radius: 100px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    /* Use the theme's body font stack and scale — matches Typography settings */
+    font-family: var(--font-body-family, inherit);
+    font-style: var(--font-body-style, normal);
+    font-weight: var(--font-body-weight, 400);
+    font-size: 1.4rem; /* slightly below body (1.5rem) for pill label comfort */
+    letter-spacing: inherit;
+    line-height: 1.2;
+    color: inherit;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+    position: relative; /* stay above the pill */
+    z-index: 1;
+  }
+
+  .idt-tab-btn:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+    outline-offset: 3px;
+  }
+
+  .idt-tab-btn--active {
+    font-weight: 600;
+  }
+
+  /* ── Subtitle ──────────────────────────────────────────── */
+  /* font-size, font-family, line-height, letter-spacing handled by .text-body */
+  .idt-subtitles {
+    min-height: 1.5em; /* reserve space to avoid layout jump */
+  }
+
+  .idt-subtitle {
+    margin: 0;
+    color: currentColor;
+  }
+
+  .idt-subtitle.idt-hidden {
+    display: none;
+  }
+
+  /* ── Empty state (theme editor only) ──────────────────── */
+  .idt-empty-state {
+    padding: 40px;
+    text-align: center;
+    border: 2px dashed rgba(0, 0, 0, 0.15);
+    border-radius: 16px;
+    opacity: 0.5;
+  }
+
+  /* ================================================================
+     Desktop layout  ≥ 750px
+  ================================================================ */
+  @media screen and (min-width: 750px) {
+
+    .idt-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto 1fr;
+      /* grid-template-areas set via per-section <style> above */
+      column-gap: 48px;
+      row-gap: 0;
+      padding: 48px 52px;
+      align-items: start;
+      gap: 0;
+    }
+
+    .idt-head {
+      grid-area: idt-head;
+      padding-bottom: 24px;
+      align-self: end;
+    }
+
+    .idt-media {
+      grid-area: media;
+      grid-row: 1 / 3;
+      aspect-ratio: auto;
+      height: 100%;
+      min-height: 380px;
+      border-radius: 20px;
+    }
+
+    .idt-media__item {
+      position: absolute;
+      inset: 0;
+    }
+
+    .idt-controls {
+      grid-area: idt-controls;
+      align-self: start;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding-top: 4px;
+    }
+
+    /* Desktop tabs visible, mobile tabs hidden */
+    .idt-tabs--desktop {
+      display: flex;
+    }
+
+    .idt-tabs--mobile {
+      display: none;
+    }
+
+  }
+
+  /* ================================================================
+     Reduced motion
+  ================================================================ */
+  @media (prefers-reduced-motion) {
+    .idt-active-pill,
+    .idt-tab-btn {
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+(function () {
+  if (customElements.get('day-tabs')) return;
+
+  class DayTabs extends HTMLElement {
+    connectedCallback() {
+      this._sid = this.dataset.section;
+      if (!this._sid) return;
+
+      this._buttons   = Array.from(this.querySelectorAll('.idt-tab-btn'));
+      this._panels    = Array.from(this.querySelectorAll('.idt-media__item'));
+      this._subtitles = Array.from(this.querySelectorAll('.idt-subtitle'));
+
+      if (!this._buttons.length) return;
+
+      this._buttons.forEach((btn) => {
+        btn.addEventListener('click', this._handleClick.bind(this));
+        btn.addEventListener('keydown', this._handleKeydown.bind(this));
+      });
+
+      /* Sync initial state from HTML (first active button's index) */
+      const initialBtn = this._buttons.find((b) => b.classList.contains('idt-tab-btn--active'));
+      this._currentIndex = initialBtn ? (parseInt(initialBtn.dataset.index, 10) || 0) : 0;
+
+      /* Place pills at initial position without animation */
+      this._updatePills(true);
+
+      /* Reposition pills on resize (button widths may change) */
+      this._onResize = () => this._updatePills(true);
+      window.addEventListener('resize', this._onResize);
+    }
+
+    disconnectedCallback() {
+      window.removeEventListener('resize', this._onResize);
+    }
+
+    _handleClick(e) {
+      const idx = parseInt(e.currentTarget.dataset.index, 10);
+      if (!isNaN(idx)) this._activate(idx);
+    }
+
+    _handleKeydown(e) {
+      /* Only process keys when a tab button is focused */
+      const visibleBtns = this._visibleButtons();
+      const pos = visibleBtns.indexOf(e.currentTarget);
+      if (pos === -1) return;
+
+      let next = pos;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        next = (pos + 1) % visibleBtns.length;
+        e.preventDefault();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        next = (pos - 1 + visibleBtns.length) % visibleBtns.length;
+        e.preventDefault();
+      } else if (e.key === 'Home') {
+        next = 0;
+        e.preventDefault();
+      } else if (e.key === 'End') {
+        next = visibleBtns.length - 1;
+        e.preventDefault();
+      } else {
+        return;
+      }
+
+      const targetIdx = parseInt(visibleBtns[next].dataset.index, 10);
+      this._activate(targetIdx);
+      visibleBtns[next].focus();
+    }
+
+    /* Returns the set of tab buttons currently visible (one set hidden by CSS) */
+    _visibleButtons() {
+      return this._buttons.filter((btn) => btn.offsetParent !== null);
+    }
+
+    /* Move each pill to sit behind its active button.
+       instant=true skips the CSS transition (used on init and resize). */
+    _placePill(pill, btn) {
+      pill.style.width  = btn.offsetWidth  + 'px';
+      pill.style.height = btn.offsetHeight + 'px';
+      pill.style.left   = btn.offsetLeft   + 'px';
+      pill.style.top    = btn.offsetTop    + 'px';
+    }
+
+    _updatePills(instant) {
+      this.querySelectorAll('.idt-tabs').forEach((tabsEl) => {
+        const pill      = tabsEl.querySelector('.idt-active-pill');
+        const activeBtn = tabsEl.querySelector('.idt-tab-btn--active');
+        if (!pill || !activeBtn) return;
+
+        if (instant) {
+          /* Suppress transition for this paint only */
+          pill.style.transitionDuration = '0s';
+          this._placePill(pill, activeBtn);
+          /* Re-enable transition after the browser has rendered the new position */
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            pill.style.transitionDuration = '';
+          }));
+        } else {
+          this._placePill(pill, activeBtn);
+        }
+      });
+    }
+
+    _activate(idx) {
+      this._currentIndex = idx;
+
+      /* Update all buttons (both mobile + desktop sets) */
+      this._buttons.forEach((btn) => {
+        const active = parseInt(btn.dataset.index, 10) === idx;
+        btn.classList.toggle('idt-tab-btn--active', active);
+        btn.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+
+      /* Slide pills to the newly active button */
+      this._updatePills(false);
+
+      /* Update panels */
+      this._panels.forEach((panel) => {
+        panel.classList.toggle('idt-hidden', parseInt(panel.dataset.index, 10) !== idx);
+      });
+
+      /* Update subtitles */
+      this._subtitles.forEach((sub) => {
+        sub.classList.toggle('idt-hidden', parseInt(sub.dataset.index, 10) !== idx);
+      });
+    }
+  }
+
+  customElements.define('day-tabs', DayTabs);
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Interactive Day Tabs",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "WHY IT MATTERS"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Made for the day you actually have"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "options": [
+        { "value": "h0", "label": "Extra large" },
+        { "value": "h1", "label": "Large" },
+        { "value": "h2", "label": "Medium" },
+        { "value": "h3", "label": "Small" }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "range",
+      "id": "default_tab_index",
+      "label": "Default active tab",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 1,
+      "info": "Set which tab is active when the section first loads"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position (desktop)",
+      "options": [
+        { "value": "right", "label": "Right" },
+        { "value": "left",  "label": "Left" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "outer_bg_color",
+      "label": "Section background color",
+      "default": "#f4f1ee"
+    },
+    {
+      "type": "color",
+      "id": "panel_bg_color",
+      "label": "Panel background color",
+      "default": "#e2dcf5"
+    },
+    {
+      "type": "color",
+      "id": "active_tab_bg_color",
+      "label": "Active tab background color",
+      "default": "#c8f135"
+    },
+    {
+      "type": "color",
+      "id": "tabs_container_bg_color",
+      "label": "Tab container background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "header",
+      "content": "Advanced"
+    },
+    {
+      "type": "checkbox",
+      "id": "display_id",
+      "label": "Display section ID",
+      "info": "ID is used in the Sections group section to merge 2 sections. ID can also be put inside any button link and the button will scroll to this section.",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "visibility",
+      "label": "Display on",
+      "options": [
+        { "value": "desktop-hidden", "label": "Mobile only" },
+        { "value": "mobile-hidden",  "label": "Desktop only" },
+        { "value": "always-display", "label": "All devices" }
+      ],
+      "default": "always-display"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_label",
+          "label": "Button label",
+          "default": "Work"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Image alt text",
+          "info": "Describe the image for accessibility. Defaults to the tab label if left empty."
+        },
+        {
+          "type": "textarea",
+          "id": "subtitle",
+          "label": "Subtitle text",
+          "default": "Add a short description for this tab here."
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Interactive Day Tabs",
+      "blocks": [
+        {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Work",
+            "subtitle": "Voor lange dagen waarop je je basis niet wilt vergeten."
+          }
+        },
+        {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Move",
+            "subtitle": "Voor als je het beste uit je training wilt halen."
+          }
+        },
+        {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Travel",
+            "subtitle": "Onderweg, maar toch in balans."
+          }
+        },
+        {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Reset",
+            "subtitle": "Op de momenten dat je even helemaal opnieuw wilt beginnen."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
