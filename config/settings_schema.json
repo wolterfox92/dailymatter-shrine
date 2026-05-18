@@ -191,12 +191,10 @@
         "label": "Desktop gradient backgrounds style",
         "options": [
           {
-            "value": "sticky",
-            "label": "Sticky"
+            "value": "sticky", "label": "Sticky"
           },
           {
-            "value": "static",
-            "label": "Static"
+            "value": "static", "label": "Static"
           }
         ],
         "default": "static",

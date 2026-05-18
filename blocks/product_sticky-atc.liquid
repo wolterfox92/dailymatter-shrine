@@ -15,118 +15,9 @@
   {% endstyle %}
 {% endif %}
 
-{% if block.settings.frosted_pill_style %}
-  {% style %}
-    sticky-atc.sticky-atc--frosted-pill {
-      background: transparent !important;
-      padding: 0 16px max(16px, calc(16px + env(safe-area-inset-bottom, 0px))) 16px;
-    }
-    sticky-atc.sticky-atc--frosted-pill .sticky-atc-container {
-      max-width: 680px;
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(14px) saturate(180%);
-      -webkit-backdrop-filter: blur(14px) saturate(180%);
-      border-radius: 100px;
-      padding: 8px 8px 8px 10px;
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.10), 0 1px 4px rgba(0, 0, 0, 0.05);
-      color: #111111;
-    }
-    @supports not (backdrop-filter: blur(1px)) {
-      sticky-atc.sticky-atc--frosted-pill .sticky-atc-container {
-        background: rgba(255, 255, 255, 0.97);
-      }
-    }
-    sticky-atc.sticky-atc--frosted-pill .sticky-atc__image {
-      width: 44px;
-      height: 44px;
-      flex-shrink: 0;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    sticky-atc.sticky-atc--frosted-pill .sticky-atc__image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    sticky-atc.sticky-atc--frosted-pill .sticky-atc__left {
-      flex: 1;
-      min-width: 0;
-    }
-    sticky-atc.sticky-atc--frosted-pill .sticky-atc__left__content {
-      flex-direction: column;
-      justify-content: center;
-      gap: 2px;
-    }
-    sticky-atc.sticky-atc--frosted-pill .sticky-atc__title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin: 0;
-      line-height: 1.25;
-      color: inherit;
-    }
-    sticky-atc.sticky-atc--frosted-pill .sticky-atc__subtitle {
-      font-size: 1.3rem;
-      font-family: var(--font-body-family);
-      font-style: var(--font-body-style);
-      font-weight: var(--font-body-weight);
-      line-height: 1.3;
-      opacity: 0.65;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin: 0;
-      display: block;
-      color: inherit;
-    }
-    sticky-atc.sticky-atc--frosted-pill .sticky-atc__button {
-      flex-shrink: 0;
-    }
-    sticky-atc.sticky-atc--frosted-pill .sticky-atc__add_button {
-      border-radius: 100px;
-      padding: 12px 22px;
-      height: auto;
-      min-height: 44px;
-      font-size: 1.4rem;
-      font-weight: 600;
-      white-space: nowrap;
-      --color-button: {{ block.settings.frosted_pill_btn_bg.red }}, {{ block.settings.frosted_pill_btn_bg.green }}, {{ block.settings.frosted_pill_btn_bg.blue }};
-      --color-button-text: {{ block.settings.frosted_pill_btn_text.red }}, {{ block.settings.frosted_pill_btn_text.green }}, {{ block.settings.frosted_pill_btn_text.blue }};
-    }
-    @media screen and (max-width: 749px) {
-      sticky-atc.sticky-atc--frosted-pill {
-        padding: 0 10px max(12px, calc(12px + env(safe-area-inset-bottom, 0px))) 10px;
-      }
-      sticky-atc.sticky-atc--frosted-pill .sticky-atc-container {
-        padding: 6px 6px 6px 8px;
-        gap: 8px;
-        border-radius: 80px;
-      }
-      sticky-atc.sticky-atc--frosted-pill .sticky-atc__image {
-        width: 38px;
-        height: 38px;
-      }
-      sticky-atc.sticky-atc--frosted-pill .sticky-atc__title {
-        font-size: 1.4rem;
-      }
-      sticky-atc.sticky-atc--frosted-pill .sticky-atc__subtitle {
-        font-size: 1.2rem;
-      }
-      sticky-atc.sticky-atc--frosted-pill .sticky-atc__add_button {
-        padding: 10px 16px;
-        font-size: 1.3rem;
-        min-height: 40px;
-      }
-    }
-  {% endstyle %}
-{% endif %}
-
 <sticky-atc 
   id="sticky-atc-{{ section.id }}"
-  class="sticky-atc color-{{ block.settings.color_scheme }}{% if block.settings.frosted_pill_style %} sticky-atc--frosted-pill{% endif %}{% unless block.settings.mobile_show_sale_badge %} sticky-atc--mobile-no-badge{% endunless %}{% unless block.settings.desktop_show_sale_badge %} sticky-atc--desktop-no-badge{% endunless %}{% if block.settings.mobile_transparent_bg %} sticky-atc--mobile-transparent{% endif %}{% if block.settings.desktop_transparent_bg %} sticky-atc--desktop-transparent{% endif %}{% if block.settings.mobile_show_title or block.settings.mobile_show_price %} sticky-atc--small-mobile-select{% endif %}"
+  class="sticky-atc color-{{ block.settings.color_scheme }}{% unless block.settings.mobile_show_sale_badge %} sticky-atc--mobile-no-badge{% endunless %}{% unless block.settings.desktop_show_sale_badge %} sticky-atc--desktop-no-badge{% endunless %}{% if block.settings.mobile_transparent_bg %} sticky-atc--mobile-transparent{% endif %}{% if block.settings.desktop_transparent_bg %} sticky-atc--desktop-transparent{% endif %}{% if block.settings.mobile_show_title or block.settings.mobile_show_price %} sticky-atc--small-mobile-select{% endif %}" 
   data-section="{{ section.id }}"
   {%- if block.settings.display_when == 'after_scroll' -%}
     data-after-scroll="true"
@@ -157,9 +48,6 @@
             {{ product.title }}
           </h4>
         {% endif %}
-        {%- if block.settings.subtitle != blank -%}
-          <p class="sticky-atc__subtitle">{{ block.settings.subtitle | escape }}</p>
-        {%- endif -%}
         {% if block.settings.mobile_rating_stars or block.settings.desktop_rating_stars %}
           <div class='rating-stars-and-text font-size--desktop-auto flex-center{% unless block.settings.mobile_rating_stars %} mobile-hidden{% endunless %}{% unless block.settings.desktop_rating_stars %} desktop-hidden{% endunless %}' style='--bg-star-color:{{ block.settings.star_color }};--font-size:1.3rem;--alignment:flex-start;'>
             <div class='rating-stars__container rating-stars__container--underlay'>
@@ -385,33 +273,6 @@
       "content": "General"
     },
     {
-      "type": "checkbox",
-      "id": "frosted_pill_style",
-      "label": "Frosted pill style",
-      "info": "Displays the sticky bar as a floating frosted glass capsule. Disable to use the standard full-width bar.",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "subtitle",
-      "label": "Subtitle / selling line",
-      "info": "Short text shown below the product title. Leave empty to hide."
-    },
-    {
-      "type": "color",
-      "id": "frosted_pill_btn_bg",
-      "label": "Button background color",
-      "default": "#111111",
-      "info": "Applied when Frosted pill style is enabled."
-    },
-    {
-      "type": "color",
-      "id": "frosted_pill_btn_text",
-      "label": "Button text color",
-      "default": "#ffffff",
-      "info": "Applied when Frosted pill style is enabled."
-    },
-    {
       "type": "select",
       "id": "function",
       "options": [
@@ -539,7 +400,7 @@
     {
       "type": "checkbox",
       "id": "desktop_show_image",
-      "default": true,
+      "default": false,
       "label": "Show product image"
     },
     {
@@ -598,7 +459,7 @@
     {
       "type": "checkbox",
       "id": "mobile_show_image",
-      "default": true,
+      "default": false,
       "label": "Show product image"
     },
     {
