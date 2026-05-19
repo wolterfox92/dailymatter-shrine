@@ -169,18 +169,6 @@
               },
               "blocks": {}
             },
-            "appstle_subscription_appstle_subscription_product_page_widget_pTzgEM": {
-              "type": "shopify://apps/appstle-subscription/blocks/appstle-subscription-product-page-widget/fe257d39-6f88-4f35-ab08-bd437e3aa94e",
-              "settings": {}
-            },
-            "custom_liquid_DH3Fy9": {
-              "type": "custom-liquid",
-              "name": "Custom Liquid",
-              "settings": {
-                "custom_liquid": "<div id=\"AppstleBabMain\" class=\"appstle-bab\" data-bab-id=\"BAB_ID_WILL_GO_HERE\"></div>"
-              },
-              "blocks": {}
-            },
             "e7a28cbe-03cb-4c9d-a2c4-0e3e76ffb3e5": {
               "type": "product_sticky-atc",
               "settings": {
@@ -221,8 +209,6 @@
             "description",
             "product_bundle_offer_q9nKR8",
             "e0a0b690-50df-4ca4-acfd-ce2980696cce",
-            "appstle_subscription_appstle_subscription_product_page_widget_pTzgEM",
-            "custom_liquid_DH3Fy9",
             "e7a28cbe-03cb-4c9d-a2c4-0e3e76ffb3e5"
           ]
         }
