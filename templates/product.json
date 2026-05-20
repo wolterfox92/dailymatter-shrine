@@ -291,6 +291,159 @@
         "desktop_padding_bottom": 36
       }
     },
+    "collapsible_content_6TAVEm": {
+      "type": "collapsible-content",
+      "blocks": {
+        "collapsible_row_content_J4gcmW": {
+          "type": "collapsible-row-content",
+          "settings": {
+            "open": true,
+            "heading": "Voordelen",
+            "icon": "",
+            "filled_icon": false,
+            "row_content": "<p><strong>Daily Matter is je dagelijkse basis voor energie, hydratatie en kracht.</strong><br/><br/>Elk sachet combineert 5 g creatine monohydraat, elektrolyten en een gerichte B-vitamineblend. <br/></p><ul><li><strong>Stay energised</strong><br/>Met B-vitaminen die je normale energiestofwisseling ondersteunen. Voor dagen waarop koffie en wilskracht niet je hele plan hoeven te zijn.</li></ul><p></p><ul><li><strong>Hydrate smarter</strong><br/>Met natrium, kalium en magnesium als onderdeel van een slimme dagelijkse hydratatieroutine.</li></ul><p></p><ul><li><strong>Keep your strength</strong><br/>5 g creatine monohydraat per sachet. Niet gemaakt om je in een sporthokje te duwen, maar om kracht, beweging en dagelijkse performance toegankelijker te maken.</li></ul><p></p><ul><li><strong>A daily routine</strong><br/>Eén sachet per dag. Geen potten, geen schepjes, geen supplementenchaos. Voor thuis, kantoor, sporttas of onderweg.</li></ul>",
+            "page": ""
+          },
+          "blocks": {}
+        },
+        "collapsible_row_content_D3BTU8": {
+          "type": "collapsible-row-content",
+          "settings": {
+            "open": false,
+            "heading": "Collapsible row",
+            "icon": "",
+            "filled_icon": false,
+            "row_content": "",
+            "page": ""
+          },
+          "blocks": {}
+        },
+        "collapsible_row_content_mbewmQ": {
+          "type": "collapsible-row-content",
+          "settings": {
+            "open": false,
+            "heading": "Collapsible row",
+            "icon": "",
+            "filled_icon": false,
+            "row_content": "",
+            "page": ""
+          },
+          "blocks": {}
+        },
+        "collapsible_row_content_emyBex": {
+          "type": "collapsible-row-content",
+          "settings": {
+            "open": false,
+            "heading": "Collapsible row",
+            "icon": "",
+            "filled_icon": false,
+            "row_content": "",
+            "page": ""
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "collapsible_row_content_J4gcmW",
+        "collapsible_row_content_D3BTU8",
+        "collapsible_row_content_mbewmQ",
+        "collapsible_row_content_emyBex"
+      ],
+      "name": "Collapsible content",
+      "settings": {
+        "display_id": false,
+        "visibility": "always-display",
+        "caption": "",
+        "title": "",
+        "title_highlight_1": "solid-color",
+        "title_highlight_1_gradient": "linear-gradient(57deg, rgba(249, 119, 255, 1) 8%, rgba(54, 212, 255, 1) 47%, rgba(43, 252, 135, 1) 83%)",
+        "title_highlight_1_bg-color": "#F9EFFF",
+        "title_highlight_1_color": "#6D388B",
+        "highlighted-1_border_radius": 8,
+        "highlighted-1_border_width": 0,
+        "highlighted-1_border": "solid",
+        "highlighted-1_border_color": "#6D388B",
+        "highlighted-1_padding-block": 0.3,
+        "highlighted-1_padding-inline": 0.3,
+        "title_highlight_1_underline-thickness": 2,
+        "title_highlight_1_underline-color": "#6D388B",
+        "title_highlight_1_underline-color--gradient": "linear-gradient(57deg, rgba(249, 119, 255, 1) 8%, rgba(54, 212, 255, 1) 47%, rgba(43, 252, 135, 1) 83%)",
+        "title_highlight_1_underline-color-position": 25,
+        "title_highlight_1_handwritten-color": "#6D388B",
+        "title_highlight_1_handwritten-stroke-width": 3,
+        "title_highlight_1_handwritten-position": 60,
+        "title_highlight_2": "none",
+        "title_highlight_2_gradient": "linear-gradient(57deg, rgba(249, 119, 255, 1) 8%, rgba(54, 212, 255, 1) 47%, rgba(43, 252, 135, 1) 83%)",
+        "title_highlight_2_bg-color": "#F9EFFF",
+        "title_highlight_2_color": "#6D388B",
+        "highlighted-2_border_radius": 8,
+        "highlighted-2_border_width": 0,
+        "highlighted-2_border": "solid",
+        "highlighted-2_border_color": "#6D388B",
+        "highlighted-2_padding-block": 0.3,
+        "highlighted-2_padding-inline": 0.3,
+        "title_highlight_2_underline-thickness": 2,
+        "title_highlight_2_underline-color": "#6D388B",
+        "title_highlight_2_underline-color--gradient": "linear-gradient(57deg, rgba(249, 119, 255, 1) 8%, rgba(54, 212, 255, 1) 47%, rgba(43, 252, 135, 1) 83%)",
+        "title_highlight_2_underline-color-position": 25,
+        "title_highlight_2_handwritten-color": "#6D388B",
+        "title_highlight_2_handwritten-stroke-width": 3,
+        "title_highlight_2_handwritten-position": 60,
+        "heading_size": "h1",
+        "custom_desktop_size": 39,
+        "custom_mobile_size": 28,
+        "color_scheme": "background-1",
+        "custom_colors_background": "#FFFFFF",
+        "custom_gradient_background": "",
+        "custom_colors_text": "#2E2A39",
+        "pattern_bg": "none",
+        "pattern_color": "#6D388B",
+        "pattern_size": 20,
+        "pattern_thickness": 2,
+        "pattern_angle": 45,
+        "pattern_opacity_mode": "low",
+        "pattern_opacity_low": 7,
+        "pattern_opacity_normal": 80,
+        "video_muted_autoplay": true,
+        "image_ratio": "adapt",
+        "desktop_layout": "image_second",
+        "rows_spacing": 4,
+        "row_heading_size": "medium",
+        "collapse_icon": "carret",
+        "collapse_icon_style": "standard",
+        "collapse_icon_radius": 15,
+        "animation_speed": 0.4,
+        "border_type": "bottom",
+        "border_thickness": 1,
+        "border_style": "solid",
+        "corner_radius": 8,
+        "enable_custom_style": false,
+        "heading_padding_vertical": 12,
+        "heading_padding_horizontal": 10,
+        "content_padding_vertical": 10,
+        "content_padding_horizontal": 10,
+        "closed_state_border": "#dddddd",
+        "closed_state_header_bg": "#F9F9F9",
+        "closed_state_header_text": "#121212",
+        "closed_state_row_icon": "#121212",
+        "closed_state_collapse_icon": "#121212",
+        "closed_state_collapse_icon_solid": "#fff",
+        "closed_state_collapse_bg": "#121212",
+        "closed_state_content_bg": "#F9F9F9",
+        "closed_state_content_text": "#121212",
+        "open_state_border": "#D5AEEA",
+        "open_state_header_bg": "#FEFAFF",
+        "open_state_header_text": "#000000",
+        "open_state_row_icon": "#6D388B",
+        "open_state_collapse_icon": "#121212",
+        "open_state_collapse_icon_solid": "#fff",
+        "open_state_collapse_bg": "#6D388B",
+        "open_state_content_bg": "#FEFAFF",
+        "open_state_content_text": "#121212",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
     "multicolumn_7FmGFe": {
       "type": "multicolumn",
       "blocks": {
@@ -298,8 +451,8 @@
           "type": "column",
           "settings": {
             "muted_autoplay": true,
-            "title": "Column",
-            "text": "<p>Pair text with an image/video to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "title": "Drukke dagen",
+            "text": "<p>Gemaakt voor werk, afspraken, sport, gezin en alles daartussen.</p>",
             "link_label": "",
             "link": ""
           }
@@ -308,8 +461,8 @@
           "type": "column",
           "settings": {
             "muted_autoplay": true,
-            "title": "Column",
-            "text": "<p>Pair text with an image/video to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "title": "Onderweg of thuis",
+            "text": "<p>Eén sachet in je tas, op je bureau of naast je koffie.</p>",
             "link_label": "",
             "link": ""
           }
@@ -318,8 +471,8 @@
           "type": "column",
           "settings": {
             "muted_autoplay": true,
-            "title": "Column",
-            "text": "<p>Pair text with an image/video to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "title": "Geen gymtype nodig",
+            "text": "<p>Je hoeft geen fanatiek sporter te zijn om je basis serieus te nemen.</p>",
             "link_label": "",
             "link": ""
           }
@@ -1310,6 +1463,7 @@
   },
   "order": [
     "main",
+    "collapsible_content_6TAVEm",
     "multicolumn_7FmGFe",
     "related-products",
     "custom_columns_new_dBCjfR",
