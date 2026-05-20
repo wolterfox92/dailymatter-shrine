@@ -1,6 +1,428 @@
+{% doc %}
+  @prompt
+    Ik wil een custom Shopify section laten bouwen voor op de productpagina.
+    
+    De section toont een klikbare regel onder of tussen de productinformatie. Deze regel bestaat uit een klein informatie-icoon aan de linkerkant en een onderstreepte tekstlink daarnaast. De tekst moet bijvoorbeeld zijn:
+    
+    View nutritional information
+    
+    De regel moet eruitzien als een rustige, duidelijke link. Dus geen grote button, maar meer een informatieve tekstregel die opvalt door de underline en het icoon. De hele regel moet klikbaar zijn, niet alleen de tekst.
+    
+    Wanneer een bezoeker op deze regel klikt, opent er een pop-up over de pagina. De rest van de pagina wordt donkerder gemaakt met een transparante overlay, zodat de aandacht volledig naar de pop-up gaat.
+    
+    In het midden van het scherm verschijnt een grote modal met afgeronde hoeken. In deze modal staat één afbeelding. Deze afbeelding moet ik zelf kunnen uploaden via de Shopify theme editor. De afbeelding kan bijvoorbeeld een visuele nutritional information sheet zijn met productinformatie, ingrediënten of voedingswaarden.
+    
+    Rechtsboven in de modal staat een ronde sluitknop met een kruisje. De bezoeker moet de pop-up kunnen sluiten door op deze knop te klikken. Daarnaast moet de pop-up ook sluiten wanneer iemand buiten de modal klikt of op de escape-toets drukt.
+    
+    Op desktop mag de modal groot en centraal in beeld staan. Op mobiel moet de pop-up netjes meeschalen, zodat de afbeelding volledig zichtbaar blijft en niet buiten het scherm valt. De afbeelding moet responsive zijn en automatisch binnen de beschikbare ruimte passen.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-nutritional-info-trigger-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: {{ block.settings.padding_vertical }}px {{ block.settings.padding_horizontal }}px;
+    color: {{ block.settings.text_color }};
+    font-size: {{ block.settings.font_size }}px;
+    text-decoration: underline;
+    transition: opacity 0.2s ease;
+    width: {{ block.settings.desktop_width_percent }}%;
+  }
+
+  .ai-nutritional-info-trigger-{{ ai_gen_id }}:hover {
+    opacity: 0.7;
+  }
+
+  .ai-nutritional-info-icon-{{ ai_gen_id }} {
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    flex-shrink: 0;
+  }
+
+  .ai-nutritional-info-icon-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+
+  .ai-nutritional-info-overlay-{{ ai_gen_id }} {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, {{ block.settings.overlay_opacity | divided_by: 100.0 }});
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+
+  .ai-nutritional-info-overlay-{{ ai_gen_id }}.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .ai-nutritional-info-modal-{{ ai_gen_id }} {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    background-color: {{ block.settings.modal_background_color }};
+    border-radius: {{ block.settings.modal_border_radius }}px;
+    padding: {{ block.settings.modal_padding }}px;
+    max-width: {{ block.settings.modal_max_width }}px;
+    max-height: 90vh;
+    width: 90%;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+    overflow: auto;
+  }
+
+  .ai-nutritional-info-modal-{{ ai_gen_id }}.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .ai-nutritional-info-close-{{ ai_gen_id }} {
+    position: absolute;
+    top: {{ block.settings.close_button_offset }}px;
+    right: {{ block.settings.close_button_offset }}px;
+    width: {{ block.settings.close_button_size }}px;
+    height: {{ block.settings.close_button_size }}px;
+    border-radius: 50%;
+    background-color: {{ block.settings.close_button_background }};
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease;
+    z-index: 10000;
+  }
+
+  .ai-nutritional-info-close-{{ ai_gen_id }}:hover {
+    opacity: 0.7;
+  }
+
+  .ai-nutritional-info-close-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+    stroke: {{ block.settings.close_button_icon_color }};
+  }
+
+  .ai-nutritional-info-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: {{ block.settings.image_border_radius }}px;
+  }
+
+  .ai-nutritional-info-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f4f4f4;
+    border-radius: {{ block.settings.image_border_radius }}px;
+    color: #999;
+    font-size: 14px;
+    text-align: center;
+    padding: 20px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-nutritional-info-modal-{{ ai_gen_id }} {
+      max-width: 95%;
+      padding: {{ block.settings.modal_padding | times: 0.7 }}px;
+    }
+
+    .ai-nutritional-info-trigger-{{ ai_gen_id }} {
+      width: 100%;
+    }
+  }
+{% endstyle %}
+
+<nutritional-info-{{ ai_gen_id }} {{ block.shopify_attributes }}>
+  <button
+    class="ai-nutritional-info-trigger-{{ ai_gen_id }}"
+    aria-label="{{ block.settings.trigger_text }}"
+  >
+    <span class="ai-nutritional-info-icon-{{ ai_gen_id }}">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="16" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+      </svg>
+    </span>
+    <span>{{ block.settings.trigger_text }}</span>
+  </button>
+
+  <div class="ai-nutritional-info-overlay-{{ ai_gen_id }}"></div>
+
+  <div class="ai-nutritional-info-modal-{{ ai_gen_id }}" role="dialog" aria-modal="true" aria-labelledby="nutritional-info-title-{{ ai_gen_id }}">
+    <button
+      class="ai-nutritional-info-close-{{ ai_gen_id }}"
+      aria-label="Sluiten"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+
+    {% if block.settings.nutritional_image %}
+      <img
+        src="{{ block.settings.nutritional_image | image_url: width: 1200 }}"
+        alt="{{ block.settings.nutritional_image.alt | escape }}"
+        loading="lazy"
+        width="{{ block.settings.nutritional_image.width }}"
+        height="{{ block.settings.nutritional_image.height }}"
+        class="ai-nutritional-info-image-{{ ai_gen_id }}"
+      >
+    {% else %}
+      <div class="ai-nutritional-info-placeholder-{{ ai_gen_id }}">
+        Upload een afbeelding met voedingsinformatie via de theme editor
+      </div>
+    {% endif %}
+  </div>
+</nutritional-info-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class NutritionalInfo{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.trigger = this.querySelector('.ai-nutritional-info-trigger-{{ ai_gen_id }}');
+        this.overlay = this.querySelector('.ai-nutritional-info-overlay-{{ ai_gen_id }}');
+        this.modal = this.querySelector('.ai-nutritional-info-modal-{{ ai_gen_id }}');
+        this.closeButton = this.querySelector('.ai-nutritional-info-close-{{ ai_gen_id }}');
+      }
+
+      connectedCallback() {
+        this.trigger.addEventListener('click', this.openModal.bind(this));
+        this.closeButton.addEventListener('click', this.closeModal.bind(this));
+        this.overlay.addEventListener('click', this.closeModal.bind(this));
+        document.addEventListener('keydown', this.handleEscape.bind(this));
+      }
+
+      disconnectedCallback() {
+        document.removeEventListener('keydown', this.handleEscape.bind(this));
+      }
+
+      openModal() {
+        this.overlay.classList.add('active');
+        this.modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      closeModal() {
+        this.overlay.classList.remove('active');
+        this.modal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      handleEscape(event) {
+        if (event.key === 'Escape' && this.modal.classList.contains('active')) {
+          this.closeModal();
+        }
+      }
+    }
+
+    customElements.define('nutritional-info-{{ ai_gen_id }}', NutritionalInfo{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Voedingsinformatie popup",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Trigger link"
+    },
+    {
+      "type": "text",
+      "id": "trigger_text",
+      "label": "Linktekst",
+      "default": "Bekijk voedingsinformatie"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Tekstkleur",
+      "default": "#121212"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Tekstgrootte",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icoongrootte",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "label": "Verticale padding",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Horizontale padding",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop breedte",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Overlay"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay transparantie",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Modal"
+    },
+    {
+      "type": "image_picker",
+      "id": "nutritional_image",
+      "label": "Voedingsinformatie afbeelding"
+    },
+    {
+      "type": "color",
+      "id": "modal_background_color",
+      "label": "Achtergrondkleur",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "modal_max_width",
+      "label": "Maximale breedte",
+      "min": 400,
+      "max": 1000,
+      "step": 50,
+      "unit": "px",
+      "default": 700
+    },
+    {
+      "type": "range",
+      "id": "modal_padding",
+      "label": "Padding",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "modal_border_radius",
+      "label": "Afgeronde hoeken",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "label": "Afbeelding afgeronde hoeken",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Sluitknop"
+    },
+    {
+      "type": "color",
+      "id": "close_button_background",
+      "label": "Achtergrondkleur",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "close_button_icon_color",
+      "label": "Icoonkleur",
+      "default": "#121212"
+    },
+    {
+      "type": "range",
+      "id": "close_button_size",
+      "label": "Knopgrootte",
+      "min": 24,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "close_button_offset",
+      "label": "Afstand vanaf rand",
+      "min": 5,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    }
+  ],
+  "presets": [
+    {
+      "name": "Voedingsinformatie popup"
+    }
+  ]
+}
 {% endschema %}
