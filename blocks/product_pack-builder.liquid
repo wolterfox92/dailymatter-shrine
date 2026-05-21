@@ -1,0 +1,430 @@
+{% liquid
+  if section.settings.product_images == 'all' or section.settings.product_images == 'one'
+    assign product = section.settings.product
+  endif
+
+  assign block_id = block.id
+  assign tier_count = block.settings.tier_count | plus: 0
+
+  assign first_variant = product.selected_or_first_available_variant
+  assign allocations = first_variant.selling_plan_allocations
+  assign allocations_count = allocations.size
+  assign has_subscription = false
+  if allocations_count > 0
+    assign has_subscription = true
+  endif
+
+  assign money_format = shop.money_format | escape
+
+  assign preselected_mode = block.settings.preselected_option
+  if has_subscription == false and preselected_mode == 'subscription'
+    assign preselected_mode = 'one_time'
+  endif
+%}
+
+{%- unless product -%}
+  <div class="pack-builder pack-builder--empty">Selecteer een product in de section settings.</div>
+{%- else -%}
+
+<link rel="stylesheet" href="{{ 'pack-builder.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="{{ 'pack-builder.css' | asset_url }}"></noscript>
+<script src="{{ 'pack-builder.js' | asset_url }}" defer></script>
+
+{%- capture tier_data -%}
+[
+  {%- for i in (1..3) -%}
+    {%- if i > tier_count -%}{%- continue -%}{%- endif -%}
+    {%- assign qty_key = 'tier_' | append: i | append: '_qty' -%}
+    {%- assign pct_key = 'tier_' | append: i | append: '_pct' -%}
+    {%- assign label_key = 'tier_' | append: i | append: '_label' -%}
+    {%- assign qty = block.settings[qty_key] -%}
+    {%- assign pct = block.settings[pct_key] -%}
+    {%- assign label = block.settings[label_key] -%}
+    {"qty": {{ qty }}, "pct": {{ pct }}, "label": {{ label | json }}}{%- unless forloop.last or forloop.index >= tier_count -%},{%- endunless -%}
+  {%- endfor -%}
+]
+{%- endcapture -%}
+
+<pack-builder
+  id="PackBuilder-{{ block_id }}"
+  class="pack-builder color-{{ block.settings.color_scheme }}"
+  data-product-id="{{ product.id }}"
+  data-product-url="{{ product.url }}"
+  data-money-format="{{ money_format }}"
+  data-tiers='{{ tier_data | strip_newlines | strip }}'
+  data-preselected-mode="{{ preselected_mode }}"
+  data-has-subscription="{{ has_subscription }}"
+  data-skip-cart="{{ block.settings.skip_cart }}"
+  {{ block.shopify_attributes }}
+  style="
+    --pb-accent: {{ block.settings.accent_color }};
+    --pb-accent-text: {{ block.settings.accent_text_color }};
+    --pb-border-radius: {{ block.settings.corner_radius }}px;
+    --pb-border-width: {{ block.settings.border_width }}px;
+    --pb-flavor-cols: {{ product.variants.size }};
+    margin-top: {{ block.settings.margin_top | divided_by: 10.0 }}rem;
+    margin-bottom: {{ block.settings.margin_bottom | divided_by: 10.0 }}rem;
+  "
+>
+  {%- if block.settings.flavors_heading != blank -%}
+    <h3 class="pack-builder__heading">{{ block.settings.flavors_heading }}</h3>
+  {%- endif -%}
+
+  <div class="pack-builder__tiers" role="tablist" aria-label="Pack size">
+    {%- for i in (1..3) -%}
+      {%- if i > tier_count -%}{%- continue -%}{%- endif -%}
+      {%- assign qty_key = 'tier_' | append: i | append: '_qty' -%}
+      {%- assign pct_key = 'tier_' | append: i | append: '_pct' -%}
+      {%- assign label_key = 'tier_' | append: i | append: '_label' -%}
+      {%- assign qty = block.settings[qty_key] -%}
+      {%- assign pct = block.settings[pct_key] -%}
+      {%- assign label = block.settings[label_key] -%}
+      <button
+        type="button"
+        class="pack-builder__tier"
+        role="tab"
+        data-tier-qty="{{ qty }}"
+        data-tier-pct="{{ pct }}"
+        aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+      >
+        {%- if pct > 0 -%}
+          <span class="pack-builder__tier-badge">Save {{ pct }}%</span>
+        {%- endif -%}
+        <span class="pack-builder__tier-label">{{ label }}</span>
+      </button>
+    {%- endfor -%}
+  </div>
+
+  <div class="pack-builder__flavors">
+    {%- for variant in product.variants -%}
+      <div class="pack-builder__flavor" data-variant-id="{{ variant.id }}" data-variant-price="{{ variant.price }}" data-variant-available="{{ variant.available }}">
+        {%- if variant.featured_image != blank -%}
+          {{ variant.featured_image | image_url: width: 400 | image_tag: loading: 'lazy', widths: '200,400', class: 'pack-builder__flavor-image' }}
+        {%- elsif product.featured_image != blank -%}
+          {{ product.featured_image | image_url: width: 400 | image_tag: loading: 'lazy', widths: '200,400', class: 'pack-builder__flavor-image' }}
+        {%- endif -%}
+        <div class="pack-builder__flavor-body">
+          <div class="pack-builder__flavor-name">{{ variant.title }}</div>
+          <div class="pack-builder__stepper">
+            <button type="button" class="pack-builder__step pack-builder__step--down" aria-label="Decrease" data-step="-1">
+              <span aria-hidden="true">−</span>
+            </button>
+            <span class="pack-builder__count" data-count>0</span>
+            <button type="button" class="pack-builder__step pack-builder__step--up" aria-label="Increase" data-step="1">
+              <span aria-hidden="true">+</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+
+  {%- if block.settings.purchase_heading != blank -%}
+    <h3 class="pack-builder__heading pack-builder__heading--purchase">{{ block.settings.purchase_heading }}</h3>
+  {%- endif -%}
+
+  <div class="pack-builder__modes">
+    {%- if has_subscription -%}
+      <label class="pack-builder__mode pack-builder__mode--subscription" data-mode="subscription">
+        {%- if block.settings.subscription_badge != blank -%}
+          <span class="pack-builder__mode-ribbon">{{ block.settings.subscription_badge }}</span>
+        {%- endif -%}
+        <input type="radio" name="pb-mode-{{ block_id }}" value="subscription" class="pack-builder__mode-radio" {% if preselected_mode == 'subscription' %}checked{% endif %}>
+        <div class="pack-builder__mode-top">
+          <span class="pack-builder__mode-radio-visual" aria-hidden="true"></span>
+          <span class="pack-builder__mode-title">{{ block.settings.subscription_label }}</span>
+          <span class="pack-builder__mode-prices">
+            <span class="pack-builder__compare" data-sub-compare hidden></span>
+            <span class="pack-builder__price" data-sub-price></span>
+            <span class="pack-builder__save-badge" data-sub-save hidden></span>
+          </span>
+        </div>
+        {%- if block.settings.subscription_benefits != blank -%}
+          <div class="pack-builder__benefits rte">{{ block.settings.subscription_benefits }}</div>
+        {%- endif -%}
+        {%- if allocations_count > 0 -%}
+          <div class="pack-builder__frequency">
+            <select class="pack-builder__frequency-select" aria-label="Delivery frequency">
+              {%- for allocation in allocations -%}
+                <option value="{{ allocation.selling_plan.id }}" {% if forloop.first %}selected{% endif %}>
+                  {{ allocation.selling_plan.name }}
+                </option>
+              {%- endfor -%}
+            </select>
+          </div>
+        {%- endif -%}
+      </label>
+    {%- endif -%}
+
+    <label class="pack-builder__mode pack-builder__mode--one-time" data-mode="one_time">
+      <input type="radio" name="pb-mode-{{ block_id }}" value="one_time" class="pack-builder__mode-radio" {% if preselected_mode == 'one_time' or has_subscription == false %}checked{% endif %}>
+      <div class="pack-builder__mode-top">
+        <span class="pack-builder__mode-radio-visual" aria-hidden="true"></span>
+        <span class="pack-builder__mode-title">{{ block.settings.one_time_label }}</span>
+        <span class="pack-builder__mode-prices">
+          <span class="pack-builder__compare" data-ot-compare hidden></span>
+          <span class="pack-builder__price" data-ot-price></span>
+        </span>
+      </div>
+    </label>
+  </div>
+
+  <div class="pack-builder__status" data-status aria-live="polite"></div>
+
+  <button type="button" class="pack-builder__atc button" data-atc disabled>
+    <span data-atc-label>{{ block.settings.atc_label | default: 'Add to cart' }}</span>
+  </button>
+</pack-builder>
+
+{%- endunless -%}
+
+{% schema %}
+{
+  "name": "Pack builder",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "How it works"
+    },
+    {
+      "type": "paragraph",
+      "content": "Lets shoppers pick a pack size (1/2/3 packs), choose how many of each variant fills the pack, and toggle one-time vs subscription. Discounts apply at checkout via Shopify automatic discounts — see setup notes."
+    },
+    {
+      "type": "header",
+      "content": "Headings & labels"
+    },
+    {
+      "type": "text",
+      "id": "flavors_heading",
+      "label": "Flavors heading",
+      "default": "1. Choose your flavours"
+    },
+    {
+      "type": "text",
+      "id": "purchase_heading",
+      "label": "Purchase mode heading",
+      "default": "2. Subscribe or one-time purchase"
+    },
+    {
+      "type": "text",
+      "id": "subscription_label",
+      "label": "Subscription label",
+      "default": "Subscription"
+    },
+    {
+      "type": "text",
+      "id": "subscription_badge",
+      "label": "Subscription ribbon (top banner)",
+      "default": "BEST SELLER",
+      "info": "Leave empty to hide."
+    },
+    {
+      "type": "richtext",
+      "id": "subscription_benefits",
+      "label": "Subscription benefits",
+      "default": "<p>Easily pause, cancel or adjust at any time</p><p>30 day money back guarantee</p>"
+    },
+    {
+      "type": "text",
+      "id": "one_time_label",
+      "label": "One-time label",
+      "default": "One-time purchase"
+    },
+    {
+      "type": "text",
+      "id": "atc_label",
+      "label": "Add to cart button label",
+      "default": "Add to cart"
+    },
+    {
+      "type": "header",
+      "content": "Pack tiers"
+    },
+    {
+      "type": "range",
+      "id": "tier_count",
+      "label": "Number of tiers",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "header",
+      "content": "Tier 1"
+    },
+    {
+      "type": "text",
+      "id": "tier_1_label",
+      "label": "Label",
+      "default": "1 pack"
+    },
+    {
+      "type": "number",
+      "id": "tier_1_qty",
+      "label": "Pack quantity (total units)",
+      "default": 1
+    },
+    {
+      "type": "number",
+      "id": "tier_1_pct",
+      "label": "Save % (visual badge)",
+      "default": 16,
+      "info": "Visual only. Actual discount applies via your Shopify automatic discount rule."
+    },
+    {
+      "type": "header",
+      "content": "Tier 2",
+      "visible_if": "{{ block.settings.tier_count >= 2 }}"
+    },
+    {
+      "type": "text",
+      "id": "tier_2_label",
+      "label": "Label",
+      "default": "2 packs",
+      "visible_if": "{{ block.settings.tier_count >= 2 }}"
+    },
+    {
+      "type": "number",
+      "id": "tier_2_qty",
+      "label": "Pack quantity (total units)",
+      "default": 2,
+      "visible_if": "{{ block.settings.tier_count >= 2 }}"
+    },
+    {
+      "type": "number",
+      "id": "tier_2_pct",
+      "label": "Save % (visual badge)",
+      "default": 20,
+      "visible_if": "{{ block.settings.tier_count >= 2 }}"
+    },
+    {
+      "type": "header",
+      "content": "Tier 3",
+      "visible_if": "{{ block.settings.tier_count >= 3 }}"
+    },
+    {
+      "type": "text",
+      "id": "tier_3_label",
+      "label": "Label",
+      "default": "3 packs",
+      "visible_if": "{{ block.settings.tier_count >= 3 }}"
+    },
+    {
+      "type": "number",
+      "id": "tier_3_qty",
+      "label": "Pack quantity (total units)",
+      "default": 3,
+      "visible_if": "{{ block.settings.tier_count >= 3 }}"
+    },
+    {
+      "type": "number",
+      "id": "tier_3_pct",
+      "label": "Save % (visual badge)",
+      "default": 25,
+      "visible_if": "{{ block.settings.tier_count >= 3 }}"
+    },
+    {
+      "type": "header",
+      "content": "General"
+    },
+    {
+      "type": "select",
+      "id": "preselected_option",
+      "label": "Preselected option",
+      "options": [
+        { "label": "Subscription", "value": "subscription" },
+        { "label": "One-time purchase", "value": "one_time" }
+      ],
+      "default": "subscription"
+    },
+    {
+      "type": "checkbox",
+      "id": "skip_cart",
+      "label": "Skip cart (go straight to checkout)",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Styling"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "accent-1", "label": "Accent 1" },
+        { "value": "accent-2", "label": "Accent 2" },
+        { "value": "background-1", "label": "Background 1" },
+        { "value": "background-2", "label": "Background 2" },
+        { "value": "inverse", "label": "Inverse" }
+      ],
+      "default": "background-1"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color (badges, selected state)",
+      "default": "#C8FF3D"
+    },
+    {
+      "type": "color",
+      "id": "accent_text_color",
+      "label": "Accent text color",
+      "default": "#121212"
+    },
+    {
+      "type": "range",
+      "id": "corner_radius",
+      "label": "Corner radius",
+      "min": 0,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Border width",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Margins"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Top",
+      "min": 0,
+      "max": 45,
+      "step": 3,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 45,
+      "step": 3,
+      "unit": "px",
+      "default": 15
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pack builder",
+      "category": "Upsells, offers & gifts"
+    }
+  ]
+}
+{% endschema %}
