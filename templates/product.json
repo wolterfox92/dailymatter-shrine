@@ -117,16 +117,8 @@
                 "modal_background_color": "#ffffff",
                 "modal_max_width": 720,
                 "modal_border_radius": 16,
-                "spacing_top": 8,
-                "spacing_bottom": 8
-              },
-              "blocks": {}
-            },
-            "custom_liquid_hgJrPh": {
-              "type": "custom-liquid",
-              "name": "Custom Liquid",
-              "settings": {
-                "custom_liquid": ""
+                "spacing_top": 4,
+                "spacing_bottom": 4
               },
               "blocks": {}
             },
@@ -149,6 +141,14 @@
                 "dates_to_skip": "",
                 "margin_top": 15,
                 "margin_bottom": 15
+              },
+              "blocks": {}
+            },
+            "custom_liquid_hgJrPh": {
+              "type": "custom-liquid",
+              "name": "Custom Liquid",
+              "settings": {
+                "custom_liquid": ""
               },
               "blocks": {}
             },
@@ -241,8 +241,8 @@
             "description",
             "product_pack_builder_xpTLmr",
             "product_nutrition_info_modal_tUi7nb",
-            "custom_liquid_hgJrPh",
             "product_estimated_shipping_KDYyEC",
+            "custom_liquid_hgJrPh",
             "e7a28cbe-03cb-4c9d-a2c4-0e3e76ffb3e5",
             "collapsible_row_KpF4Qh"
           ]
