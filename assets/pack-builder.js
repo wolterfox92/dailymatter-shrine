@@ -272,15 +272,21 @@
       if (this.atcLabelEl) this.atcLabelEl.textContent = 'Adding…';
 
       try {
+        const sectionsToRefresh = ['cart-drawer', 'cart-icon-bubble', 'cart-notification'];
         const res = await fetch(`${window.routes?.cart_add_url || '/cart/add'}.js`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify({ items }),
+          body: JSON.stringify({
+            items,
+            sections: sectionsToRefresh.join(','),
+            sections_url: window.location.pathname,
+          }),
         });
         if (!res.ok) {
           const err = await res.json().catch(() => ({}));
           throw new Error(err.description || err.message || 'Add to cart failed');
         }
+        const data = await res.json().catch(() => ({}));
 
         if (this.skipCart) {
           window.location.href = '/checkout';
@@ -293,18 +299,43 @@
           this.state.counts[id] = 0;
         });
 
-        // Refresh cart drawer / notification — theme listens to publish/subscribe events
-        document.documentElement.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true }));
-        if (window.PUB_SUB_EVENTS && window.publish) {
-          window.publish(window.PUB_SUB_EVENTS.cartUpdate, { source: 'pack-builder' });
+        // Swap rendered section HTML so the drawer/header reflect the new cart
+        // before we open anything. Without this the drawer opens with stale markup.
+        const sections = data && data.sections ? data.sections : null;
+        if (sections) {
+          const swap = (sectionId, targetSelector) => {
+            const html = sections[sectionId];
+            if (!html) return;
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            const incoming = doc.querySelector(targetSelector);
+            const current = document.querySelector(targetSelector);
+            if (incoming && current) {
+              current.innerHTML = incoming.innerHTML;
+              if (incoming.className) current.className = incoming.className;
+            }
+          };
+          swap('cart-drawer', 'cart-drawer');
+          swap('cart-icon-bubble', '#cart-icon-bubble');
         }
 
-        // Try to open the cart drawer
+        // Notify the rest of the theme that the cart changed
+        document.documentElement.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true }));
+        if (window.PUB_SUB_EVENTS && window.publish) {
+          window.publish(window.PUB_SUB_EVENTS.cartUpdate, { source: 'pack-builder', cartData: data });
+        }
+
+        // Open the cart drawer (preferred) or fall back to the notification
         const drawer = document.querySelector('cart-drawer');
-        if (drawer && typeof drawer.open === 'function') {
-          drawer.open();
-        } else {
-          // Fallback: cart notification
+        const drawerOpened = drawer && typeof drawer.open === 'function'
+          ? (drawer.open(), true)
+          : false;
+        if (!drawerOpened && drawer) {
+          // Custom-element class isn't registered — use the same CSS hooks the theme uses
+          drawer.classList.add('animate', 'active');
+          drawer.removeAttribute('aria-hidden');
+          document.body.classList.add('overflow-hidden');
+        }
+        if (!drawer) {
           const notif = document.querySelector('cart-notification');
           if (notif && typeof notif.open === 'function') notif.open();
         }
