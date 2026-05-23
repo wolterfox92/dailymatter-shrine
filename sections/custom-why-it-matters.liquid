@@ -1,0 +1,511 @@
+{%- liquid
+  assign pill_bg = section.settings.pill_bg
+  assign pod_color = section.settings.pod_color
+  assign bg_color = section.settings.bg_color
+  assign text_color = section.settings.text_color
+-%}
+
+{%- style -%}
+  .why-matters-{{ section.id }} {
+    --wim-bg: {{ bg_color }};
+    --wim-text: {{ text_color }};
+    --wim-pill-bg: {{ pill_bg }};
+    --wim-pod: {{ pod_color }};
+    padding-top: {{ section.settings.padding_top | times: 0.6 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.6 | round: 0 }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .why-matters-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="why-matters-section why-matters-{{ section.id }} page-width">
+  <why-it-matters
+    class="why-matters-card"
+    data-default-index="0"
+  >
+    <div class="why-matters-header">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="why-matters-eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.title != blank -%}
+        <h2 class="why-matters-title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+        <div class="why-matters-pill" role="tablist" aria-label="{{ section.settings.title | escape }}">
+          <span class="why-matters-pod" aria-hidden="true"></span>
+          {%- for block in section.blocks -%}
+            <button
+              type="button"
+              role="tab"
+              class="why-matters-tab{% if forloop.first %} is-active{% endif %}"
+              id="wim-tab-{{ section.id }}-{{ forloop.index0 }}"
+              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+              aria-controls="wim-panel-{{ section.id }}-{{ forloop.index0 }}"
+              data-index="{{ forloop.index0 }}"
+              {{ block.shopify_attributes }}
+            >
+              {{ block.settings.label | escape }}
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="why-matters-panels">
+      {%- for block in section.blocks -%}
+        <div
+          class="why-matters-panel{% if forloop.first %} is-active{% endif %}"
+          role="tabpanel"
+          id="wim-panel-{{ section.id }}-{{ forloop.index0 }}"
+          aria-labelledby="wim-tab-{{ section.id }}-{{ forloop.index0 }}"
+          data-index="{{ forloop.index0 }}"
+          {% unless forloop.first %}hidden{% endunless %}
+        >
+          {%- if block.settings.subtitle != blank -%}
+            <p class="why-matters-subtitle">{{ block.settings.subtitle }}</p>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+
+    <div class="why-matters-media">
+      {%- for block in section.blocks -%}
+        <div
+          class="why-matters-image-wrap{% if forloop.first %} is-active{% endif %}"
+          data-index="{{ forloop.index0 }}"
+          {% unless forloop.first %}aria-hidden="true"{% endunless %}
+        >
+          {%- if block.settings.image != blank -%}
+            {{
+              block.settings.image
+              | image_url: width: 1200
+              | image_tag:
+                loading: 'lazy',
+                widths: '400, 600, 800, 1000, 1200, 1600',
+                sizes: '(min-width: 990px) 45vw, 100vw',
+                alt: block.settings.image.alt
+            }}
+          {%- else -%}
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </why-it-matters>
+</div>
+
+{% stylesheet %}
+  .why-matters-section {
+    box-sizing: border-box;
+  }
+  .why-matters-card {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "header"
+      "media"
+      "panels";
+    gap: 2.4rem;
+    background: var(--wim-bg, #BFA6FF);
+    color: var(--wim-text, #2E2A39);
+    border-radius: 2.4rem;
+    padding: 3.2rem 2.4rem;
+  }
+  @media screen and (min-width: 990px) {
+    .why-matters-card {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto 1fr;
+      grid-template-areas:
+        "header media"
+        "panels media";
+      column-gap: 4rem;
+      row-gap: 3.2rem;
+      align-items: start;
+      padding: 5.6rem;
+    }
+  }
+  .why-matters-header {
+    grid-area: header;
+    display: flex;
+    flex-direction: column;
+    gap: 3.2rem;
+    min-width: 0;
+  }
+  .why-matters-media { grid-area: media; }
+  .why-matters-panels { grid-area: panels; }
+  .why-matters-eyebrow {
+    margin: 0 0 1.6rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: inherit;
+  }
+  .why-matters-title {
+    margin: 0;
+    font-size: clamp(3.2rem, 5vw, 5.6rem);
+    line-height: 1.05;
+    font-weight: 800;
+    color: inherit;
+    letter-spacing: -0.01em;
+  }
+  .why-matters-pill {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    background: var(--wim-pill-bg, #FFFFFF);
+    border-radius: 999px;
+    padding: 0.5rem 0.6rem;
+    width: 100%;
+    overflow: hidden;
+    isolation: isolate;
+    clip-path: inset(0 round 999px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  }
+  @media screen and (min-width: 750px) {
+    .why-matters-pill {
+      padding: 0.8rem 1rem;
+    }
+  }
+  .why-matters-pod {
+    position: absolute;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    left: 0;
+    width: 0;
+    border-radius: 999px;
+    background: var(--wim-pod, #C7F25C);
+    transition: transform 320ms cubic-bezier(0.32, 0.72, 0, 1), width 320ms cubic-bezier(0.32, 0.72, 0, 1);
+    pointer-events: none;
+    z-index: 0;
+  }
+  @media screen and (min-width: 750px) {
+    .why-matters-pod {
+      top: 0.8rem;
+      bottom: 0.8rem;
+    }
+  }
+  .why-matters-tab {
+    position: relative;
+    z-index: 1;
+    appearance: none;
+    background: transparent;
+    border: 0;
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0.8rem 1rem;
+    border-radius: 999px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+    text-align: center;
+    transition: color 200ms ease;
+  }
+  @media screen and (min-width: 750px) {
+    .why-matters-tab {
+      padding: 1rem 1.8rem;
+      font-size: 1.5rem;
+    }
+  }
+  .why-matters-tab:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+  .why-matters-panels {
+    min-height: 8rem;
+  }
+  .why-matters-panel {
+    display: none;
+    animation: wim-fade 260ms ease both;
+  }
+  .why-matters-panel.is-active {
+    display: block;
+  }
+  .why-matters-subtitle {
+    margin: 0;
+    font-size: clamp(1.6rem, 1.6vw, 1.9rem);
+    line-height: 1.4;
+    color: inherit;
+    max-width: 36ch;
+  }
+  .why-matters-media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border-radius: 2rem;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.04);
+  }
+  @media screen and (min-width: 990px) {
+    .why-matters-media {
+      aspect-ratio: auto;
+      min-height: 100%;
+    }
+  }
+  .why-matters-image-wrap {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 320ms ease;
+  }
+  .why-matters-image-wrap.is-active {
+    opacity: 1;
+  }
+  .why-matters-image-wrap img,
+  .why-matters-image-wrap svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  @keyframes wim-fade {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .why-matters-pod,
+    .why-matters-image-wrap,
+    .why-matters-panel { transition: none; animation: none; }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  class WhyItMatters extends HTMLElement {
+    constructor() {
+      super();
+      this.tabs = Array.from(this.querySelectorAll('.why-matters-tab'));
+      this.panels = Array.from(this.querySelectorAll('.why-matters-panel'));
+      this.images = Array.from(this.querySelectorAll('.why-matters-image-wrap'));
+      this.pod = this.querySelector('.why-matters-pod');
+      this.pill = this.querySelector('.why-matters-pill');
+    }
+
+    connectedCallback() {
+      if (!this.tabs.length) return;
+      this.tabs.forEach((tab) => {
+        tab.addEventListener('click', () => this.activate(parseInt(tab.dataset.index, 10)));
+        tab.addEventListener('keydown', (e) => this.onKey(e));
+      });
+      const start = parseInt(this.dataset.defaultIndex || '0', 10);
+      this.activate(start, true);
+      this.ro = new ResizeObserver(() => this.movePod(this.activeIndex));
+      this.ro.observe(this.pill);
+    }
+
+    disconnectedCallback() {
+      if (this.ro) this.ro.disconnect();
+    }
+
+    activate(index, instant) {
+      if (index < 0 || index >= this.tabs.length) return;
+      this.activeIndex = index;
+
+      this.tabs.forEach((tab, i) => {
+        const active = i === index;
+        tab.classList.toggle('is-active', active);
+        tab.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+
+      this.panels.forEach((panel, i) => {
+        const active = i === index;
+        panel.classList.toggle('is-active', active);
+        if (active) {
+          panel.removeAttribute('hidden');
+        } else {
+          panel.setAttribute('hidden', '');
+        }
+      });
+
+      this.images.forEach((img, i) => {
+        img.classList.toggle('is-active', i === index);
+      });
+
+      if (instant) {
+        const prev = this.pod.style.transition;
+        this.pod.style.transition = 'none';
+        this.movePod(index);
+        // force reflow then restore
+        void this.pod.offsetWidth;
+        this.pod.style.transition = prev;
+      } else {
+        this.movePod(index);
+      }
+    }
+
+    movePod(index) {
+      const tab = this.tabs[index];
+      if (!tab || !this.pod || !this.pill) return;
+      const tabRect = tab.getBoundingClientRect();
+      const pillRect = this.pill.getBoundingClientRect();
+      const inset = 4; // horizontal breathing room around the pod within the tab
+      const x = (tabRect.left - pillRect.left) + inset;
+      const w = Math.max(0, tabRect.width - inset * 2);
+      this.pod.style.width = `${w}px`;
+      this.pod.style.transform = `translateX(${x}px)`;
+    }
+
+    onKey(e) {
+      const isLTR = getComputedStyle(this).direction !== 'rtl';
+      const next = isLTR ? 'ArrowRight' : 'ArrowLeft';
+      const prev = isLTR ? 'ArrowLeft' : 'ArrowRight';
+      if (e.key !== next && e.key !== prev && e.key !== 'Home' && e.key !== 'End') return;
+      e.preventDefault();
+      let i = this.activeIndex;
+      if (e.key === next) i = (i + 1) % this.tabs.length;
+      else if (e.key === prev) i = (i - 1 + this.tabs.length) % this.tabs.length;
+      else if (e.key === 'Home') i = 0;
+      else if (e.key === 'End') i = this.tabs.length - 1;
+      this.activate(i);
+      this.tabs[i].focus();
+    }
+  }
+
+  if (!customElements.get('why-it-matters')) {
+    customElements.define('why-it-matters', WhyItMatters);
+  }
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Why it matters",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "WHY IT MATTERS"
+    },
+    {
+      "type": "richtext",
+      "id": "title",
+      "label": "Title",
+      "default": "<p>Made for the day you actually have</p>"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Card background",
+      "default": "#BFA6FF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#2E2A39"
+    },
+    {
+      "type": "color",
+      "id": "pill_bg",
+      "label": "Pill background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "pod_color",
+      "label": "Active tab (pod) color",
+      "default": "#C7F25C"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 40
+    }
+  ],
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Tab label",
+          "default": "Work"
+        },
+        {
+          "type": "richtext",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "<p>Voor lange dagen waarop je je basis niet wilt vergeten.</p>"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Why it matters",
+      "blocks": [
+        {
+          "type": "tab",
+          "settings": {
+            "label": "Work",
+            "subtitle": "<p>Voor lange dagen waarop je je basis niet wilt vergeten.</p>"
+          }
+        },
+        {
+          "type": "tab",
+          "settings": {
+            "label": "Move",
+            "subtitle": "<p>Voor trainingen en wandelingen — energie en herstel binnen handbereik.</p>"
+          }
+        },
+        {
+          "type": "tab",
+          "settings": {
+            "label": "Travel",
+            "subtitle": "<p>Voor onderweg — zodat je routine met je meegaat, waar je ook bent.</p>"
+          }
+        },
+        {
+          "type": "tab",
+          "settings": {
+            "label": "Reset",
+            "subtitle": "<p>Voor momenten van rust — om op te laden en weer in balans te komen.</p>"
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}
