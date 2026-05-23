@@ -123,12 +123,61 @@
       if (this.freqSelect) {
         this.freqSelect.addEventListener('change', () => {
           this.state.sellingPlanId = this.freqSelect.value;
+          this.notify();
         });
       }
 
       if (this.atcEl) {
         this.atcEl.addEventListener('click', () => this.addToCart());
       }
+    }
+
+    notify() {
+      this.dispatchEvent(new CustomEvent('pack-builder:state', {
+        bubbles: true,
+        detail: {
+          mode: this.state.mode,
+          sellingPlanId: this.state.sellingPlanId,
+          tierQty: this.state.tierQty,
+          tierPct: this.state.tierPct,
+          totalCount: this.totalCount(),
+          isComplete: this.state.tierQty > 0 && this.totalCount() === this.state.tierQty,
+          hasSubscription: this.hasSubscription,
+        },
+      }));
+    }
+
+    setSellingPlan(id) {
+      if (!this.freqSelect) return;
+      const value = String(id);
+      if (this.freqSelect.value === value) return;
+      this.freqSelect.value = value;
+      this.state.sellingPlanId = this.freqSelect.value;
+      this.notify();
+    }
+
+    setMode(mode) {
+      if (mode === 'subscription' && !this.hasSubscription) return;
+      const radio = this.modeRadios.find((r) => r.value === mode);
+      if (!radio || radio.checked) return;
+      radio.checked = true;
+      this.state.mode = mode;
+      this.render();
+    }
+
+    triggerAddToCart() {
+      if (this.state.tierQty > 0 && this.totalCount() === this.state.tierQty) {
+        this.addToCart();
+        return true;
+      }
+      this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (this.statusEl) {
+        this.statusEl.classList.remove('pack-builder__status--flash');
+        // force reflow to restart animation
+        void this.statusEl.offsetWidth;
+        this.statusEl.classList.add('pack-builder__status--flash');
+      }
+      return false;
     }
 
     totalCount() {
@@ -244,6 +293,8 @@
           }
         }
       }
+
+      this.notify();
     }
 
     async addToCart() {

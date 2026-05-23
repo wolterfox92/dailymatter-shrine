@@ -1,0 +1,158 @@
+{% liquid
+  assign selected_product = section.settings.product
+  if selected_product == blank and product != blank
+    assign selected_product = product
+  endif
+
+  assign first_variant = selected_product.selected_or_first_available_variant
+  assign allocations = first_variant.selling_plan_allocations
+  assign has_subscription = false
+  if allocations.size > 0
+    assign has_subscription = true
+  endif
+%}
+
+{%- unless selected_product and has_subscription -%}
+  {%- comment -%} Sticky pack CTA only renders when a product with selling plans is in scope. {%- endcomment -%}
+{%- else -%}
+
+<link rel="stylesheet" href="{{ 'custom-sticky-pack-cta.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="{{ 'custom-sticky-pack-cta.css' | asset_url }}"></noscript>
+<script src="{{ 'custom-sticky-pack-cta.js' | asset_url }}" defer></script>
+
+<custom-sticky-pack-cta
+  id="StickyPackCta-{{ section.id }}"
+  class="sticky-pack-cta is-hidden{% if section.settings.show_product_info %} sticky-pack-cta--with-product{% endif %}"
+  data-section="{{ section.id }}"
+  data-pack-builder-selector="pack-builder"
+  style="
+    --spc-bg: {{ section.settings.bg_color }};
+    --spc-text: {{ section.settings.text_color }};
+    --spc-accent: {{ section.settings.accent_color }};
+    --spc-accent-text: {{ section.settings.accent_text_color }};
+    --spc-border-radius: {{ section.settings.corner_radius }}px;
+  "
+>
+  <div class="sticky-pack-cta__inner page-width">
+    {%- if section.settings.show_product_info -%}
+      <div class="sticky-pack-cta__product">
+        {%- if selected_product.featured_image -%}
+          {{
+            selected_product.featured_image
+            | image_url: width: 160
+            | image_tag:
+              loading: 'lazy',
+              widths: '80, 160',
+              class: 'sticky-pack-cta__image',
+              alt: selected_product.featured_image.alt
+          }}
+        {%- endif -%}
+        <span class="sticky-pack-cta__title">{{ selected_product.title }}</span>
+      </div>
+    {%- endif -%}
+
+    <div class="sticky-pack-cta__plan">
+      <span class="sticky-pack-cta__plan-text" data-spc-plan-text>
+        {{- allocations.first.selling_plan.name -}}
+      </span>
+      <span class="sticky-pack-cta__save" data-spc-save hidden></span>
+      <span class="sticky-pack-cta__caret" aria-hidden="true">
+        <svg viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <select class="sticky-pack-cta__select" aria-label="Delivery frequency" data-spc-select>
+        {%- for allocation in allocations -%}
+          <option value="{{ allocation.selling_plan.id }}" {% if forloop.first %}selected{% endif %}>
+            {{ allocation.selling_plan.name }}
+          </option>
+        {%- endfor -%}
+      </select>
+    </div>
+
+    <button type="button" class="sticky-pack-cta__btn button" data-spc-atc>
+      <span data-spc-label>{{ section.settings.button_label | default: 'Start now' }}</span>
+    </button>
+  </div>
+</custom-sticky-pack-cta>
+
+{%- endunless -%}
+
+{% schema %}
+{
+  "name": "Sticky pack CTA",
+  "tag": "section",
+  "class": "section-sticky-pack-cta",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Verschijnt zodra de bezoeker voorbij de Pack builder is gescrold. Toont dezelfde frequentie-opties + tier-korting en gebruikt de Pack builder voor add-to-cart. Zet Shrine's eigen Sticky add-to-cart blok uit om dubbele balken te voorkomen."
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product",
+      "info": "Optioneel — laat leeg om automatisch het product van de huidige pagina te gebruiken."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Start now"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_info",
+      "label": "Show product image & title",
+      "default": false,
+      "info": "Aanbevolen alleen voor brede schermen."
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Bar background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent (button & badge)",
+      "default": "#C8FF3D"
+    },
+    {
+      "type": "color",
+      "id": "accent_text_color",
+      "label": "Accent text color",
+      "default": "#121212"
+    },
+    {
+      "type": "range",
+      "id": "corner_radius",
+      "label": "Corner radius",
+      "min": 0,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sticky pack CTA"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["product"]
+  }
+}
+{% endschema %}
