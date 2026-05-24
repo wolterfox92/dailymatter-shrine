@@ -55,6 +55,8 @@
   data-preselected-mode="{{ preselected_mode }}"
   data-has-subscription="{{ has_subscription }}"
   data-skip-cart="{{ block.settings.skip_cart }}"
+  data-per-day-suffix="{{ block.settings.per_day_suffix | default: '/ day' | escape }}"
+  data-sticks-per-pack="{{ block.settings.sticks_per_pack | default: 30 }}"
   {{ block.shopify_attributes }}
   style="
     --pb-accent: {{ block.settings.accent_color }};
@@ -79,6 +81,8 @@
       {%- assign qty = block.settings[qty_key] -%}
       {%- assign pct = block.settings[pct_key] -%}
       {%- assign label = block.settings[label_key] -%}
+      {%- assign sticks_per_pack = block.settings.sticks_per_pack | default: 30 -%}
+      {%- assign total_sticks = qty | times: sticks_per_pack -%}
       <button
         type="button"
         class="pack-builder__tier"
@@ -91,6 +95,8 @@
           <span class="pack-builder__tier-badge">Save {{ pct }}%</span>
         {%- endif -%}
         <span class="pack-builder__tier-label">{{ label }}</span>
+        <span class="pack-builder__tier-count">{{ total_sticks }} {% if total_sticks == 1 %}{{ block.settings.unit_label_singular }}{% else %}{{ block.settings.unit_label_plural }}{% endif %}</span>
+        <span class="pack-builder__tier-per-day" data-tier-per-day></span>
       </button>
     {%- endfor -%}
   </div>
@@ -136,9 +142,9 @@
           <span class="pack-builder__mode-prices">
             <span class="pack-builder__compare" data-sub-compare hidden></span>
             <span class="pack-builder__price" data-sub-price></span>
-            <span class="pack-builder__save-badge" data-sub-save hidden></span>
           </span>
         </div>
+        <div class="pack-builder__mode-tiers-slot" data-pack-builder-tiers-slot></div>
         {%- if block.settings.subscription_benefits != blank -%}
           <div class="pack-builder__benefits rte">{{ block.settings.subscription_benefits }}</div>
         {%- endif -%}
@@ -237,6 +243,34 @@
       "id": "atc_label",
       "label": "Add to cart button label",
       "default": "Add to cart"
+    },
+    {
+      "type": "text",
+      "id": "unit_label_singular",
+      "label": "Unit label (singular)",
+      "default": "Count",
+      "info": "Used in the tier tile, e.g. \"1 Count\"."
+    },
+    {
+      "type": "text",
+      "id": "unit_label_plural",
+      "label": "Unit label (plural)",
+      "default": "Count",
+      "info": "Used in the tier tile, e.g. \"30 Count\"."
+    },
+    {
+      "type": "text",
+      "id": "per_day_suffix",
+      "label": "Per-day suffix",
+      "default": "/ day",
+      "info": "Appears after the per-day price on each tier."
+    },
+    {
+      "type": "number",
+      "id": "sticks_per_pack",
+      "label": "Sticks per pack",
+      "default": 30,
+      "info": "Used to compute the total stick count per tier and the per-day price (total price ÷ total sticks)."
     },
     {
       "type": "header",

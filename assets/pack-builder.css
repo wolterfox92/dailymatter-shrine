@@ -31,6 +31,26 @@
   margin-bottom: 1.6rem;
 }
 
+.pack-builder__tiers,
+.pack-builder__tiers * {
+  box-sizing: border-box;
+}
+
+/* Slots where the tier tiles are teleported (under the subscribe option) */
+.subscription__pack-tiers-slot:empty,
+.pack-builder__mode-tiers-slot:empty {
+  display: none;
+}
+
+.subscription__pack-tiers-slot .pack-builder__tiers,
+.pack-builder__mode-tiers-slot .pack-builder__tiers {
+  margin: 2.4rem 0 0.4rem;
+  --pb-radius: var(--pb-border-radius, 10px);
+  --pb-bw: var(--pb-border-width, 2px);
+  --pb-muted-border: rgba(0,0,0,0.12);
+  --pb-muted-bg: rgba(0,0,0,0.04);
+}
+
 .pack-builder__tier {
   position: relative;
   background: transparent;
@@ -71,6 +91,25 @@
   display: block;
   font-size: 1.4rem;
   font-weight: 700;
+}
+
+.pack-builder__tier-count {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 500;
+  opacity: 0.75;
+  margin-top: 0.2rem;
+}
+
+.pack-builder__tier-per-day {
+  display: block;
+  font-size: 1.2rem;
+  opacity: 0.65;
+  margin-top: 0.4rem;
+}
+
+.pack-builder__tier-per-day[hidden] {
+  display: none;
 }
 
 /* ---------- Flavors ---------- */

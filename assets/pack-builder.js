@@ -28,6 +28,8 @@
       this.moneyFormat = this.dataset.moneyFormat || '${{amount}}';
       this.hasSubscription = this.dataset.hasSubscription === 'true';
       this.skipCart = this.dataset.skipCart === 'true';
+      this.perDaySuffix = this.dataset.perDaySuffix || '/ day';
+      this.sticksPerPack = Number(this.dataset.sticksPerPack) || 0;
 
       try {
         this.tiers = JSON.parse(this.dataset.tiers || '[]');
@@ -48,6 +50,24 @@
       this.cacheEls();
       this.bind();
       this.render();
+      this.relocateTiers();
+    }
+
+    relocateTiers() {
+      const tiersEl = this.querySelector('.pack-builder__tiers');
+      if (!tiersEl) return;
+      // Prefer the slot inside this pack-builder's own subscribe mode card.
+      // Fall back to a standalone subscription-widget slot elsewhere on the page.
+      const slot = this.querySelector('.pack-builder__mode--subscription [data-pack-builder-tiers-slot]')
+        || document.querySelector('[data-pack-builder-tiers-slot]');
+      if (!slot) return;
+      const cs = getComputedStyle(this);
+      ['--pb-accent', '--pb-accent-text', '--pb-border-radius', '--pb-border-width', '--pb-tier-cols'].forEach((v) => {
+        const value = cs.getPropertyValue(v);
+        if (value) tiersEl.style.setProperty(v, value.trim());
+      });
+      slot.appendChild(tiersEl);
+      tiersEl.classList.add('pack-builder__tiers--in-subscription');
     }
 
     cacheEls() {
@@ -73,7 +93,8 @@
 
     bind() {
       this.tierButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
           const qty = Number(btn.dataset.tierQty);
           const pct = Number(btn.dataset.tierPct);
           this.state.tierQty = qty;
@@ -102,7 +123,6 @@
             const step = Number(btn.dataset.step);
             const next = this.state.counts[id] + step;
             if (next < 0) return;
-            if (step > 0 && this.totalCount() >= this.maxTierQty()) return;
             this.state.counts[id] = next;
             countEl.textContent = next;
             this.syncTierToTotal();
@@ -141,7 +161,7 @@
           tierQty: this.state.tierQty,
           tierPct: this.state.tierPct,
           totalCount: this.totalCount(),
-          isComplete: this.state.tierQty > 0 && this.totalCount() === this.state.tierQty,
+          isComplete: this.state.tierQty > 0 && this.totalCount() >= this.state.tierQty,
           hasSubscription: this.hasSubscription,
         },
       }));
@@ -166,7 +186,7 @@
     }
 
     triggerAddToCart() {
-      if (this.state.tierQty > 0 && this.totalCount() === this.state.tierQty) {
+      if (this.state.tierQty > 0 && this.totalCount() >= this.state.tierQty) {
         this.addToCart();
         return true;
       }
@@ -219,9 +239,26 @@
     render() {
       // Tier active state + grid cols
       this.style.setProperty('--pb-tier-cols', this.tierButtons.length || 1);
+      const unitPriceForTiers = this.averageUnitPrice();
       this.tierButtons.forEach(btn => {
-        const isActive = Number(btn.dataset.tierQty) === this.state.tierQty;
+        const tQty = Number(btn.dataset.tierQty);
+        const tPct = Number(btn.dataset.tierPct) || 0;
+        const isActive = tQty === this.state.tierQty;
         btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+
+        const perDayEl = btn.querySelector('[data-tier-per-day]');
+        if (perDayEl) {
+          const totalSticks = tQty * this.sticksPerPack;
+          if (totalSticks > 0 && unitPriceForTiers > 0) {
+            const tierTotal = unitPriceForTiers * tQty * (1 - tPct / 100);
+            const perDayCents = Math.round(tierTotal / totalSticks);
+            perDayEl.textContent = `${formatMoney(perDayCents, this.moneyFormat)} ${this.perDaySuffix}`;
+            perDayEl.hidden = false;
+          } else {
+            perDayEl.textContent = '';
+            perDayEl.hidden = true;
+          }
+        }
       });
 
       // Flavor counts
@@ -230,11 +267,10 @@
         const count = this.state.counts[id] || 0;
         const countEl = el.querySelector('[data-count]');
         if (countEl) countEl.textContent = count;
-        const total = this.totalCount();
         const downBtn = el.querySelector('.pack-builder__step--down');
         const upBtn = el.querySelector('.pack-builder__step--up');
         if (downBtn) downBtn.disabled = count <= 0;
-        if (upBtn) upBtn.disabled = total >= this.maxTierQty() || el.dataset.variantAvailable === 'false';
+        if (upBtn) upBtn.disabled = el.dataset.variantAvailable === 'false';
       });
 
       // Price calculation
@@ -250,7 +286,6 @@
       // Update subscription prices
       const subPriceEl = this.querySelector('[data-sub-price]');
       const subCompareEl = this.querySelector('[data-sub-compare]');
-      const subSaveEl = this.querySelector('[data-sub-save]');
       if (subPriceEl) subPriceEl.textContent = formatMoney(discountedTotal, this.moneyFormat);
       if (subCompareEl) {
         if (pct > 0) {
@@ -258,14 +293,6 @@
           subCompareEl.hidden = false;
         } else {
           subCompareEl.hidden = true;
-        }
-      }
-      if (subSaveEl) {
-        if (pct > 0) {
-          subSaveEl.textContent = `SAVE ${pct}%`;
-          subSaveEl.hidden = false;
-        } else {
-          subSaveEl.hidden = true;
         }
       }
 
@@ -300,7 +327,7 @@
     async addToCart() {
       if (this.state.loading) return;
       const total = this.totalCount();
-      if (total !== this.state.tierQty) return;
+      if (total === 0 || total < this.state.tierQty) return;
 
       const items = [];
       this.flavorEls.forEach(el => {
