@@ -152,39 +152,6 @@
               },
               "blocks": {}
             },
-            "e7a28cbe-03cb-4c9d-a2c4-0e3e76ffb3e5": {
-              "type": "product_sticky-atc",
-              "settings": {
-                "function": "add_to_cart",
-                "display_when": "after_scroll",
-                "button_label": "Add to cart",
-                "enable_custom_btn_color": false,
-                "custom_btn_color": "#dd1d1d",
-                "color_scheme": "background-1",
-                "star_color": "#ffcc00",
-                "stars_label": "(xxxx Reviews)",
-                "picker_type": "combined",
-                "desktop_show_image": true,
-                "desktop_show_title": true,
-                "desktop_rating_stars": false,
-                "desktop_show_price": true,
-                "desktop_show_sale_badge": true,
-                "desktop_variant_picker": true,
-                "desktop_full_button_width": false,
-                "desktop_show_price_in_button": false,
-                "desktop_transparent_bg": false,
-                "mobile_show_image": false,
-                "mobile_show_title": true,
-                "mobile_rating_stars": false,
-                "mobile_show_price": true,
-                "mobile_show_sale_badge": false,
-                "mobile_variant_picker": false,
-                "mobile_full_button_width": false,
-                "mobile_show_price_in_button": false,
-                "mobile_transparent_bg": false
-              },
-              "blocks": {}
-            },
             "collapsible_row_KpF4Qh": {
               "type": "collapsible-row",
               "name": "Collapsible row",
@@ -341,7 +308,6 @@
             "product_nutrition_info_modal_tUi7nb",
             "product_estimated_shipping_KDYyEC",
             "custom_liquid_hgJrPh",
-            "e7a28cbe-03cb-4c9d-a2c4-0e3e76ffb3e5",
             "collapsible_row_KpF4Qh",
             "collapsible_row_j7tkC3",
             "collapsible_row_pFGxx3"
@@ -421,7 +387,7 @@
         "badge_display_on": "all",
         "badge_size_percentage": 20,
         "mobile_padding_top": 0,
-        "mobile_padding_bottom": 16,
+        "mobile_padding_bottom": 0,
         "desktop_padding_top": 36,
         "desktop_padding_bottom": 36
       }
@@ -429,16 +395,6 @@
     "multicolumn_7FmGFe": {
       "type": "multicolumn",
       "blocks": {
-        "column_wcYenB": {
-          "type": "column",
-          "settings": {
-            "muted_autoplay": true,
-            "title": "Niet meer vanzelf",
-            "text": "<p>Als energie, focus en herstel iets minder makkelijk gaan dan vroeger. Niet alarmerend , gewoon een teken dat je basis wat aandacht kan gebruiken.</p>",
-            "link_label": "",
-            "link": ""
-          }
-        },
         "column_WM8yTy": {
           "type": "column",
           "settings": {
@@ -471,7 +427,6 @@
         }
       },
       "block_order": [
-        "column_wcYenB",
         "column_WM8yTy",
         "column_Yc93Cw",
         "column_J3yGcX"
@@ -480,7 +435,7 @@
       "settings": {
         "display_id": false,
         "visibility": "always-display",
-        "title": "Juist wanneer <strong>energie</strong>, <strong>focus</strong> en <strong>snel herstel</strong> iets minder vanzelfsprekend is als vroeger",
+        "title": "Wanneer <strong>energie</strong>, <strong>focus</strong> en <strong>snel herstel</strong> minder vanzelfsprekend is als vroeger",
         "title_highlight_1": "solid-color",
         "title_highlight_1_gradient": "linear-gradient(57deg, rgba(249, 119, 255, 1) 8%, rgba(54, 212, 255, 1) 47%, rgba(43, 252, 135, 1) 83%)",
         "title_highlight_1_bg-color": "#f9efff",
@@ -515,12 +470,12 @@
         "title_highlight_2_handwritten-color": "#6d388b",
         "title_highlight_2_handwritten-stroke-width": 3,
         "title_highlight_2_handwritten-position": 60,
-        "heading_size": "h2",
+        "heading_size": "h3",
         "custom_desktop_size": 39,
         "custom_mobile_size": 28,
         "button_label": "",
         "button_link": "shopify://products/daily-elektrolyte",
-        "atc_button_label": "test",
+        "atc_button_label": "",
         "atc_product": "daily-elektrolyte",
         "atc_skip_cart": true,
         "color_scheme": "background-1",
@@ -1325,6 +1280,20 @@
         "padding_bottom": 36
       }
     },
+    "custom_sticky_pack_cta_fzfBUB": {
+      "type": "custom-sticky-pack-cta",
+      "name": "Sticky pack CTA",
+      "settings": {
+        "product": "",
+        "button_label": "Start now",
+        "show_product_info": false,
+        "bg_color": "#FFFFFF",
+        "text_color": "#121212",
+        "accent_color": "#C8FF3D",
+        "accent_text_color": "#121212",
+        "corner_radius": 12
+      }
+    },
     "55bd100e-3bbd-426c-a5cf-eed7b2a3706f": {
       "type": "testimonials",
       "blocks": {
@@ -1461,6 +1430,7 @@
     "custom_columns_new_dBCjfR",
     "eba88da5-80ac-47fc-aa75-997cfe7b2e59",
     "4fc05ee5-1c30-4863-b88f-81cb6fa7c41a",
+    "custom_sticky_pack_cta_fzfBUB",
     "55bd100e-3bbd-426c-a5cf-eed7b2a3706f"
   ]
 }
