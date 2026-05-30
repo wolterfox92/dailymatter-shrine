@@ -1251,7 +1251,7 @@
         "stack_item_jkTNyy": {
           "type": "stack_item",
           "settings": {
-            "label": "Creatine",
+            "label": "Creatine Monohydraat",
             "note": "5 g",
             "value": ""
           }
@@ -1275,7 +1275,7 @@
         "alt_item_3mKK4E": {
           "type": "alt_item",
           "settings": {
-            "label": "Creatine",
+            "label": "Creatine Monohydraat",
             "note": "5 g/dag",
             "price": 18
           }
