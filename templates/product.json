@@ -618,19 +618,13 @@
         "text_WDtcRD": {
           "type": "text",
           "settings": {
-            "title": "Sharpen focus"
+            "title": "All day focus"
           }
         },
         "text_EXBbWd": {
           "type": "text",
           "settings": {
             "title": "Faster recovery"
-          }
-        },
-        "text_VfaDNq": {
-          "type": "text",
-          "settings": {
-            "title": "Hormone balance"
           }
         },
         "text_CcHY79": {
@@ -644,7 +638,6 @@
         "text_fxrVGm",
         "text_WDtcRD",
         "text_EXBbWd",
-        "text_VfaDNq",
         "text_CcHY79"
       ],
       "name": "Horizontal Ticker",
