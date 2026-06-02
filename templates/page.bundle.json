@@ -1,0 +1,30 @@
+{
+  "sections": {
+    "bundle-builder": {
+      "type": "custom-bundle-builder",
+      "blocks": {
+        "trust-1": {
+          "type": "trust_item",
+          "settings": {
+            "text": "Binnen 24 uur verzonden"
+          }
+        },
+        "trust-2": {
+          "type": "trust_item",
+          "settings": {
+            "text": "60 dagen garantie"
+          }
+        },
+        "trust-3": {
+          "type": "trust_item",
+          "settings": {
+            "text": "Van Europese bodem"
+          }
+        }
+      },
+      "block_order": ["trust-1", "trust-2", "trust-3"],
+      "settings": {}
+    }
+  },
+  "order": ["bundle-builder"]
+}
