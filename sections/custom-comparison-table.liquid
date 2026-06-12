@@ -9,14 +9,17 @@
   assign sticks_per_pack = section.settings.sticks_per_pack | default: 30
 
   assign price_source = section.settings.price_source
+  assign stack_was_cents = 0
   assign stack_total_cents = 0
   if price_source == 'product' and product != blank
     assign base_variant_price = product.selected_or_first_available_variant.price
-    assign stack_total_cents = base_variant_price | times: tier_qty
+    assign stack_was_cents = base_variant_price | times: tier_qty
     assign discount_factor = 100 | minus: tier_pct
-    assign stack_total_cents = stack_total_cents | times: discount_factor | divided_by: 100
+    assign stack_total_cents = stack_was_cents | times: discount_factor | divided_by: 100
   else
     assign stack_total_cents = section.settings.stack_total_manual | times: 100
+    assign stack_was_manual = section.settings.stack_was_manual | default: 0
+    assign stack_was_cents = stack_was_manual | times: 100
   endif
 
   assign total_sticks = tier_qty | times: sticks_per_pack
@@ -45,490 +48,619 @@
   endif
 
   assign stack_price_display = stack_total_cents | money_without_trailing_zeros
+  assign stack_was_display = stack_was_cents | money_without_trailing_zeros
   assign stack_per_day_display = stack_per_day_cents | money
   assign alt_price_display = alt_total_cents | money_without_trailing_zeros
   assign alt_per_day_display = alt_per_day_cents | money
   assign savings_display = savings_cents | money_without_trailing_zeros
 
-  assign title_html = section.settings.title | replace: '[price]', stack_price_display
+  assign headline_html = section.settings.headline | replace: '[price]', stack_price_display | replace: '[savings]', savings_display | replace: '[pct]', savings_pct
+  assign aside_html = section.settings.aside_text | replace: '[price]', stack_price_display | replace: '[savings]', savings_display | replace: '[pct]', savings_pct
   assign footer_right_html = section.settings.footer_right | replace: '[savings]', savings_display | replace: '[pct]', savings_pct
+  assign save_tag_html = section.settings.save_tag | replace: '[savings]', savings_display | replace: '[pct]', savings_pct
+  assign discount_label_html = section.settings.discount_label | replace: '[pct]', tier_pct
 -%}
 
 {%- style -%}
-  .compare-{{ section.id }} {
-    --cmp-bg: {{ section.settings.bg_color }};
-    --cmp-text: {{ section.settings.text_color }};
-    --cmp-stack-bg: {{ section.settings.stack_bg }};
-    --cmp-stack-text: {{ section.settings.stack_text }};
-    --cmp-stack-rule: {{ section.settings.stack_rule }};
-    --cmp-stack-check: {{ section.settings.stack_check }};
-    --cmp-alt-bg: {{ section.settings.alt_bg }};
-    --cmp-alt-text: {{ section.settings.alt_text }};
-    --cmp-alt-rule: {{ section.settings.alt_rule }};
-    --cmp-alt-muted: {{ section.settings.alt_muted }};
-    --cmp-cta-bg: {{ section.settings.cta_bg }};
-    --cmp-cta-text: {{ section.settings.cta_text }};
-    --cmp-radius: {{ section.settings.corner_radius }}px;
+  .reken-{{ section.id }} {
+    --rk-shell: {{ section.settings.bg_color }};
+    --rk-ink: {{ section.settings.text_color }};
+    --rk-ink-2: {{ section.settings.text_muted }};
+    --rk-ink-3: {{ section.settings.text_faint }};
+    --rk-hero-bg: {{ section.settings.hero_bg }};
+    --rk-hero-ink: {{ section.settings.hero_text }};
+    --rk-hero-ink-2: {{ section.settings.hero_text_muted }};
+    --rk-alt-bg: {{ section.settings.alt_bg }};
+    --rk-alt-ink: {{ section.settings.alt_text }};
+    --rk-line: {{ section.settings.alt_rule }};
+    --rk-line-hero: {{ section.settings.hero_rule }};
+    --rk-lime: {{ section.settings.accent_lime }};
+    --rk-lime-deep: {{ section.settings.accent_lime_deep }};
+    --rk-check-bg: {{ section.settings.check_bg }};
+    --rk-check-ink: {{ section.settings.check_ink }};
+    --rk-badge-hero-bg: {{ section.settings.badge_hero_bg }};
+    --rk-badge-hero-ink: {{ section.settings.badge_hero_ink }};
+    --rk-strike: {{ section.settings.strike_color }};
+    --rk-cta-bg: {{ section.settings.cta_bg }};
+    --rk-cta-ink: {{ section.settings.cta_text }};
+    --rk-cta-circ-bg: {{ section.settings.cta_circ_bg }};
+    --rk-cta-circ-ink: {{ section.settings.cta_circ_ink }};
+    --rk-radius: {{ section.settings.corner_radius }}px;
+    --rk-radius-sm: {{ section.settings.corner_radius_sm }}px;
+    background: var(--rk-shell);
+    color: var(--rk-ink);
     padding-top: {{ section.settings.padding_top | times: 0.6 | round: 0 }}px;
     padding-bottom: {{ section.settings.padding_bottom | times: 0.6 | round: 0 }}px;
-    background: var(--cmp-bg);
-    color: var(--cmp-text);
   }
   @media screen and (min-width: 750px) {
-    .compare-{{ section.id }} {
+    .reken-{{ section.id }} {
       padding-top: {{ section.settings.padding_top }}px;
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
 {%- endstyle -%}
 
-<div class="compare-section compare-{{ section.id }}">
-  <div class="compare-inner page-width">
-    {%- if section.settings.title != blank -%}
-      <h2 class="compare-title">{{ title_html }}</h2>
-    {%- endif -%}
-    {%- if section.settings.subtitle != blank -%}
-      <p class="compare-subtitle">{{ section.settings.subtitle }}</p>
+<div class="reken-section reken-{{ section.id }}">
+  <div class="reken-inner page-width">
+
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="reken-eyebrow">{{ section.settings.eyebrow | escape }}</p>
     {%- endif -%}
 
-    <div class="compare-grid">
-      <article class="compare-card compare-card--stack">
+    <div class="reken-head">
+      {%- if section.settings.headline != blank -%}
+        <h2 class="reken-headline">
+          {{ headline_html }}
+          {%- if section.settings.headline_highlight != blank -%}
+            <span class="reken-headline__pop">{{ section.settings.headline_highlight | replace: '[savings]', savings_display | replace: '[pct]', savings_pct }}</span>
+          {%- endif -%}
+        </h2>
+      {%- endif -%}
+
+      <div class="reken-head__aside">
+        {%- if section.settings.aside_text != blank -%}
+          <div class="reken-head__copy">{{ aside_html }}</div>
+        {%- endif -%}
+        {%- if section.settings.cta_label != blank -%}
+          <a class="reken-cta" href="{{ section.settings.cta_link | default: '#' }}">
+            {{ section.settings.cta_label | escape }}
+            <span class="reken-cta__circ" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h9M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <section class="reken-grid">
+
+      <article class="reken-card reken-card--hero" aria-label="{{ section.settings.stack_heading | escape }}">
         {%- if section.settings.stack_badge != blank -%}
-          <span class="compare-badge compare-badge--stack">{{ section.settings.stack_badge | escape }}</span>
+          <span class="reken-badge reken-badge--hero"><span class="reken-badge__dot"></span>{{ section.settings.stack_badge | escape }}</span>
         {%- endif -%}
 
-        <header class="compare-card__head">
-          <h3 class="compare-card__title">{{ section.settings.stack_heading | escape }}</h3>
+        <header class="reken-card__head">
+          <h3 class="reken-card__title">{{ section.settings.stack_heading | escape }}</h3>
           {%- if section.settings.stack_meta != blank -%}
-            <span class="compare-card__meta">{{ section.settings.stack_meta | escape }}</span>
+            <span class="reken-card__sub">{{ section.settings.stack_meta | escape }}</span>
           {%- endif -%}
         </header>
 
-        <ul class="compare-list">
+        <div class="reken-rows">
           {%- for block in section.blocks -%}
             {%- if block.type == 'stack_item' -%}
-              <li class="compare-row" {{ block.shopify_attributes }}>
-                <span class="compare-row__icon compare-row__icon--check" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
-                </span>
-                <span class="compare-row__label">
-                  {{ block.settings.label | escape }}
+              <div class="reken-row" {{ block.shopify_attributes }}>
+                <div class="reken-row__label">
+                  <span class="reken-mark reken-mark--check" aria-hidden="true">
+                    <svg viewBox="0 0 12 12" fill="none"><path d="M2 6.5l2.5 2.5L10 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                  <span class="reken-row__name">{{ block.settings.label | escape }}</span>
                   {%- if block.settings.note != blank -%}
-                    <span class="compare-row__note">{{ block.settings.note | escape }}</span>
+                    <span class="reken-row__meta">{{ block.settings.note | escape }}</span>
                   {%- endif -%}
-                </span>
-                <span class="compare-row__value">{{ block.settings.value | default: section.settings.stack_value_label | escape }}</span>
-              </li>
+                </div>
+                <span class="reken-row__incl">{{ block.settings.value | default: section.settings.stack_value_label | escape }}</span>
+              </div>
             {%- endif -%}
           {%- endfor -%}
-        </ul>
+        </div>
 
-        <div class="compare-card__price">
-          <div class="compare-card__price-meta">
-            <span class="compare-card__price-label">{{ section.settings.stack_total_label | escape }}</span>
-          </div>
-          <div class="compare-card__price-amount">
-            <span class="compare-card__price-value">{{ stack_price_display }}</span>
-            {%- if stack_per_day_cents > 0 -%}
-              <span class="compare-card__price-perday">{{ stack_per_day_display }} {{ section.settings.per_day_suffix | escape }}</span>
+        <div class="reken-total">
+          {%- if section.settings.stack_total_label != blank -%}
+            <span class="reken-total__label">{{ section.settings.stack_total_label | escape }}</span>
+          {%- endif -%}
+          <span class="reken-total__price">
+            {%- if section.settings.show_was and stack_was_cents > stack_total_cents -%}
+              <span class="reken-total__was">{{ stack_was_display }}</span>
             {%- endif -%}
-          </div>
+            {{ stack_price_display }}
+            {%- if stack_per_day_cents > 0 -%}
+              <span class="reken-total__perday">
+                {{ stack_per_day_display }} {{ section.settings.per_day_suffix | escape }}
+                {%- if section.settings.show_discount_label and tier_pct > 0 -%}
+                  · {{ discount_label_html }}
+                {%- endif -%}
+              </span>
+            {%- endif -%}
+          </span>
         </div>
 
         {%- assign stack_feature_count = 0 -%}
         {%- for b in section.blocks -%}
           {%- if b.type == 'stack_feature' -%}{%- assign stack_feature_count = stack_feature_count | plus: 1 -%}{%- endif -%}
         {%- endfor -%}
-
-        {%- if stack_feature_count > 0 or section.settings.cta_label != blank -%}
-          <div class="compare-card__foot">
-            {%- if stack_feature_count > 0 -%}
-              <ul class="compare-features">
-                {%- for block in section.blocks -%}
-                  {%- if block.type == 'stack_feature' -%}
-                    <li class="compare-feature" {{ block.shopify_attributes }}>
-                      <span class="compare-feature__icon" aria-hidden="true">
-                        {%- if block.settings.icon != blank -%}
-                          {{ block.settings.icon | image_url: width: 48 | image_tag: width: 24, height: 24, alt: '', loading: 'lazy' }}
-                        {%- else -%}
-                          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/></svg>
-                        {%- endif -%}
-                      </span>
-                      <span class="compare-feature__text">{{ block.settings.label | escape }}</span>
-                    </li>
-                  {%- endif -%}
-                {%- endfor -%}
-              </ul>
-            {%- endif -%}
-
-            {%- if section.settings.cta_label != blank -%}
-              <a
-                href="{{ section.settings.cta_link | default: '#' }}"
-                class="compare-cta"
-              >
-                {{ section.settings.cta_label | escape }}
-                <span aria-hidden="true">&nbsp;→</span>
-              </a>
-            {%- endif -%}
+        {%- if stack_feature_count > 0 -%}
+          <div class="reken-notes">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'stack_feature' -%}
+                <div class="reken-note" {{ block.shopify_attributes }}>
+                  <span class="reken-note__ico" aria-hidden="true">
+                    {%- render 'reken-note-icon', icon: block.settings.icon_preset, image: block.settings.icon -%}
+                  </span>
+                  {{ block.settings.label | escape }}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
           </div>
         {%- endif -%}
       </article>
 
-      <div class="compare-vs" aria-hidden="true">
-        <span>{{ section.settings.vs_label | default: 'vs' | escape }}</span>
-      </div>
-
-      <article class="compare-card compare-card--alt">
+      <article class="reken-card reken-card--alt" aria-label="{{ section.settings.alt_heading | escape }}">
         {%- if section.settings.alt_badge != blank -%}
-          <span class="compare-badge compare-badge--alt">{{ section.settings.alt_badge | escape }}</span>
+          <span class="reken-badge reken-badge--alt"><span class="reken-badge__dot"></span>{{ section.settings.alt_badge | escape }}</span>
         {%- endif -%}
 
-        <header class="compare-card__head">
-          <h3 class="compare-card__title">{{ section.settings.alt_heading | escape }}</h3>
+        <header class="reken-card__head">
+          <h3 class="reken-card__title">{{ section.settings.alt_heading | escape }}</h3>
           {%- if section.settings.alt_meta != blank -%}
-            <span class="compare-card__meta">{{ section.settings.alt_meta | escape }}</span>
+            <span class="reken-card__sub">{{ section.settings.alt_meta | escape }}</span>
           {%- endif -%}
         </header>
 
-        <ul class="compare-list">
+        <div class="reken-rows">
           {%- for block in section.blocks -%}
             {%- if block.type == 'alt_item' -%}
-              <li class="compare-row" {{ block.shopify_attributes }}>
-                <span class="compare-row__icon compare-row__icon--ring" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/></svg>
-                </span>
-                <span class="compare-row__label">
-                  {{ block.settings.label | escape }}
+              <div class="reken-row" {{ block.shopify_attributes }}>
+                <div class="reken-row__label">
+                  <span class="reken-mark reken-mark--dot" aria-hidden="true"></span>
+                  <span class="reken-row__name">{{ block.settings.label | escape }}</span>
                   {%- if block.settings.note != blank -%}
-                    <span class="compare-row__note">{{ block.settings.note | escape }}</span>
+                    <span class="reken-row__meta">{{ block.settings.note | escape }}</span>
                   {%- endif -%}
-                </span>
-                <span class="compare-row__value">{{ block.settings.price | times: 100 | money_without_trailing_zeros }}</span>
-              </li>
+                </div>
+                <span class="reken-row__price">{{ block.settings.price | times: 100 | money_without_trailing_zeros }}</span>
+              </div>
             {%- endif -%}
           {%- endfor -%}
-        </ul>
+        </div>
 
-        <div class="compare-card__price">
-          <div class="compare-card__price-amount compare-card__price-amount--strike">
-            <span class="compare-card__price-value">{{ alt_price_display }}</span>
+        <div class="reken-total">
+          {%- if section.settings.alt_total_label != blank -%}
+            <span class="reken-total__label">{{ section.settings.alt_total_label | escape }}</span>
+          {%- endif -%}
+          <span class="reken-total__price">
+            {{ alt_price_display }}
             {%- if alt_per_day_cents > 0 -%}
-              <span class="compare-card__price-perday">{{ alt_per_day_display }} {{ section.settings.per_day_suffix | escape }}</span>
+              <span class="reken-total__perday">{{ alt_per_day_display }} {{ section.settings.per_day_suffix | escape }}</span>
             {%- endif -%}
-          </div>
-          <div class="compare-card__price-meta">
-            <span class="compare-card__price-label">{{ section.settings.alt_total_label | escape }}</span>
-          </div>
+          </span>
         </div>
 
         {%- assign alt_feature_count = 0 -%}
         {%- for b in section.blocks -%}
           {%- if b.type == 'alt_feature' -%}{%- assign alt_feature_count = alt_feature_count | plus: 1 -%}{%- endif -%}
         {%- endfor -%}
-
         {%- if alt_feature_count > 0 -%}
-          <div class="compare-card__foot">
-            <ul class="compare-features">
-              {%- for block in section.blocks -%}
-                {%- if block.type == 'alt_feature' -%}
-                  <li class="compare-feature" {{ block.shopify_attributes }}>
-                    <span class="compare-feature__icon" aria-hidden="true">
-                      {%- if block.settings.icon != blank -%}
-                        {{ block.settings.icon | image_url: width: 48 | image_tag: width: 24, height: 24, alt: '', loading: 'lazy' }}
-                      {%- else -%}
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/></svg>
-                      {%- endif -%}
-                    </span>
-                    <span class="compare-feature__text">{{ block.settings.label | escape }}</span>
-                  </li>
-                {%- endif -%}
-              {%- endfor -%}
-            </ul>
+          <div class="reken-notes">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'alt_feature' -%}
+                <div class="reken-note" {{ block.shopify_attributes }}>
+                  <span class="reken-note__ico" aria-hidden="true">
+                    {%- render 'reken-note-icon', icon: block.settings.icon_preset, image: block.settings.icon -%}
+                  </span>
+                  {{ block.settings.label | escape }}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
           </div>
         {%- endif -%}
       </article>
-    </div>
 
-    {%- if section.settings.footer_left != blank or section.settings.footer_right != blank -%}
-      <div class="compare-footer">
+    </section>
+
+    {%- if section.settings.footer_left != blank or section.settings.save_tag != blank or section.settings.footer_right != blank -%}
+      <div class="reken-foot">
         {%- if section.settings.footer_left != blank -%}
-          <span class="compare-footer__left">{{ section.settings.footer_left }}</span>
+          <span class="reken-foot__left">{{ section.settings.footer_left }}</span>
         {%- endif -%}
-        {%- if section.settings.footer_right != blank -%}
-          <span class="compare-footer__right">{{ footer_right_html }}</span>
+        {%- if section.settings.save_tag != blank -%}
+          <span class="reken-foot__save">
+            {%- if section.settings.save_prefix != blank -%}{{ section.settings.save_prefix | escape }}{%- endif -%}
+            <span class="reken-foot__tag">{{ save_tag_html }}</span>
+          </span>
+        {%- elsif section.settings.footer_right != blank -%}
+          <span class="reken-foot__right">{{ footer_right_html }}</span>
         {%- endif -%}
       </div>
     {%- endif -%}
+
   </div>
 </div>
 
 {% stylesheet %}
-  .compare-section { box-sizing: border-box; }
-  .compare-inner {
+  .reken-section { box-sizing: border-box; }
+  .reken-inner {
     display: flex;
     flex-direction: column;
-    gap: 2.4rem;
   }
-  .compare-title {
-    margin: 0;
-    font-size: clamp(3.2rem, 5.5vw, 6.4rem);
-    line-height: 1.05;
-    letter-spacing: -0.01em;
+  .reken-eyebrow {
+    margin: 0 0 1.8rem;
+    font-size: 1.2rem;
     font-weight: 700;
-    max-width: 24ch;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--rk-ink-3);
   }
-  .compare-subtitle {
-    margin: 0;
-    font-size: clamp(1.5rem, 1.6vw, 1.8rem);
-    line-height: 1.45;
-    max-width: 60ch;
-    opacity: 0.85;
+  .reken-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2.4rem;
+    margin-bottom: 4rem;
   }
-  .compare-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    position: relative;
-  }
-  @media screen and (min-width: 990px) {
-    .compare-grid {
-      grid-template-columns: 1fr 1fr;
-      gap: 2.4rem;
+  @media screen and (min-width: 860px) {
+    .reken-head {
+      flex-direction: row;
+      align-items: flex-end;
+      gap: 4rem;
     }
   }
-  .compare-card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    padding: 2.4rem;
-    border-radius: var(--cmp-radius, 24px);
-    min-width: 0;
-  }
-  @media screen and (min-width: 750px) {
-    .compare-card { padding: 3.2rem; }
-  }
-  .compare-card--stack {
-    background: var(--cmp-stack-bg);
-    color: var(--cmp-stack-text);
-  }
-  .compare-card--alt {
-    background: var(--cmp-alt-bg);
-    color: var(--cmp-alt-text);
-  }
-  .compare-badge {
-    position: absolute;
-    top: -1.2rem;
-    left: 2rem;
-    padding: 0.5rem 1.2rem;
-    border-radius: 999px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    background: var(--cmp-stack-bg);
-    color: var(--cmp-stack-text);
-    border: 1px solid currentColor;
-  }
-  .compare-badge--alt {
-    background: var(--cmp-alt-bg);
-    color: var(--cmp-alt-text);
-    border: 1px solid var(--cmp-alt-muted);
-  }
-  .compare-card__head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 0.8rem 1.6rem;
-  }
-  .compare-card__title {
+  .reken-headline {
     margin: 0;
-    font-size: clamp(2.4rem, 2.4vw, 3.2rem);
-    line-height: 1.1;
+    font-family: var(--font-heading-family);
     font-weight: 700;
+    font-size: clamp(3.8rem, 5vw, 6.6rem);
+    line-height: 0.98;
     letter-spacing: -0.01em;
+    max-width: 100%;
   }
-  .compare-card__meta {
-    font-size: 1.4rem;
-    opacity: 0.7;
+  @media screen and (min-width: 860px) {
+    .reken-headline { max-width: 9ch; }
   }
-  .compare-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
+  .reken-headline p { margin: 0; display: inline; }
+  .reken-headline__pop {
+    color: var(--rk-lime-deep);
   }
-  .compare-row {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
+  .reken-head__aside {
+    max-width: 33rem;
+    padding-bottom: 0.8rem;
+  }
+  .reken-head__copy {
+    font-size: 1.6rem;
+    line-height: 1.5;
+    color: var(--rk-ink-2);
+    margin: 0 0 1.8rem;
+  }
+  .reken-head__copy p { margin: 0 0 1rem; }
+  .reken-head__copy p:last-child { margin: 0; }
+  .reken-cta {
+    display: inline-flex;
     align-items: center;
     gap: 1.2rem;
-    padding: 1.4rem 0;
-    border-bottom: 1px solid var(--cmp-stack-rule);
+    background: var(--rk-cta-bg);
+    color: var(--rk-cta-ink);
+    border: none;
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: 1rem 1rem 1rem 2.2rem;
+    border-radius: 999px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: transform 200ms ease;
   }
-  .compare-card--alt .compare-row {
-    border-bottom-color: var(--cmp-alt-rule);
-  }
-  .compare-row:last-child { border-bottom: 0; }
-  .compare-row__icon {
+  .reken-cta:hover { transform: translateY(-1px); }
+  .reken-cta__circ {
+    width: 3.4rem;
+    height: 3.4rem;
+    border-radius: 999px;
+    background: var(--rk-cta-circ-bg);
+    color: var(--rk-cta-circ-ink);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 2.4rem;
-    height: 2.4rem;
-    flex: 0 0 auto;
   }
-  .compare-row__icon--check { color: var(--cmp-stack-check); }
-  .compare-row__icon--ring { color: var(--cmp-alt-muted); }
-  .compare-row__label {
-    font-size: 1.6rem;
-    line-height: 1.3;
+  .reken-cta__circ svg { width: 1.5rem; height: 1.5rem; }
+
+  .reken-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.8rem;
+    align-items: stretch;
+  }
+  @media screen and (min-width: 860px) {
+    .reken-grid {
+      grid-template-columns: 1.05fr 0.95fr;
+    }
+  }
+
+  .reken-card {
+    position: relative;
+    border-radius: var(--rk-radius);
+    padding: 3.4rem 3.4rem 3rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 54rem;
+  }
+  @media (max-width: 859px) {
+    .reken-card { min-height: 0; padding: 2.8rem 2.4rem 2.4rem; }
+    .reken-card--alt { order: -1; }
+  }
+  .reken-card--hero {
+    background: var(--rk-hero-bg);
+    color: var(--rk-hero-ink);
+  }
+  .reken-card--alt {
+    background: var(--rk-alt-bg);
+    color: var(--rk-alt-ink);
+    border: 1px solid var(--rk-line);
+  }
+
+  .reken-badge {
     display: inline-flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 0.4rem 0.8rem;
-  }
-  .compare-row__note {
-    font-size: 1.3rem;
-    opacity: 0.65;
-  }
-  .compare-row__value {
-    font-size: 1.5rem;
-    text-align: right;
-    opacity: 0.7;
+    align-items: center;
+    gap: 0.8rem;
+    align-self: flex-start;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 0.8rem 1.4rem;
+    border-radius: 999px;
+    margin-bottom: 2.6rem;
     white-space: nowrap;
   }
-  .compare-card__price {
+  .reken-badge--hero {
+    background: var(--rk-badge-hero-bg);
+    color: var(--rk-badge-hero-ink);
+  }
+  .reken-badge--alt {
+    background: var(--rk-shell);
+    color: var(--rk-ink-2);
+  }
+  .reken-badge__dot {
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 999px;
+    background: currentColor;
+  }
+  .reken-badge--hero .reken-badge__dot { background: var(--rk-lime); }
+
+  .reken-card__head {
     display: flex;
-    align-items: flex-end;
+    align-items: baseline;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1.2rem 2rem;
-    margin-top: 0.8rem;
-    padding-top: 1.6rem;
-    border-top: 1px solid var(--cmp-stack-rule);
-  }
-  .compare-card--alt .compare-card__price {
-    border-top-color: var(--cmp-alt-rule);
-  }
-  .compare-card__price-label {
-    font-size: 1.8rem;
-    font-weight: 600;
-  }
-  .compare-card__price-amount {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    line-height: 1;
-  }
-  .compare-card__price-value {
-    font-family: var(--font-heading-family);
-    font-style: italic;
-    font-size: clamp(3.6rem, 4.4vw, 5.6rem);
-    font-weight: 600;
-    letter-spacing: -0.01em;
-  }
-  .compare-card__price-amount--strike .compare-card__price-value {
-    text-decoration: line-through;
-    text-decoration-thickness: 1.5px;
-    opacity: 0.55;
-  }
-  .compare-card__price-perday {
-    margin-top: 0.6rem;
-    font-size: 1.2rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    opacity: 0.7;
-  }
-  .compare-card__foot {
-    display: flex;
-    flex-direction: column;
     gap: 1.6rem;
-    margin-top: auto;
+    margin-bottom: 2.2rem;
+    flex-wrap: wrap;
   }
-  .compare-features {
-    list-style: none;
+  .reken-card__title {
     margin: 0;
-    padding: 0;
+    font-family: var(--font-heading-family);
+    font-weight: 600;
+    font-size: 3rem;
+    line-height: 1;
+    letter-spacing: -0.005em;
+  }
+  .reken-card__sub {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--rk-ink-3);
+  }
+  .reken-card--hero .reken-card__sub { color: var(--rk-hero-ink-2); }
+
+  .reken-rows {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    flex: 1;
   }
-  .compare-feature {
+  .reken-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 1.6rem;
+    padding: 1.7rem 0;
+    border-top: 1px solid var(--rk-line);
+  }
+  .reken-card--hero .reken-row { border-top-color: var(--rk-line-hero); }
+  .reken-row:first-child { border-top: 0; padding-top: 0.4rem; }
+
+  .reken-row__label {
     display: flex;
     align-items: center;
     gap: 1rem;
-    font-size: 1.4rem;
-    opacity: 0.9;
-  }
-  .compare-feature__icon {
-    display: inline-flex;
-    width: 2rem;
-    height: 2rem;
-    align-items: center;
-    justify-content: center;
-  }
-  .compare-feature__icon img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-  .compare-cta {
-    align-self: flex-start;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 1.4rem 2.4rem;
-    border-radius: 999px;
-    background: var(--cmp-cta-bg);
-    color: var(--cmp-cta-text);
-    font-family: var(--font-heading-family);
-    font-style: italic;
-    font-size: 1.8rem;
+    font-size: 1.6rem;
+    line-height: 1.25;
     font-weight: 600;
-    text-decoration: none;
-    transition: transform 200ms ease, opacity 200ms ease;
-    min-height: 4.4rem;
+    flex-wrap: nowrap;
+    min-width: 0;
   }
-  .compare-cta:hover { transform: translateY(-1px); }
-  .compare-cta:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 3px;
+  .reken-row__name {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  .compare-vs {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 4.4rem;
-    height: 4.4rem;
-    border-radius: 50%;
-    background: var(--cmp-bg);
-    color: var(--cmp-text);
-    border: 1px solid currentColor;
-    display: none;
+  .reken-row__meta {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--rk-ink-3);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .reken-card--hero .reken-row__meta { color: var(--rk-hero-ink-2); }
+  .reken-row__price {
+    font-size: 1.6rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .reken-row__incl {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--rk-check-bg);
+    background: color-mix(in srgb, var(--rk-lime) 60%, transparent);
+    padding: 0.5rem 1.1rem;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .reken-mark {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 999px;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.3rem;
-    font-style: italic;
-    font-weight: 500;
-    z-index: 1;
+    flex-shrink: 0;
   }
-  @media screen and (min-width: 990px) {
-    .compare-vs { display: flex; }
+  .reken-mark--check {
+    background: var(--rk-check-bg);
+    color: var(--rk-check-ink);
   }
-  .compare-footer {
+  .reken-mark--check svg { width: 1.2rem; height: 1.2rem; }
+  .reken-mark--dot {
+    background: transparent;
+    border: 1.5px solid var(--rk-ink-3);
+  }
+
+  .reken-total {
     display: flex;
+    align-items: flex-end;
     justify-content: space-between;
     gap: 1.6rem;
-    flex-wrap: wrap;
+    margin-top: 0.6rem;
+    padding-top: 2.2rem;
+    border-top: 1.5px solid var(--rk-line);
+  }
+  .reken-card--hero .reken-total { border-top-color: var(--rk-line-hero); }
+  .reken-total__label {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--rk-ink-2);
+    max-width: 12ch;
+    line-height: 1.25;
+  }
+  .reken-card--hero .reken-total__label { color: var(--rk-hero-ink-2); }
+  .reken-total__price {
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: 3.9rem;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+  .reken-total__was {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--rk-ink-3);
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--rk-strike);
+    margin-right: 1rem;
+    vertical-align: 0.2rem;
+  }
+  .reken-total__perday {
+    display: block;
+    font-family: var(--font-body-family);
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--rk-ink-3);
+    margin-top: 0.8rem;
+  }
+  .reken-card--hero .reken-total__perday { color: var(--rk-hero-ink-2); }
+
+  .reken-notes {
+    margin-top: 2.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .reken-note {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--rk-ink-2);
+    line-height: 1.3;
+  }
+  .reken-card--hero .reken-note { color: var(--rk-hero-ink-2); }
+  .reken-note__ico {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 999px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .reken-card--hero .reken-note__ico { background: rgba(255, 255, 255, 0.45); }
+  .reken-card--alt .reken-note__ico { background: var(--rk-shell); }
+  .reken-note__ico svg { width: 1.6rem; height: 1.6rem; stroke-width: 1.7; }
+  .reken-note__ico img {
+    width: 1.6rem;
+    height: 1.6rem;
+    object-fit: contain;
+  }
+
+  .reken-foot {
+    margin-top: 1.8rem;
+    background: var(--rk-alt-bg);
+    border: 1px solid var(--rk-line);
+    border-radius: var(--rk-radius-sm);
+    padding: 1.8rem 2.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2.4rem;
     font-size: 1.3rem;
-    opacity: 0.65;
+    font-weight: 500;
+    color: var(--rk-ink-3);
+    flex-wrap: wrap;
+  }
+  .reken-foot__left p,
+  .reken-foot__right p { margin: 0; display: inline; }
+  .reken-foot__save {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--rk-ink);
+    font-weight: 700;
+    font-size: 1.4rem;
+  }
+  .reken-foot__tag {
+    background: var(--rk-lime);
+    color: var(--rk-ink);
+    padding: 0.5rem 1.2rem;
+    border-radius: 999px;
+    font-variant-numeric: tabular-nums;
+  }
+  @media (max-width: 560px) {
+    .reken-foot { flex-direction: column; align-items: flex-start; gap: 1.4rem; }
+  }
+
+  @media (max-width: 859px) {
+    .reken-row { padding: 1.3rem 0; gap: 1rem; }
+    .reken-row__label { font-size: 1.35rem; gap: 1rem; }
+    .reken-row__meta { font-size: 1.1rem; }
+    .reken-row__price { font-size: 1.4rem; }
+    .reken-row__incl { font-size: 1.1rem; padding: 0.4rem 0.9rem; }
+    .reken-mark { width: 2rem; height: 2rem; }
+    .reken-mark--check svg { width: 1.1rem; height: 1.1rem; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .compare-cta { transition: none; }
+    .reken-cta { transition: none; }
   }
 {% endstylesheet %}
 
@@ -540,36 +672,60 @@
   "settings": [
     {
       "type": "header",
-      "content": "Content"
+      "content": "Header"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Het rekensommetje"
     },
     {
       "type": "richtext",
-      "id": "title",
-      "label": "Title",
-      "info": "Use [price] to insert the Daily Matter total price.",
-      "default": "<p>Waar je [price] voor betaalt.</p>"
+      "id": "headline",
+      "label": "Headline",
+      "info": "Placeholders: [price], [savings], [pct].",
+      "default": "<p>Eén sachet.</p>"
+    },
+    {
+      "type": "text",
+      "id": "headline_highlight",
+      "label": "Highlighted suffix",
+      "info": "Rendered in the accent color after the headline. Placeholders: [savings], [pct].",
+      "default": "[savings] minder."
     },
     {
       "type": "richtext",
-      "id": "subtitle",
-      "label": "Subtitle",
-      "default": "<p>Eén sachet per dag. Geen drie potten, geen schepjes, geen ochtend-checklist.</p>"
+      "id": "aside_text",
+      "label": "Aside copy",
+      "default": "<p>Dezelfde vier actieve stoffen, los samengesteld kost je meer — en vier potten, vier schepjes, vier dingen om te onthouden.</p>"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA label",
+      "default": "Bekijk de bundle"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link"
     },
     {
       "type": "header",
-      "content": "Stack (left) card"
+      "content": "Stack card (hero)"
     },
     {
       "type": "text",
       "id": "stack_badge",
       "label": "Badge",
-      "default": "JOUW STACK"
+      "default": "Jouw stack"
     },
     {
       "type": "text",
       "id": "stack_heading",
       "label": "Card heading",
-      "default": "Daily Matter"
+      "default": "Daily Matters"
     },
     {
       "type": "text",
@@ -591,25 +747,33 @@
       "default": "30 sachets — één maand"
     },
     {
-      "type": "text",
-      "id": "cta_label",
-      "label": "CTA label",
-      "default": "Start vandaag"
+      "type": "checkbox",
+      "id": "show_was",
+      "label": "Show crossed-out was-price",
+      "default": true
     },
     {
-      "type": "url",
-      "id": "cta_link",
-      "label": "CTA link"
+      "type": "checkbox",
+      "id": "show_discount_label",
+      "label": "Show discount label next to per-day price",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "discount_label",
+      "label": "Discount label",
+      "info": "Use [pct] for the tier discount %.",
+      "default": "[pct]% korting"
     },
     {
       "type": "header",
-      "content": "Alternative (right) card"
+      "content": "Alternative card"
     },
     {
       "type": "text",
       "id": "alt_badge",
       "label": "Badge",
-      "default": "HET ALTERNATIEF"
+      "default": "Het alternatief"
     },
     {
       "type": "text",
@@ -621,7 +785,7 @@
       "type": "text",
       "id": "alt_meta",
       "label": "Card meta",
-      "default": "3 potten · 3 routines"
+      "default": "4 potten · 4 routines"
     },
     {
       "type": "text",
@@ -638,7 +802,7 @@
       "id": "price_source",
       "label": "Stack price source",
       "options": [
-        { "value": "product", "label": "Derive from product (lowest subscription tier)" },
+        { "value": "product", "label": "Derive from product" },
         { "value": "manual", "label": "Manual" }
       ],
       "default": "product"
@@ -647,12 +811,12 @@
       "type": "product",
       "id": "product",
       "label": "Product",
-      "info": "Daily Matter price = first variant × tier qty × (1 − tier %). Defaults to the current product on PDPs if blank."
+      "info": "Stack price = first variant × tier qty × (1 − tier %). Defaults to current product on PDPs."
     },
     {
       "type": "range",
       "id": "tier_qty",
-      "label": "Lowest tier quantity",
+      "label": "Tier quantity",
       "min": 1,
       "max": 6,
       "step": 1,
@@ -661,18 +825,29 @@
     {
       "type": "range",
       "id": "tier_pct",
-      "label": "Lowest tier discount %",
+      "label": "Tier discount %",
       "min": 0,
       "max": 60,
       "step": 1,
       "unit": "%",
-      "default": 16
+      "default": 12
     },
     {
       "type": "range",
       "id": "stack_total_manual",
       "label": "Manual stack total",
-      "info": "Used only when stack price source is set to Manual.",
+      "info": "Used only when source is Manual.",
+      "min": 0,
+      "max": 500,
+      "step": 5,
+      "unit": "€",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "stack_was_manual",
+      "label": "Manual was-price",
+      "info": "Used only when source is Manual.",
       "min": 0,
       "max": 500,
       "step": 5,
@@ -695,12 +870,6 @@
       "default": "per dag"
     },
     {
-      "type": "text",
-      "id": "vs_label",
-      "label": "VS label",
-      "default": "vs"
-    },
-    {
       "type": "header",
       "content": "Footer"
     },
@@ -708,14 +877,27 @@
       "type": "richtext",
       "id": "footer_left",
       "label": "Footer left",
-      "default": "<p>Prijzen op basis van gemiddelde retail per stuk.</p>"
+      "default": "<p>Prijzen op basis van gemiddelde retail per stuk, mei 2026.</p>"
+    },
+    {
+      "type": "text",
+      "id": "save_prefix",
+      "label": "Savings prefix",
+      "default": "Je bespaart "
+    },
+    {
+      "type": "text",
+      "id": "save_tag",
+      "label": "Savings tag",
+      "info": "Placeholders: [savings], [pct].",
+      "default": "[savings] / maand · [pct]%"
     },
     {
       "type": "richtext",
       "id": "footer_right",
-      "label": "Footer right",
-      "info": "Use [savings] and [pct] to insert calculated savings.",
-      "default": "<p>Bespaar [savings] / maand · [pct]%</p>"
+      "label": "Footer right (fallback)",
+      "info": "Shown only when the Savings tag is empty.",
+      "default": "<p></p>"
     },
     {
       "type": "header",
@@ -725,73 +907,133 @@
       "type": "color",
       "id": "bg_color",
       "label": "Section background",
-      "default": "#EFEAE0"
+      "default": "#F3F0EA"
     },
     {
       "type": "color",
       "id": "text_color",
       "label": "Section text",
-      "default": "#1A1A1A"
+      "default": "#211D33"
     },
     {
       "type": "color",
-      "id": "stack_bg",
-      "label": "Stack card background",
-      "default": "#2B3327"
+      "id": "text_muted",
+      "label": "Section muted text",
+      "default": "#5B5670"
     },
     {
       "type": "color",
-      "id": "stack_text",
-      "label": "Stack card text",
-      "default": "#F4EFE3"
+      "id": "text_faint",
+      "label": "Section faint text",
+      "default": "#8B8799"
     },
     {
       "type": "color",
-      "id": "stack_rule",
-      "label": "Stack card rule",
-      "default": "#4A5446"
+      "id": "hero_bg",
+      "label": "Hero card background",
+      "default": "#CBBCEE"
     },
     {
       "type": "color",
-      "id": "stack_check",
-      "label": "Stack checkmark color",
-      "default": "#F4EFE3"
+      "id": "hero_text",
+      "label": "Hero card text",
+      "default": "#211D33"
+    },
+    {
+      "type": "color",
+      "id": "hero_text_muted",
+      "label": "Hero card muted",
+      "default": "#6A5F86"
+    },
+    {
+      "type": "color",
+      "id": "hero_rule",
+      "label": "Hero card rule",
+      "default": "#A998C9"
     },
     {
       "type": "color",
       "id": "alt_bg",
-      "label": "Alternative card background",
-      "default": "#F7F1E3"
+      "label": "Alt card background",
+      "default": "#FFFFFF"
     },
     {
       "type": "color",
       "id": "alt_text",
-      "label": "Alternative card text",
-      "default": "#2B2A26"
+      "label": "Alt card text",
+      "default": "#211D33"
     },
     {
       "type": "color",
       "id": "alt_rule",
-      "label": "Alternative card rule",
-      "default": "#D9D2BF"
+      "label": "Card border / rule",
+      "default": "#ECEAE4"
     },
     {
       "type": "color",
-      "id": "alt_muted",
-      "label": "Alternative muted/icon color",
-      "default": "#9A8F75"
+      "id": "accent_lime",
+      "label": "Accent (lime)",
+      "default": "#AEE05C"
+    },
+    {
+      "type": "color",
+      "id": "accent_lime_deep",
+      "label": "Accent (lime deep)",
+      "default": "#9ED142"
+    },
+    {
+      "type": "color",
+      "id": "check_bg",
+      "label": "Check circle background",
+      "default": "#2F4A32"
+    },
+    {
+      "type": "color",
+      "id": "check_ink",
+      "label": "Check icon color",
+      "default": "#AEE05C"
+    },
+    {
+      "type": "color",
+      "id": "badge_hero_bg",
+      "label": "Hero badge background",
+      "default": "#211D33"
+    },
+    {
+      "type": "color",
+      "id": "badge_hero_ink",
+      "label": "Hero badge text",
+      "default": "#CBBCEE"
+    },
+    {
+      "type": "color",
+      "id": "strike_color",
+      "label": "Strikethrough color",
+      "default": "#C96A3F"
     },
     {
       "type": "color",
       "id": "cta_bg",
       "label": "CTA background",
-      "default": "#E89A3C"
+      "default": "#AEE05C"
     },
     {
       "type": "color",
       "id": "cta_text",
       "label": "CTA text",
-      "default": "#1A1A1A"
+      "default": "#211D33"
+    },
+    {
+      "type": "color",
+      "id": "cta_circ_bg",
+      "label": "CTA circle background",
+      "default": "#211D33"
+    },
+    {
+      "type": "color",
+      "id": "cta_circ_ink",
+      "label": "CTA circle icon",
+      "default": "#AEE05C"
     },
     {
       "type": "header",
@@ -805,7 +1047,17 @@
       "max": 40,
       "step": 2,
       "unit": "px",
-      "default": 24
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "corner_radius_sm",
+      "label": "Footer corner radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 18
     },
     {
       "type": "range",
@@ -815,7 +1067,7 @@
       "max": 160,
       "step": 4,
       "unit": "px",
-      "default": 64
+      "default": 80
     },
     {
       "type": "range",
@@ -825,92 +1077,118 @@
       "max": 160,
       "step": 4,
       "unit": "px",
-      "default": 64
+      "default": 80
     }
   ],
   "blocks": [
     {
       "type": "stack_item",
-      "name": "Stack item (left)",
+      "name": "Stack item",
       "settings": [
         {
           "type": "text",
           "id": "label",
           "label": "Label",
-          "default": "Creatine"
+          "default": "Creatine Monohydraat"
         },
         {
           "type": "text",
           "id": "note",
-          "label": "Note",
-          "default": "5 g"
+          "label": "Note"
         },
         {
           "type": "text",
           "id": "value",
           "label": "Value",
-          "info": "Leave blank to use the section default (e.g. \"inbegrepen\")."
+          "info": "Leave blank for the default (e.g. \"inbegrepen\")."
         }
       ]
     },
     {
       "type": "alt_item",
-      "name": "Alternative item (right)",
+      "name": "Alt item",
       "settings": [
         {
           "type": "text",
           "id": "label",
           "label": "Label",
-          "default": "Creatine"
+          "default": "Creatine Monohydraat"
         },
         {
           "type": "text",
           "id": "note",
-          "label": "Note",
-          "default": "5 g/dag"
+          "label": "Note"
         },
         {
           "type": "number",
           "id": "price",
           "label": "Price",
-          "info": "In whole units of your store's currency. Used for the row value and the alternative total.",
+          "info": "Whole units of your store's currency.",
           "default": 18
         }
       ]
     },
     {
       "type": "stack_feature",
-      "name": "Stack feature",
+      "name": "Stack note",
       "settings": [
+        {
+          "type": "select",
+          "id": "icon_preset",
+          "label": "Icon",
+          "options": [
+            { "value": "shield", "label": "Shield" },
+            { "value": "bag", "label": "Bag" },
+            { "value": "calendar-check", "label": "Calendar check" },
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "spark", "label": "Spark" },
+            { "value": "none", "label": "None / custom image" }
+          ],
+          "default": "shield"
+        },
         {
           "type": "image_picker",
           "id": "icon",
-          "label": "Icon",
-          "info": "Small icon (≤ 48px). Leave empty for a default dot."
+          "label": "Custom icon",
+          "info": "Optional. Overrides preset."
         },
         {
           "type": "text",
           "id": "label",
           "label": "Label",
-          "default": "Eén sachet, scheuren en klaar"
+          "default": "Eén sachet — scheuren en klaar"
         }
       ]
     },
     {
       "type": "alt_feature",
-      "name": "Alt feature",
+      "name": "Alt note",
       "settings": [
+        {
+          "type": "select",
+          "id": "icon_preset",
+          "label": "Icon",
+          "options": [
+            { "value": "bottle", "label": "Bottle" },
+            { "value": "scoop", "label": "Scoop" },
+            { "value": "brain", "label": "Brain" },
+            { "value": "clock", "label": "Clock" },
+            { "value": "checklist", "label": "Checklist" },
+            { "value": "none", "label": "None / custom image" }
+          ],
+          "default": "bottle"
+        },
         {
           "type": "image_picker",
           "id": "icon",
-          "label": "Icon",
-          "info": "Small icon (≤ 48px). Leave empty for a default dot."
+          "label": "Custom icon",
+          "info": "Optional. Overrides preset."
         },
         {
           "type": "text",
           "id": "label",
           "label": "Label",
-          "default": "3 potten op je aanrecht"
+          "default": "4 potten op je aanrecht"
         }
       ]
     }
@@ -919,18 +1197,20 @@
     {
       "name": "Pack comparison",
       "blocks": [
-        { "type": "stack_item", "settings": { "label": "Creatine", "note": "5 g" } },
-        { "type": "stack_item", "settings": { "label": "Elektrolyten + magnesium" } },
-        { "type": "stack_item", "settings": { "label": "Vitamine B-complex", "note": "B5 · B6 · B12" } },
-        { "type": "alt_item", "settings": { "label": "Creatine", "note": "5 g/dag", "price": 18 } },
-        { "type": "alt_item", "settings": { "label": "Elektrolyten + magnesium", "price": 29 } },
-        { "type": "alt_item", "settings": { "label": "Vitamine B-complex", "note": "B5 · B6 · B12", "price": 14 } },
-        { "type": "stack_feature", "settings": { "label": "Eén sachet, scheuren en klaar" } },
-        { "type": "stack_feature", "settings": { "label": "Past in tas, jaszak of la" } },
-        { "type": "stack_feature", "settings": { "label": "Geen ochtend-checklist" } },
-        { "type": "alt_feature", "settings": { "label": "3 potten op je aanrecht" } },
-        { "type": "alt_feature", "settings": { "label": "3 schepjes om af te meten" } },
-        { "type": "alt_feature", "settings": { "label": "Elke ochtend onthouden" } }
+        { "type": "stack_item", "settings": { "label": "Creatine Monohydraat" } },
+        { "type": "stack_item", "settings": { "label": "Elektrolyten" } },
+        { "type": "stack_item", "settings": { "label": "Magnesium Bisglycinaat" } },
+        { "type": "stack_item", "settings": { "label": "B-Vitaminen", "note": "B5, B6, B12" } },
+        { "type": "alt_item", "settings": { "label": "Creatine Monohydraat", "price": 18 } },
+        { "type": "alt_item", "settings": { "label": "Elektrolyten", "price": 17 } },
+        { "type": "alt_item", "settings": { "label": "Magnesium Bisglycinaat", "price": 12 } },
+        { "type": "alt_item", "settings": { "label": "B-Vitaminen", "note": "B5, B6, B12", "price": 14 } },
+        { "type": "stack_feature", "settings": { "icon_preset": "shield", "label": "Eén sachet — scheuren en klaar" } },
+        { "type": "stack_feature", "settings": { "icon_preset": "bag", "label": "Past in tas, jaszak of la" } },
+        { "type": "stack_feature", "settings": { "icon_preset": "calendar-check", "label": "Geen ochtend-checklist" } },
+        { "type": "alt_feature", "settings": { "icon_preset": "bottle", "label": "4 potten op je aanrecht" } },
+        { "type": "alt_feature", "settings": { "icon_preset": "scoop", "label": "4 schepjes om af te meten" } },
+        { "type": "alt_feature", "settings": { "icon_preset": "brain", "label": "Elke ochtend onthouden" } }
       ]
     }
   ],
