@@ -57,10 +57,12 @@
   data-skip-cart="{{ block.settings.skip_cart }}"
   data-per-day-suffix="{{ block.settings.per_day_suffix | default: '/ day' | escape }}"
   data-sticks-per-pack="{{ block.settings.sticks_per_pack | default: 30 }}"
+  data-most-popular-match="{{ block.settings.most_popular_match | escape }}"
   {{ block.shopify_attributes }}
   style="
     --pb-accent: {{ block.settings.accent_color }};
     --pb-accent-text: {{ block.settings.accent_text_color }};
+    --pb-popular-bg: {{ block.settings.most_popular_color }};
     --pb-border-radius: {{ block.settings.corner_radius }}px;
     --pb-border-width: {{ block.settings.border_width }}px;
     --pb-flavor-cols: {{ product.variants.size }};
@@ -145,18 +147,53 @@
           </span>
         </div>
         <div class="pack-builder__mode-tiers-slot" data-pack-builder-tiers-slot></div>
-        {%- if block.settings.subscription_benefits != blank -%}
-          <div class="pack-builder__benefits rte">{{ block.settings.subscription_benefits }}</div>
+        {%- liquid
+          assign benefits = ''
+          for n in (1..4)
+            assign bkey = 'benefit_' | append: n
+            assign bval = block.settings[bkey]
+            if bval != blank
+              assign benefits = benefits | append: bval | append: '~~'
+            endif
+          endfor
+          assign benefits = benefits | split: '~~'
+        -%}
+        {%- if benefits.size > 0 -%}
+          <ul class="pack-builder__benefits">
+            {%- for benefit in benefits -%}
+              <li class="pack-builder__benefit">
+                <span class="pack-builder__benefit-icon" aria-hidden="true">
+                  <svg viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="9.5" cy="9.5" r="7.125" fill="var(--pb-accent)"></circle>
+                    <path d="M8.3125 6.53125L11.2812 9.5L8.3125 12.4688" stroke="var(--pb-accent-text)" stroke-width="1.1875" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </span>
+                <span class="pack-builder__benefit-text">{{ benefit }}</span>
+              </li>
+            {%- endfor -%}
+          </ul>
         {%- endif -%}
         {%- if allocations_count > 0 -%}
           <div class="pack-builder__frequency">
-            <select class="pack-builder__frequency-select" aria-label="Delivery frequency">
-              {%- for allocation in allocations -%}
-                <option value="{{ allocation.selling_plan.id }}" {% if forloop.first %}selected{% endif %}>
-                  {{ allocation.selling_plan.name }}
-                </option>
-              {%- endfor -%}
-            </select>
+            <div class="pack-builder__frequency-control">
+              <span class="pack-builder__frequency-label" data-freq-label></span>
+              {%- if block.settings.most_popular_label != blank -%}
+                <span class="pack-builder__frequency-pill" data-freq-pill hidden>{{ block.settings.most_popular_label }}</span>
+              {%- endif -%}
+              <span class="pack-builder__frequency-arrow" aria-hidden="true">
+                <svg viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="13.5" cy="13.5" r="13.5" fill="var(--pb-accent)"></circle>
+                  <path d="M9 11.5L13.5 16L18 11.5" stroke="var(--pb-accent-text)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </span>
+              <select class="pack-builder__frequency-select" aria-label="Delivery frequency">
+                {%- for allocation in allocations -%}
+                  <option value="{{ allocation.selling_plan.id }}" {% if forloop.first %}selected{% endif %}>
+                    {{ allocation.selling_plan.name }}
+                  </option>
+                {%- endfor -%}
+              </select>
+            </div>
           </div>
         {%- endif -%}
       </label>
@@ -227,10 +264,55 @@
       "info": "Leave empty to hide."
     },
     {
-      "type": "richtext",
-      "id": "subscription_benefits",
-      "label": "Subscription benefits",
-      "default": "<p>Easily pause, cancel or adjust at any time</p><p>30 day money back guarantee</p>"
+      "type": "header",
+      "content": "Subscription benefits"
+    },
+    {
+      "type": "text",
+      "id": "benefit_1",
+      "label": "Benefit 1",
+      "default": "Easily pause or cancel at any time"
+    },
+    {
+      "type": "text",
+      "id": "benefit_2",
+      "label": "Benefit 2",
+      "default": "Free gifts worth €50+"
+    },
+    {
+      "type": "text",
+      "id": "benefit_3",
+      "label": "Benefit 3",
+      "default": "30 day money back guarantee"
+    },
+    {
+      "type": "text",
+      "id": "benefit_4",
+      "label": "Benefit 4",
+      "default": "Free delivery every order (€5)"
+    },
+    {
+      "type": "header",
+      "content": "Most popular pill"
+    },
+    {
+      "type": "text",
+      "id": "most_popular_label",
+      "label": "Pill text",
+      "default": "Most popular",
+      "info": "Leave empty to hide the pill."
+    },
+    {
+      "type": "text",
+      "id": "most_popular_match",
+      "label": "Show pill on frequency",
+      "info": "Pill shows when the selected delivery frequency name contains this text (e.g. \"4 week\"). Leave empty to show it on the first frequency."
+    },
+    {
+      "type": "color",
+      "id": "most_popular_color",
+      "label": "Pill background",
+      "default": "#cac0ff"
     },
     {
       "type": "text",

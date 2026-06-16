@@ -79,6 +79,8 @@
       this.atcOriginalLabel = this.atcLabelEl ? this.atcLabelEl.textContent : 'Add to cart';
       this.modeRadios = Array.from(this.querySelectorAll('.pack-builder__mode-radio'));
       this.freqSelect = this.querySelector('.pack-builder__frequency-select');
+      this.freqLabelEl = this.querySelector('[data-freq-label]');
+      this.freqPillEl = this.querySelector('[data-freq-pill]');
 
       // Seed counts
       this.flavorEls.forEach(el => {
@@ -88,6 +90,21 @@
 
       if (this.freqSelect) {
         this.state.sellingPlanId = this.freqSelect.value;
+        this.updateFreqDisplay();
+      }
+    }
+
+    updateFreqDisplay() {
+      if (!this.freqSelect) return;
+      const opt = this.freqSelect.options[this.freqSelect.selectedIndex];
+      const text = opt ? opt.textContent.trim() : '';
+      if (this.freqLabelEl) this.freqLabelEl.textContent = text;
+      if (this.freqPillEl) {
+        const match = (this.dataset.mostPopularMatch || '').trim().toLowerCase();
+        const show = match
+          ? text.toLowerCase().includes(match)
+          : this.freqSelect.selectedIndex === 0;
+        this.freqPillEl.hidden = !show;
       }
     }
 
@@ -143,6 +160,7 @@
       if (this.freqSelect) {
         this.freqSelect.addEventListener('change', () => {
           this.state.sellingPlanId = this.freqSelect.value;
+          this.updateFreqDisplay();
           this.notify();
         });
       }
@@ -173,6 +191,7 @@
       if (this.freqSelect.value === value) return;
       this.freqSelect.value = value;
       this.state.sellingPlanId = this.freqSelect.value;
+      this.updateFreqDisplay();
       this.notify();
     }
 

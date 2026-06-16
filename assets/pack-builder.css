@@ -249,10 +249,15 @@
 }
 
 .pack-builder__mode-top {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
+  display: flex;
   align-items: center;
   gap: 0.8rem;
+}
+
+/* Subscription groups title + prices to the left (per design);
+   one-time pushes its price to the right edge. */
+.pack-builder__mode--one-time .pack-builder__mode-prices {
+  margin-left: auto;
 }
 
 .pack-builder__mode-radio-visual {
@@ -275,26 +280,26 @@
 
 .pack-builder__mode-title {
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
+  letter-spacing: -0.01em;
 }
 
 .pack-builder__mode-prices {
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0.6rem;
   flex-wrap: wrap;
-  justify-content: flex-end;
 }
 
 .pack-builder__compare {
   text-decoration: line-through;
-  opacity: 0.55;
-  font-size: 1.3rem;
+  opacity: 0.5;
+  font-size: 1.4rem;
 }
 
 .pack-builder__price {
   font-weight: 700;
-  font-size: 1.6rem;
+  font-size: 1.4rem;
 }
 
 .pack-builder__save-badge {
@@ -308,36 +313,114 @@
 }
 
 .pack-builder__benefits {
-  margin-top: 0.8rem;
-  font-size: 1.25rem;
-  line-height: 1.4;
+  list-style: none;
+  margin: 1.2rem 0 0;
+  padding: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.4rem 1rem;
+  gap: 1.2rem 1.6rem;
 }
 
-.pack-builder__benefits p {
-  margin: 0;
+.pack-builder__benefit {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
 }
 
-@media (max-width: 600px) {
-  .pack-builder__benefits {
-    grid-template-columns: 1fr;
-  }
+.pack-builder__benefit-icon {
+  flex: 0 0 auto;
+  width: 1.9rem;
+  height: 1.9rem;
+  margin-top: 0.1rem;
 }
 
-.pack-builder__frequency {
-  margin-top: 1rem;
-}
-
-.pack-builder__frequency-select {
+.pack-builder__benefit-icon svg {
+  display: block;
   width: 100%;
-  padding: 0.9rem 1rem;
-  border-radius: calc(var(--pb-radius) - 2px);
-  border: 1px solid var(--pb-muted-border);
+  height: 100%;
+}
+
+.pack-builder__benefit-text {
+  font-size: 1.6rem;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: inherit;
+  opacity: 0.8;
+}
+
+/* ---------- Frequency dropdown ---------- */
+.pack-builder__frequency {
+  margin-top: 1.2rem;
+}
+
+.pack-builder__frequency-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 3.9rem;
+  padding: 0.4rem 0.6rem 0.4rem 1.4rem;
   background: #fff;
+  border: 1px solid rgba(37, 22, 47, 0.35);
+  border-radius: 0.8rem;
+}
+
+.pack-builder__frequency-label {
+  font-size: 1.6rem;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: inherit;
+  opacity: 0.8;
+}
+
+.pack-builder__frequency-pill {
+  flex: 0 0 auto;
+  background: var(--pb-popular-bg, #cac0ff);
+  color: #25162f;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  padding: 0.3rem 0.5rem;
+  border-radius: 50px;
+  white-space: nowrap;
+}
+
+.pack-builder__frequency-pill[hidden] {
+  display: none;
+}
+
+.pack-builder__frequency-arrow {
+  margin-left: auto;
+  flex: 0 0 auto;
+  width: 2.7rem;
+  height: 2.7rem;
+  pointer-events: none;
+}
+
+.pack-builder__frequency-arrow svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Native select sits transparent on top of the styled control so the
+   real (accessible) option list still opens; the visual label/pill/arrow
+   underneath are kept in sync by JS. */
+.pack-builder__frequency-select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  cursor: pointer;
   font: inherit;
-  font-size: 1.4rem;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 /* Hide subscription block (incl. ribbon and benefits) when one-time selected */
