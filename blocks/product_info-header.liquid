@@ -29,8 +29,15 @@
     {%- endif -%}
   </div>
 
-  {%- if s.description != blank -%}
-    <div class="product-info-header__description">{{ s.description }}</div>
+  {%- liquid
+    if s.description_source == 'custom'
+      assign description = s.description
+    else
+      assign description = product.description
+    endif
+  -%}
+  {%- if description != blank -%}
+    <div class="product-info-header__description">{{ description }}</div>
   {%- endif -%}
 
   {%- if s.show_rating -%}
@@ -238,9 +245,20 @@
       "content": "Description"
     },
     {
+      "type": "select",
+      "id": "description_source",
+      "label": "Source",
+      "options": [
+        { "value": "product", "label": "Product description" },
+        { "value": "custom", "label": "Custom text" }
+      ],
+      "default": "product"
+    },
+    {
       "type": "inline_richtext",
       "id": "description",
-      "label": "Description",
+      "label": "Custom description",
+      "info": "Only used when Source is set to Custom text",
       "default": "Creatine, electrolytes & b-vitamines for a good energized foundation."
     },
     {
