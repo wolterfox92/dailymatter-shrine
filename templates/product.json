@@ -435,23 +435,23 @@
         "constrain_to_viewport": true,
         "media_fit": "contain",
         "desktop_arrows_position": "hidden",
-        "mobile_media_corner_radius": 0,
-        "mobile_spacing_pixels": 0,
-        "mobile_arrows_position": "sides",
-        "mobile_pagination": "dots_overlay",
-        "mobile_thumbnails_position": "hidden",
-        "mobile_thumbnails_count": 5,
+        "mobile_media_corner_radius": 18,
+        "mobile_spacing_pixels": 10,
+        "mobile_arrows_position": "hidden",
+        "mobile_pagination": "hidden",
+        "mobile_thumbnails_position": "bottom",
+        "mobile_thumbnails_count": 4,
         "mobile_vertical_thumbnails_width": 22,
         "mobile_vertical_thumbnails_hide_arrows": true,
         "mobile_scroll_padding_percentage": 0,
-        "mobile_scroll_padding_pixels": 0,
-        "enable_mobile_outher_spacing": false,
+        "mobile_scroll_padding_pixels": 16,
+        "enable_mobile_outher_spacing": true,
         "mobile_slides_container_width": 100,
         "mobile_slides_inner_width": 100,
         "trust_badge_position": "top-right",
         "badge_display_on": "all",
         "badge_size_percentage": 20,
-        "mobile_padding_top": 0,
+        "mobile_padding_top": 20,
         "mobile_padding_bottom": 0,
         "desktop_padding_top": 36,
         "desktop_padding_bottom": 36
@@ -1299,36 +1299,42 @@
         "stack_feature_kTWTnC": {
           "type": "stack_feature",
           "settings": {
+            "icon_preset": "shield",
             "label": "Eén sachet, scheuren en klaar"
           }
         },
         "stack_feature_4zCLe6": {
           "type": "stack_feature",
           "settings": {
+            "icon_preset": "shield",
             "label": "Past in tas, jaszak of la"
           }
         },
         "stack_feature_WMWppa": {
           "type": "stack_feature",
           "settings": {
+            "icon_preset": "shield",
             "label": "Geen ochtend-checklist"
           }
         },
         "alt_feature_qzyrEF": {
           "type": "alt_feature",
           "settings": {
+            "icon_preset": "bottle",
             "label": "3 potten op je aanrecht"
           }
         },
         "alt_feature_i6He4K": {
           "type": "alt_feature",
           "settings": {
+            "icon_preset": "bottle",
             "label": "3 schepjes om af te meten"
           }
         },
         "alt_feature_d4eL6Q": {
           "type": "alt_feature",
           "settings": {
+            "icon_preset": "bottle",
             "label": "Elke ochtend onthouden"
           }
         }
@@ -1349,15 +1355,20 @@
       ],
       "name": "Pack comparison",
       "settings": {
-        "title": "<p>Waar je [price] voor betaalt.</p>",
-        "subtitle": "<p>Eén sachet per dag. Geen drie potten, geen schepjes, geen ochtend-checklist.</p>",
+        "eyebrow": "Het rekensommetje",
+        "headline": "<p>Eén sachet.</p>",
+        "headline_highlight": "[savings] minder.",
+        "aside_text": "<p>Dezelfde vier actieve stoffen, los samengesteld kost je meer — en vier potten, vier schepjes, vier dingen om te onthouden.</p>",
+        "cta_label": "Start vandaag",
+        "cta_link": "",
         "stack_badge": "JOUW STACK",
         "stack_heading": "Daily Matter",
         "stack_meta": "1 sachet · per dag",
         "stack_value_label": "inbegrepen",
         "stack_total_label": "30 sachets — één maand",
-        "cta_label": "Start vandaag",
-        "cta_link": "",
+        "show_was": true,
+        "show_discount_label": true,
+        "discount_label": "[pct]% korting",
         "alt_badge": "HET ALTERNATIEF",
         "alt_heading": "Los samenstellen",
         "alt_meta": "3 potten · 3 routines",
@@ -1367,24 +1378,37 @@
         "tier_qty": 1,
         "tier_pct": 16,
         "stack_total_manual": 45,
+        "stack_was_manual": 45,
         "sticks_per_pack": 30,
         "per_day_suffix": "per dag",
-        "vs_label": "vs",
         "footer_left": "<p>Prijzen op basis van gemiddelde retail per stuk.</p>",
+        "save_prefix": "Je bespaart",
+        "save_tag": "[savings] / maand · [pct]%",
         "footer_right": "<p>Bespaar [savings] / maand · [pct]%</p>",
         "bg_color": "#efeae0",
         "text_color": "#1a1a1a",
-        "stack_bg": "#2b3327",
-        "stack_text": "#f4efe3",
-        "stack_rule": "#4a5446",
-        "stack_check": "#f4efe3",
+        "text_muted": "#5b5670",
+        "text_faint": "#8b8799",
+        "hero_bg": "#cbbcee",
+        "hero_text": "#211d33",
+        "hero_text_muted": "#6a5f86",
+        "hero_rule": "#a998c9",
         "alt_bg": "#f7f1e3",
         "alt_text": "#2b2a26",
         "alt_rule": "#d9d2bf",
-        "alt_muted": "#9a8f75",
+        "accent_lime": "#aee05c",
+        "accent_lime_deep": "#9ed142",
+        "check_bg": "#2f4a32",
+        "check_ink": "#aee05c",
+        "badge_hero_bg": "#211d33",
+        "badge_hero_ink": "#cbbcee",
+        "strike_color": "#c96a3f",
         "cta_bg": "#e89a3c",
         "cta_text": "#1a1a1a",
+        "cta_circ_bg": "#211d33",
+        "cta_circ_ink": "#aee05c",
         "corner_radius": 24,
+        "corner_radius_sm": 18,
         "padding_top": 64,
         "padding_bottom": 64
       }
