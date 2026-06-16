@@ -314,10 +314,7 @@
         if (this.statusEl) this.statusEl.textContent = '';
         if (this.atcEl) {
           this.atcEl.disabled = this.state.loading;
-          if (this.atcLabelEl) {
-            const atcTotal = this.state.mode === 'subscription' ? discountedTotal : baseTotal;
-            this.atcLabelEl.textContent = `${this.atcOriginalLabel} — ${formatMoney(atcTotal, this.moneyFormat)}`;
-          }
+          if (this.atcLabelEl) this.atcLabelEl.textContent = this.atcOriginalLabel;
         }
       }
 
