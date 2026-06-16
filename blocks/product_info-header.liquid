@@ -1,0 +1,306 @@
+{% liquid
+  if section.settings.product_images == 'all' or section.settings.product_images == 'one'
+    assign product = section.settings.product
+  endif
+
+  assign s = block.settings
+%}
+
+<div
+  class="product-info-header product-info-header-{{ block.id }} {{ s.visibility }}"
+  {{ block.shopify_attributes }}
+>
+  {%- if s.show_badge and s.badge_text != blank -%}
+    <span class="product-info-header__badge">{{ s.badge_text }}</span>
+  {%- endif -%}
+
+  <div class="product-info-header__heading">
+    <p class="product-info-header__title">{{ product.title }}</p>
+
+    {%- if s.variant_label != blank or s.variant_sublabel != blank -%}
+      <div class="product-info-header__variant">
+        {%- if s.variant_label != blank -%}
+          <span class="product-info-header__variant-label">{{ s.variant_label }}</span>
+        {%- endif -%}
+        {%- if s.variant_sublabel != blank -%}
+          <span class="product-info-header__variant-sublabel">{{ s.variant_sublabel }}</span>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- if s.description != blank -%}
+    <div class="product-info-header__description">{{ s.description }}</div>
+  {%- endif -%}
+
+  {%- if s.show_rating -%}
+    <div class="product-info-header__rating">
+      <span class="product-info-header__stars" role="img" aria-label="{{ s.rating_value }} out of 5">
+        {%- for i in (1..5) -%}
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+            <path d="M5.08203 4.26536L6.9487 1.8487C7.08203 1.67092 7.24036 1.54036 7.4237 1.45703C7.60703 1.3737 7.7987 1.33203 7.9987 1.33203C8.1987 1.33203 8.39036 1.3737 8.5737 1.45703C8.75703 1.54036 8.91536 1.67092 9.0487 1.8487L10.9154 4.26536L13.7487 5.21536C14.0376 5.30425 14.2654 5.46814 14.432 5.70703C14.5987 5.94592 14.682 6.20981 14.682 6.4987C14.682 6.63203 14.6626 6.76537 14.6237 6.8987C14.5848 7.03203 14.5209 7.15981 14.432 7.28203L12.5987 9.88203L12.6654 12.6154C12.6765 13.0043 12.5487 13.332 12.282 13.5987C12.0154 13.8654 11.7043 13.9987 11.3487 13.9987C11.3265 13.9987 11.2043 13.982 10.982 13.9487L7.9987 13.1154L5.01536 13.9487C4.95981 13.9709 4.8987 13.9848 4.83203 13.9904C4.76536 13.9959 4.70425 13.9987 4.6487 13.9987C4.29314 13.9987 3.98203 13.8654 3.71536 13.5987C3.4487 13.332 3.32092 13.0043 3.33203 12.6154L3.3987 9.86537L1.58203 7.28203C1.49314 7.15981 1.42925 7.03203 1.39036 6.8987C1.35148 6.76537 1.33203 6.63203 1.33203 6.4987C1.33203 6.22092 1.41259 5.96259 1.5737 5.7237C1.73481 5.48481 1.95981 5.31536 2.2487 5.21536L5.08203 4.26536Z" fill="currentColor"/>
+          </svg>
+        {%- endfor -%}
+      </span>
+      <p class="product-info-header__rating-text">
+        <span>{{ s.rating_value }}</span>
+        <span class="product-info-header__rating-sep">∙</span>
+        <span>{{ s.reviews_text }}</span>
+      </p>
+    </div>
+  {%- endif -%}
+</div>
+
+{% style %}
+  .product-info-header-{{ block.id }} {
+    --pih-text: {{ s.text_color }};
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.6rem;
+    margin-top: {{ s.margin_top | divided_by: 10.0 }}rem;
+    margin-bottom: {{ s.margin_bottom | divided_by: 10.0 }}rem;
+  }
+
+  .product-info-header-{{ block.id }} .product-info-header__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    background: {{ s.badge_bg_color }};
+    color: {{ s.badge_text_color }};
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: 1.4rem;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .product-info-header-{{ block.id }} .product-info-header__heading {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+  }
+
+  .product-info-header-{{ block.id }} .product-info-header__title {
+    margin: 0;
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: 2.4rem;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--pih-text);
+  }
+
+  .product-info-header-{{ block.id }} .product-info-header__variant {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1.4rem;
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+
+  .product-info-header-{{ block.id }} .product-info-header__variant-label {
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--pih-text);
+  }
+
+  .product-info-header-{{ block.id }} .product-info-header__variant-sublabel {
+    font-family: var(--font-body-family);
+    color: {{ s.text_color | color_modify: 'alpha', 0.5 }};
+  }
+
+  .product-info-header-{{ block.id }} .product-info-header__description {
+    font-family: var(--font-body-family);
+    font-size: 1.6rem;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: {{ s.text_color | color_modify: 'alpha', 0.8 }};
+  }
+
+  .product-info-header-{{ block.id }} .product-info-header__description > * {
+    margin: 0;
+  }
+
+  .product-info-header-{{ block.id }} .product-info-header__rating {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .product-info-header-{{ block.id }} .product-info-header__stars {
+    display: inline-flex;
+    align-items: center;
+    color: {{ s.star_color }};
+  }
+
+  .product-info-header-{{ block.id }} .product-info-header__stars svg {
+    display: block;
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  .product-info-header-{{ block.id }} .product-info-header__rating-text {
+    margin: 0;
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: 1.4rem;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--pih-text);
+    white-space: nowrap;
+  }
+
+  .product-info-header-{{ block.id }} .product-info-header__rating-sep {
+    color: {{ s.star_color }};
+    margin: 0 0.4rem;
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Info header",
+  "tag": null,
+  "settings": [
+    {
+      "type": "select",
+      "id": "visibility",
+      "options": [
+        { "value": "desktop-hidden", "label": "Mobile only" },
+        { "value": "mobile-hidden", "label": "Desktop only" },
+        { "value": "always-display", "label": "All devices" }
+      ],
+      "label": "Display on",
+      "default": "always-display"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#25162f"
+    },
+    {
+      "type": "header",
+      "content": "Badge"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Show badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "default": "Selling fast"
+    },
+    {
+      "type": "color",
+      "id": "badge_bg_color",
+      "label": "Badge background",
+      "default": "#cbff78"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Badge text color",
+      "default": "#25162f"
+    },
+    {
+      "type": "header",
+      "content": "Variant line"
+    },
+    {
+      "type": "text",
+      "id": "variant_label",
+      "label": "Label",
+      "info": "e.g. flavor or color",
+      "default": "Black Cherry"
+    },
+    {
+      "type": "text",
+      "id": "variant_sublabel",
+      "label": "Sub label",
+      "info": "e.g. size or format",
+      "default": "30 Satchets (30 portions)"
+    },
+    {
+      "type": "header",
+      "content": "Description"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "Creatine, electrolytes & b-vitamines for a good energized foundation."
+    },
+    {
+      "type": "header",
+      "content": "Rating"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show rating",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star & separator color",
+      "default": "#cbff78"
+    },
+    {
+      "type": "text",
+      "id": "rating_value",
+      "label": "Rating value",
+      "default": "4.7/5"
+    },
+    {
+      "type": "text",
+      "id": "reviews_text",
+      "label": "Reviews text",
+      "default": "36 reviews"
+    },
+    {
+      "type": "header",
+      "content": "Margins"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Top",
+      "min": 0,
+      "max": 45,
+      "step": 3,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 45,
+      "step": 3,
+      "unit": "px",
+      "default": 15
+    }
+  ],
+  "presets": [
+    {
+      "name": "Info header",
+      "category": "Product basics"
+    }
+  ]
+}
+{% endschema %}

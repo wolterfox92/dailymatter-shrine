@@ -1,0 +1,218 @@
+{% liquid
+  assign s = block.settings
+  assign items = ''
+  for i in (1..6)
+    assign key = 'item_' | append: i
+    assign val = s[key]
+    if val != blank
+      assign items = items | append: val | append: '~~'
+    endif
+  endfor
+  assign items = items | split: '~~'
+%}
+
+{%- if items.size > 0 -%}
+  <ul
+    class="product-benefits-list product-benefits-list-{{ block.id }} {{ s.visibility }}"
+    {{ block.shopify_attributes }}
+  >
+    {%- for item in items -%}
+      <li class="product-benefits-list__item">
+        <span class="product-benefits-list__icon">
+          <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+            <path d="M9.5 16.625C13.435 16.625 16.625 13.435 16.625 9.5C16.625 5.56497 13.435 2.375 9.5 2.375C5.56497 2.375 2.375 5.56497 2.375 9.5C2.375 13.435 5.56497 16.625 9.5 16.625Z" stroke="currentColor" stroke-width="1.1875" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8.3125 6.53125L11.2812 9.5L8.3125 12.4688" stroke="currentColor" stroke-width="1.1875" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="product-benefits-list__label">{{ item }}</span>
+      </li>
+    {%- endfor -%}
+  </ul>
+{%- endif -%}
+
+{% style %}
+  .product-benefits-list-{{ block.id }} {
+    display: grid;
+    grid-template-columns: repeat({{ s.columns }}, max-content);
+    column-gap: {{ s.column_gap | divided_by: 10.0 }}rem;
+    row-gap: {{ s.row_gap | divided_by: 10.0 }}rem;
+    margin-top: {{ s.margin_top | divided_by: 10.0 }}rem;
+    margin-bottom: {{ s.margin_bottom | divided_by: 10.0 }}rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .product-benefits-list-{{ block.id }} .product-benefits-list__item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .product-benefits-list-{{ block.id }} .product-benefits-list__icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    color: {{ s.icon_color }};
+  }
+
+  .product-benefits-list-{{ block.id }} .product-benefits-list__icon svg {
+    display: block;
+    width: 1.9rem;
+    height: 1.9rem;
+  }
+
+  .product-benefits-list-{{ block.id }} .product-benefits-list__label {
+    font-family: var(--font-body-family);
+    font-size: 1.6rem;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: {{ s.text_color | color_modify: 'alpha', 0.8 }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .product-benefits-list-{{ block.id }} {
+      grid-template-columns: repeat({{ s.columns_mobile }}, max-content);
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Benefits list",
+  "tag": null,
+  "settings": [
+    {
+      "type": "select",
+      "id": "visibility",
+      "options": [
+        { "value": "desktop-hidden", "label": "Mobile only" },
+        { "value": "mobile-hidden", "label": "Desktop only" },
+        { "value": "always-display", "label": "All devices" }
+      ],
+      "label": "Display on",
+      "default": "always-display"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#25162f"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#25162f"
+    },
+    {
+      "type": "header",
+      "content": "Items"
+    },
+    {
+      "type": "text",
+      "id": "item_1",
+      "label": "Item 1",
+      "default": "Stay energized"
+    },
+    {
+      "type": "text",
+      "id": "item_2",
+      "label": "Item 2",
+      "default": "Sharpen focus"
+    },
+    {
+      "type": "text",
+      "id": "item_3",
+      "label": "Item 3",
+      "default": "Overall wellbeing"
+    },
+    {
+      "type": "text",
+      "id": "item_4",
+      "label": "Item 4",
+      "default": "No crashes"
+    },
+    {
+      "type": "text",
+      "id": "item_5",
+      "label": "Item 5"
+    },
+    {
+      "type": "text",
+      "id": "item_6",
+      "label": "Item 6"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns (desktop)",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "columns_mobile",
+      "label": "Columns (mobile)",
+      "min": 1,
+      "max": 2,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Column gap",
+      "min": 8,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "row_gap",
+      "label": "Row gap",
+      "min": 4,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Margins"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Top",
+      "min": 0,
+      "max": 45,
+      "step": 3,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 45,
+      "step": 3,
+      "unit": "px",
+      "default": 15
+    }
+  ],
+  "presets": [
+    {
+      "name": "Benefits list",
+      "category": "Product basics"
+    }
+  ]
+}
+{% endschema %}
