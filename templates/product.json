@@ -77,6 +77,22 @@
               },
               "blocks": {}
             },
+            "divider_tP8U6P": {
+              "type": "divider",
+              "name": "Divider",
+              "settings": {
+                "visibility": "always-display",
+                "color": "#E1E1E1",
+                "height": 1,
+                "width": 100,
+                "Full_mobile_width": false,
+                "alignment": "center",
+                "border_radius": 0,
+                "margin_top": 18,
+                "margin_bottom": 30
+              },
+              "blocks": {}
+            },
             "product_pack_builder_xpTLmr": {
               "type": "product_pack-builder",
               "name": "Pack builder",
@@ -321,6 +337,7 @@
           "block_order": [
             "product_info_header_YyTPaf",
             "product_benefits_list_CzJxF7",
+            "divider_tP8U6P",
             "product_pack_builder_xpTLmr",
             "product_nutrition_info_modal_tUi7nb",
             "product_delivery_time_eFfQFz",
@@ -360,7 +377,7 @@
         "breadcrumbs_bottom_margin": 14,
         "display_variant_image_first": false,
         "disable_prepend": true,
-        "hide_variants": false,
+        "hide_variants": true,
         "variant_image_filtering": "none",
         "image_zoom": "none",
         "thumbnails_ratio": "square",
