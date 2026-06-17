@@ -9673,6 +9673,43 @@ bundle-deals {
     margin-bottom: 0;
 }
 
+.delivery-time {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1.3rem 1.4rem;
+    background: var(--delivery-time-background, #f4f0ec);
+    border: 0.1rem solid rgba(37, 22, 47, 0.35);
+    border-radius: 0.8rem;
+}
+
+.delivery-time__icon:not(:empty) {
+    display: flex;
+    align-items: center;
+    color: var(--delivery-time-icon-color, #25162f);
+    --icon-size: 2.2rem;
+}
+
+.delivery-time__icon span {
+    font-size: var(--icon-size);
+}
+
+.delivery-time__icon img {
+    display: block;
+    width: var(--icon-size);
+}
+
+.delivery-time__text {
+    color: var(--delivery-time-text-color, #25162f);
+    font-size: 1.4rem;
+    line-height: 2.2rem;
+    letter-spacing: -0.01em;
+}
+
+.delivery-time__text p {
+    margin: 0;
+}
+
 @media screen and (min-width: 750px) {
     .product__column-sticky {
         display: block;

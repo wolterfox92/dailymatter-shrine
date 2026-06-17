@@ -1,0 +1,228 @@
+<dynamic-dates
+  class="delivery-time {{ block.settings.visibility }}"
+  data-date-format="{{ block.settings.date_format }}"
+  data-day-labels="{{ block.settings.days_labels }}"
+  data-month-labels="{{ block.settings.months_labels }}"
+  data-days-to-skip="{{ block.settings.days_to_skip | replace: ' ', '' | downcase }}"
+  data-dates-to-skip="{{ block.settings.dates_to_skip | replace: ' ', '' | downcase }}"
+  role="status"
+  aria-live="polite"
+  {{ block.shopify_attributes }}
+  style="
+    --delivery-time-background: {{ block.settings.background_color }};
+    --delivery-time-text-color: {{ block.settings.text_color }};
+    --delivery-time-icon-color: {{ block.settings.icon_color }};
+    margin-top: {{ block.settings.margin_top | divided_by: 10.0 }}rem;
+    margin-bottom: {{ block.settings.margin_bottom | divided_by: 10.0 }}rem;
+  "
+>
+  {% unless block.settings.custom_icon == blank and block.settings.icon == blank %}
+    <div class="delivery-time__icon">
+      {% if block.settings.custom_icon != blank %}
+        <img
+          src="{{ block.settings.custom_icon | image_url: width: 150 }}"
+          width="auto"
+          height="auto"
+          loading="lazy"
+        >
+      {% else %}
+        {% render 'material-icon', icon: block.settings.icon, filled: block.settings.filled_icon %}
+      {% endif %}
+    </div>
+  {% endunless %}
+  <div
+    class="delivery-time__text"
+    data-dynamic-date="true"
+    data-text="{{ block.settings.message }}"
+    data-min-days="{{ block.settings.min_shipping_days }}"
+    data-max-days="{{ block.settings.max_shipping_days }}"
+  >
+    {{ block.settings.message | replace: '[start_date]', '-' | replace: '[end_date]', '-' }}
+  </div>
+</dynamic-dates>
+
+{% schema %}
+{
+  "name": "Delivery time",
+  "tag": null,
+  "settings": [
+    {
+      "type": "select",
+      "id": "visibility",
+      "options": [
+        {
+          "value": "desktop-hidden",
+          "label": "Mobile only"
+        },
+        {
+          "value": "mobile-hidden",
+          "label": "Desktop only"
+        },
+        {
+          "value": "always-display",
+          "label": "All devices"
+        }
+      ],
+      "label": "Display on",
+      "default": "always-display"
+    },
+    {
+      "type": "header",
+      "content": "Icon & text"
+    },
+    {
+      "type": "text",
+      "id": "icon",
+      "default": "local_shipping",
+      "label": "Icon",
+      "info": "[View all available icons](https:\/\/fonts.google.com\/icons?icon.set=Material+Symbols&icon.platform=web)."
+    },
+    {
+      "type": "checkbox",
+      "id": "filled_icon",
+      "default": false,
+      "label": "Filled icon"
+    },
+    {
+      "type": "image_picker",
+      "id": "custom_icon",
+      "label": "Custom icon"
+    },
+    {
+      "type": "richtext",
+      "id": "message",
+      "label": "Text",
+      "default": "<p>Nu besteld, bezorgd op <strong>[end_date]</strong></p>",
+      "info": "Gebruik [start_date] voor de vroegste leverdatum en [end_date] voor de laatste leverdatum."
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#f4f0ec"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#25162f"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon",
+      "default": "#25162f"
+    },
+    {
+      "type": "header",
+      "content": "Shipping"
+    },
+    {
+      "type": "number",
+      "id": "min_shipping_days",
+      "label": "Minimum shipping days",
+      "default": 7
+    },
+    {
+      "type": "number",
+      "id": "max_shipping_days",
+      "label": "Maximum shipping days",
+      "default": 15
+    },
+    {
+      "type": "select",
+      "id": "date_format",
+      "label": "Date format",
+      "options": [
+        {
+          "value": "day_mm_dd",
+          "label": "Monday, February 1st"
+        },
+        {
+          "value": "day_dd_mm",
+          "label": "Monday, 1. February"
+        },
+        {
+          "value": "mm_dd",
+          "label": "February 1st"
+        },
+        {
+          "value": "dd_mm",
+          "label": "1. February"
+        },
+        {
+          "value": "dd_mm_no_dot",
+          "label": "1 February"
+        },
+        {
+          "value": "day_dd_mm_numeric",
+          "label": "Monday, 01. 02."
+        },
+        {
+          "value": "dd_mm_numeric",
+          "label": "01. 02."
+        }
+      ],
+      "default": "dd_mm_no_dot"
+    },
+    {
+      "type": "text",
+      "id": "days_labels",
+      "label": "Day labels",
+      "default": "maandag, dinsdag, woensdag, donderdag, vrijdag, zaterdag, zondag"
+    },
+    {
+      "type": "text",
+      "id": "months_labels",
+      "label": "Month labels",
+      "default": "januari, februari, maart, april, mei, juni, juli, augustus, september, oktober, november, december"
+    },
+    {
+      "type": "text",
+      "id": "days_to_skip",
+      "label": "Week days to skip",
+      "info": "Enter the names of days to skip. If there are multiple days to skip, separate them with commas. Available days to use: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday. Example usage if you want to skip weekends: \"Saturday, Sunday\"."
+    },
+    {
+      "type": "text",
+      "id": "dates_to_skip",
+      "label": "Specific dates to skip",
+      "info": "Enter the exact dates to skip. If there are multiple dates to skip, separate them with commas. The date has to be in this format: MM-DD. Example usage if you want to skip Christmass & New Years: \"12-25, 12-31, 01-01\"."
+    },
+    {
+      "type": "header",
+      "content": "Margins"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Top",
+      "min": 0,
+      "max": 45,
+      "step": 3,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 45,
+      "step": 3,
+      "unit": "px",
+      "default": 15
+    }
+  ],
+  "presets": [
+    {
+      "name": "Delivery time",
+      "category": "Shipping information"
+    }
+  ]
+}
+{% endschema %}
