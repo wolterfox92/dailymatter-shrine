@@ -1,0 +1,379 @@
+{%- liquid
+  assign track_color = section.settings.track_color
+  assign fill_color = section.settings.fill_color
+  assign label_color = section.settings.label_color
+  assign title_color = section.settings.title_color
+  assign body_color = section.settings.body_color
+-%}
+
+{%- style -%}
+  .dm-bars-{{ section.id }} {
+    --dmb-track: {{ track_color }};
+    --dmb-fill: {{ fill_color }};
+    --dmb-label: {{ label_color }};
+    --dmb-title: {{ title_color }};
+    --dmb-body: {{ body_color }};
+    --dmb-height: {{ section.settings.bar_height }}px;
+    --dmb-radius: {{ section.settings.bar_radius }}px;
+    --dmb-gap: {{ section.settings.bar_gap | divided_by: 10.0 }}rem;
+  }
+
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width section-{{ section.id }}-padding">
+    <div class="dm-bars dm-bars-{{ section.id }}" data-dm-bars>
+      {%- if section.settings.title != blank -%}
+        <h2 class="dm-bars__title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+        <div class="dm-bars__list">
+          {%- for block in section.blocks -%}
+            {%- liquid
+              assign pct = block.settings.percentage | at_most: 100 | at_least: 0
+              assign block_fill = block.settings.fill_color
+            -%}
+            <div
+              class="dm-bars__bar"
+              style="--dmb-pct: {{ pct }}%;{% if block_fill != blank %} --dmb-fill: {{ block_fill }};{% endif %}"
+              {{ block.shopify_attributes }}
+            >
+              <div class="dm-bars__fill"></div>
+              <span class="dm-bars__label">
+                {%- if block.settings.show_percentage -%}{{ pct }}% {% endif -%}
+                {{- block.settings.label | escape -}}
+              </span>
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.body != blank -%}
+        <div class="dm-bars__body">{{ section.settings.body }}</div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .dm-bars {
+    margin: 0 auto;
+    max-width: 60rem;
+  }
+
+  .dm-bars__title {
+    margin: 0 0 2.4rem;
+    text-align: center;
+    color: var(--dmb-title);
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: clamp(2.8rem, 6vw, 4rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+
+  .dm-bars__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--dmb-gap, 0.8rem);
+  }
+
+  .dm-bars__bar {
+    position: relative;
+    height: var(--dmb-height, 40px);
+    border-radius: var(--dmb-radius, 8px);
+    background: var(--dmb-track, #f4f0ec);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  /* Parent-scoped selector beats the theme's `div:empty { display: none }` rule. */
+  .dm-bars__bar .dm-bars__fill {
+    display: block;
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--dmb-pct, 0%);
+    background: var(--dmb-fill, #cbff78);
+    border-radius: inherit;
+    z-index: 0;
+    transform-origin: left center;
+    transform: scaleX(0);
+    transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .dm-bars[data-dm-revealed] .dm-bars__fill {
+    transform: scaleX(1);
+  }
+
+  .dm-bars__label {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 1.6rem;
+    color: var(--dmb-label, #25162f);
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: 1.4rem;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+
+  .dm-bars__body {
+    margin-top: 2.4rem;
+    color: var(--dmb-body, rgba(37, 22, 47, 0.8));
+    font-size: 1.6rem;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+
+  .dm-bars__body > :first-child { margin-top: 0; }
+  .dm-bars__body > :last-child { margin-bottom: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dm-bars__fill {
+      transition: none;
+      transform: scaleX(1);
+    }
+  }
+{% endstylesheet %}
+
+<script>
+  (function () {
+    function reveal(el) {
+      el.setAttribute('data-dm-revealed', '');
+    }
+
+    function init(root) {
+      if (!root || root.dataset.dmInit === 'true') return;
+      root.dataset.dmInit = 'true';
+
+      if (!('IntersectionObserver' in window)) {
+        reveal(root);
+        return;
+      }
+
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            reveal(entry.target);
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.25 });
+
+      io.observe(root);
+    }
+
+    function initAll(scope) {
+      (scope || document).querySelectorAll('[data-dm-bars]').forEach(init);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { initAll(); });
+    } else {
+      initAll();
+    }
+
+    document.addEventListener('shopify:section:load', function (e) {
+      e.target.querySelectorAll('[data-dm-bars]').forEach(function (el) {
+        el.dataset.dmInit = '';
+        el.removeAttribute('data-dm-revealed');
+        init(el);
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Stat bars",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "title",
+      "label": "Title",
+      "default": "<p>Plaats hier een titel</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body text",
+      "default": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "track_color",
+      "label": "Bar background",
+      "default": "#f4f0ec"
+    },
+    {
+      "type": "color",
+      "id": "fill_color",
+      "label": "Bar fill",
+      "default": "#cbff78"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Bar label text",
+      "default": "#25162f"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title",
+      "default": "#25162f"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Body text",
+      "default": "#3d2e3c"
+    },
+    {
+      "type": "header",
+      "content": "Bars"
+    },
+    {
+      "type": "range",
+      "id": "bar_height",
+      "min": 24,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "label": "Bar height",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "bar_radius",
+      "min": 0,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "label": "Bar corner radius",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "bar_gap",
+      "min": 0,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Gap between bars",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "accent-1", "label": "Accent 1" },
+        { "value": "accent-2", "label": "Accent 2" },
+        { "value": "background-1", "label": "Background 1" },
+        { "value": "background-2", "label": "Background 2" },
+        { "value": "inverse", "label": "Inverse" }
+      ],
+      "default": "background-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "bar",
+      "name": "Bar",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Lorem ipsum dolor"
+        },
+        {
+          "type": "range",
+          "id": "percentage",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Percentage",
+          "default": 80
+        },
+        {
+          "type": "checkbox",
+          "id": "show_percentage",
+          "label": "Show percentage in label",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "fill_color",
+          "label": "Bar fill (override)",
+          "info": "Leave empty to use the section fill color."
+        }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "Stat bars",
+      "blocks": [
+        { "type": "bar", "settings": { "label": "Lorem ipsum dolor", "percentage": 80 } },
+        { "type": "bar", "settings": { "label": "Lorem ipsum dolor", "percentage": 74 } },
+        { "type": "bar", "settings": { "label": "Lorem ipsum dolor", "percentage": 68 } },
+        { "type": "bar", "settings": { "label": "Lorem ipsum dolor", "percentage": 63 } },
+        { "type": "bar", "settings": { "label": "Lorem ipsum dolor", "percentage": 58 } }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}
