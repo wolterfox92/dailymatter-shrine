@@ -4,6 +4,7 @@
   assign label_color = section.settings.label_color
   assign title_color = section.settings.title_color
   assign body_color = section.settings.body_color
+  assign eyebrow_color = section.settings.eyebrow_color
 -%}
 
 {%- style -%}
@@ -13,6 +14,7 @@
     --dmb-label: {{ label_color }};
     --dmb-title: {{ title_color }};
     --dmb-body: {{ body_color }};
+    --dmb-eyebrow: {{ eyebrow_color }};
     --dmb-height: {{ section.settings.bar_height }}px;
     --dmb-radius: {{ section.settings.bar_radius }}px;
     --dmb-gap: {{ section.settings.bar_gap | divided_by: 10.0 }}rem;
@@ -34,6 +36,10 @@
 <div class="color-{{ section.settings.color_scheme }} gradient">
   <div class="page-width section-{{ section.id }}-padding">
     <div class="dm-bars dm-bars-{{ section.id }}" data-dm-bars>
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="dm-bars__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+
       {%- if section.settings.title != blank -%}
         <h2 class="dm-bars__title">{{ section.settings.title }}</h2>
       {%- endif -%}
@@ -73,15 +79,34 @@
     max-width: 60rem;
   }
 
+  .dm-bars__eyebrow {
+    margin: 0 0 0.4rem;
+    text-align: left;
+    color: var(--dmb-eyebrow, rgba(37, 22, 47, 0.6));
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: 1.2rem;
+    line-height: 1.2;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
   .dm-bars__title {
     margin: 0 0 2.4rem;
-    text-align: center;
+    text-align: left;
     color: var(--dmb-title);
     font-family: var(--font-heading-family);
     font-weight: 700;
-    font-size: clamp(2.8rem, 6vw, 4rem);
+    font-size: clamp(2.6rem, 5.4vw, 3.6rem);
     line-height: 1.05;
     letter-spacing: -0.01em;
+  }
+
+  .dm-bars__title > * {
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
   }
 
   .dm-bars__list {
@@ -134,10 +159,10 @@
   }
 
   .dm-bars__body {
-    margin-top: 2.4rem;
+    margin-top: 2.8rem;
     color: var(--dmb-body, rgba(37, 22, 47, 0.8));
-    font-size: 1.6rem;
-    line-height: 1.4;
+    font-size: 1.3rem;
+    line-height: 1.45;
     letter-spacing: -0.01em;
   }
 
@@ -206,6 +231,12 @@
   "class": "section",
   "settings": [
     {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Subtitle (eyebrow)",
+      "default": "Na 30 dagen"
+    },
+    {
       "type": "richtext",
       "id": "title",
       "label": "Title",
@@ -238,6 +269,12 @@
       "id": "label_color",
       "label": "Bar label text",
       "default": "#25162f"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Subtitle (eyebrow)",
+      "default": "#9a8fa0"
     },
     {
       "type": "color",
@@ -283,7 +320,7 @@
       "step": 1,
       "unit": "px",
       "label": "Gap between bars",
-      "default": 8
+      "default": 12
     },
     {
       "type": "header",

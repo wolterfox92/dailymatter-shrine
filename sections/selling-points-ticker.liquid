@@ -30,7 +30,7 @@
     display: flex;
     align-items: center;
     width: max-content;
-    column-gap: {{ section.settings.spacing }}px;
+    column-gap: var(--sp-icon-gap);
     animation: sellingPointsTicker{{ section.id }} {{ 150 | divided_by: section.settings.speed }}s linear infinite {{ section.settings.direction }} forwards;
   }
 
@@ -92,7 +92,7 @@
 
   @keyframes sellingPointsTicker{{ section.id }} {
     to {
-      transform: translateX(calc({% unless is_rtl %}-{% endunless %}50% {% if is_rtl %}+{% else %}-{% endif %} {{ section.settings.spacing | divided_by: 2.0 }}px));
+      transform: translateX(calc({% unless is_rtl %}-{% endunless %}50% {% if is_rtl %}+{% else %}-{% endif %} var(--sp-icon-gap) / 2));
     }
   }
 {%- endstyle -%}
@@ -236,12 +236,6 @@
       "default": false
     },
     {
-      "type": "number",
-      "id": "spacing",
-      "label": "Spacing between points (px)",
-      "default": 16
-    },
-    {
       "type": "header",
       "content": "Text"
     },
@@ -314,8 +308,9 @@
       "max": 40,
       "step": 1,
       "unit": "px",
-      "default": 8,
-      "label": "Gap between text and icon"
+      "default": 20,
+      "label": "Space around icons",
+      "info": "Space on each side of the icon, between it and the text on either side."
     },
     {
       "type": "header",
