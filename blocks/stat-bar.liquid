@@ -1,0 +1,52 @@
+{%- liquid
+  assign pct = block.settings.percentage | at_most: 100 | at_least: 0
+  assign block_fill = block.settings.fill_color
+-%}
+<div
+  class="dm-bars__bar"
+  style="--dmb-pct: {{ pct }}%;{% if block_fill != blank %} --dmb-fill: {{ block_fill }};{% endif %}"
+  {{ block.shopify_attributes }}
+>
+  <div class="dm-bars__fill"></div>
+  <span class="dm-bars__label">
+    {%- if block.settings.show_percentage -%}{{ pct }}% {% endif -%}
+    {{- block.settings.label | escape -}}
+  </span>
+</div>
+
+{% schema %}
+{
+  "name": "Bar",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Lorem ipsum dolor"
+    },
+    {
+      "type": "range",
+      "id": "percentage",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Percentage",
+      "default": 80
+    },
+    {
+      "type": "checkbox",
+      "id": "show_percentage",
+      "label": "Show percentage in label",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "fill_color",
+      "label": "Bar fill (override)",
+      "info": "Leave empty to use the section fill color."
+    }
+  ]
+}
+{% endschema %}

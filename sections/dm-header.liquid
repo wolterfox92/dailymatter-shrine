@@ -1,0 +1,559 @@
+{%- comment -%}
+  DM Header — floating glass header based on the Figma design.
+  Two glass "pills" that overlay the first section (hero):
+    • Left pill:  Daily Matters wordmark + lime hamburger that opens the theme drawer
+    • Right pill: lime "Account" button + dark cart circle
+  Sticky behaviour mirrors the default theme header: hides on scroll down,
+  reveals on scroll up. Drawer markup/JS is reused from the theme (secondary.js + base.css).
+{%- endcomment -%}
+
+{%- liquid
+  assign sticky = section.settings.sticky_header
+  assign reserve_space = section.settings.reserve_space
+  assign account_url = routes.account_login_url
+  if customer
+    assign account_url = routes.account_url
+  endif
+  assign logo_link = section.settings.logo_link
+  if logo_link == '/' or logo_link == blank
+    assign logo_link = request.locale.root_url
+  endif
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --dm-dark: {{ section.settings.dark_color }};
+    --dm-lime: {{ section.settings.accent_color }};
+    --dm-glass: rgba(255, 255, 255, {{ section.settings.glass_opacity | divided_by: 100.0 }});
+    --dm-header-pad-top: {{ section.settings.padding_top }}px;
+    --dm-header-pad-side: {{ section.settings.padding_side }}px;
+    --dm-header-pill-h: 3.7rem;
+    position: relative;
+    z-index: 6;
+  }
+
+  .dm-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 6;
+    display: block;
+    /* Override the theme's .header-wrapper background (we keep the overlay transparent). */
+    background: transparent;
+    padding: var(--dm-header-pad-top) var(--dm-header-pad-side) 0;
+    pointer-events: none;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, top;
+  }
+  .dm-header--hidden {
+    transform: translateY(-130%);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dm-header { transition: none; }
+  }
+
+  .dm-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.2rem;
+    max-width: var(--page-width, 1200px);
+    margin: 0 auto;
+  }
+
+  /* ---- Pills ---- */
+  .dm-header__pill {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    background: var(--dm-glass);
+    border: 0.5px solid rgba(255, 255, 255, 0.6);
+    border-radius: 999px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    height: 3.7rem;
+    box-sizing: border-box;
+  }
+  .dm-header__pill--left {
+    gap: 1.1rem;
+    padding: 0.37rem 0.67rem 0.37rem 1.6rem;
+  }
+  .dm-header__pill--right {
+    gap: 0.45rem;
+    padding: 0.37rem;
+  }
+
+  /* ---- Logo ---- */
+  .dm-header__logo {
+    display: inline-flex;
+    align-items: center;
+    color: var(--dm-dark);
+    text-decoration: none;
+    line-height: 0;
+  }
+  .dm-header__logo-mark {
+    position: relative;
+    display: inline-block;
+    width: 6rem;
+    height: 2.2rem;
+  }
+  .dm-header__logo-svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2.2rem;
+    height: 6rem;
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+  .dm-header__logo-img {
+    display: block;
+    height: 2.2rem;
+    width: auto;
+    object-fit: contain;
+  }
+
+  /* ---- Hamburger (theme drawer summary) ---- */
+  .dm-header header-drawer {
+    margin: 0;
+    display: flex;
+  }
+  .dm-header .header__icon--menu {
+    position: relative;
+    width: 2.85rem;
+    height: 2.85rem;
+    padding: 0;
+    border-radius: 999px;
+    background: var(--dm-lime);
+    color: var(--dm-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: filter 0.15s ease;
+  }
+  .dm-header .header__icon--menu:hover {
+    filter: brightness(0.95);
+  }
+  .dm-header .header__icon--menu .icon-hamburger {
+    width: 1.05rem;
+    /* Override the theme's wide gap (calc(8px - thickness)) so the three lines
+       sit tighter and centred inside the lime circle. */
+    gap: 0.3rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ---- Account button ---- */
+  .dm-header__account {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.85rem;
+    padding: 0 1.42rem;
+    border-radius: 999px;
+    background: var(--dm-lime);
+    color: var(--dm-dark);
+    font-size: 1.2rem;
+    font-weight: 500;
+    letter-spacing: -0.012em;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: filter 0.15s ease;
+  }
+  .dm-header__account:hover {
+    filter: brightness(0.95);
+  }
+
+  /* ---- Cart ---- */
+  .dm-header__cart {
+    position: relative;
+    display: inline-flex;
+    width: 2.85rem;
+    height: 2.85rem;
+    color: var(--dm-dark);
+    --dm-header-cart-accent: var(--dm-lime);
+    text-decoration: none;
+  }
+  .dm-header__cart-svg {
+    width: 100%;
+    height: 100%;
+  }
+  .dm-header .cart-count-bubble {
+    position: absolute;
+    top: -0.2rem;
+    right: -0.2rem;
+    min-width: 1.7rem;
+    height: 1.7rem;
+    padding: 0 0.4rem;
+    border-radius: 999px;
+    background: var(--dm-dark);
+    color: var(--dm-lime);
+    border: 1.5px solid var(--dm-glass);
+    font-size: 1rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Reserve-space spacer (when overlay is disabled): keeps content below the header. */
+  .dm-header__spacer {
+    height: calc(var(--dm-header-pad-top) + var(--dm-header-pill-h));
+  }
+
+  @media screen and (min-width: 990px) {
+    #shopify-section-{{ section.id }} {
+      --dm-header-pad-top: {{ section.settings.padding_top | plus: 12 }}px;
+      --dm-header-pill-h: 4.4rem;
+    }
+    .dm-header__pill { height: 4.4rem; }
+    .dm-header__pill--left { padding-left: 2rem; }
+    .dm-header .header__icon--menu,
+    .dm-header__account,
+    .dm-header__cart { height: 3.4rem; }
+    .dm-header .header__icon--menu,
+    .dm-header__cart { width: 3.4rem; }
+    .dm-header__account { font-size: 1.3rem; }
+    .dm-header__logo-mark { width: 7.4rem; height: 2.7rem; }
+    .dm-header__logo-svg { width: 2.7rem; height: 7.4rem; }
+    .dm-header__logo-img { height: 2.7rem; }
+  }
+{%- endstyle -%}
+
+<dm-header
+  class="dm-header section-header header-wrapper"
+  data-sticky="{{ sticky }}"
+  style="--icons-thickness: {{ section.settings.icons_thickness }}px;"
+>
+  <div class="dm-header__inner">
+    {%- comment -%} Left pill: logo + drawer hamburger {%- endcomment -%}
+    <div class="dm-header__pill dm-header__pill--left">
+      <a href="{{ logo_link }}" class="dm-header__logo" aria-label="{{ shop.name | escape }}">
+        {%- if settings.logo != blank -%}
+          {{
+            settings.logo
+            | image_url: width: 400
+            | image_tag:
+              class: 'dm-header__logo-img',
+              widths: '100, 200, 300, 400',
+              alt: settings.logo.alt | default: shop.name | escape
+          }}
+        {%- else -%}
+          <span class="dm-header__logo-mark">{% render 'icon-dm-logo' %}</span>
+        {%- endif -%}
+      </a>
+
+      {%- render 'header-drawer', section: section, text_menu_icon: false -%}
+    </div>
+
+    {%- comment -%} Right pill: account + cart {%- endcomment -%}
+    <div class="dm-header__pill dm-header__pill--right">
+      {%- if section.settings.show_account -%}
+        <a href="{{ account_url }}" class="dm-header__account">
+          {{- section.settings.account_label | escape -}}
+        </a>
+      {%- endif -%}
+
+      <a href="{{ routes.cart_url }}" class="dm-header__cart" aria-label="{{ 'templates.cart.cart' | t }}">
+        {%- render 'icon-dm-cart' -%}
+        <div id="cart-icon-bubble">
+          {%- liquid
+            assign cart_count = cart.item_count
+            for item in cart.items
+              if item.product.tags contains 'cart-hidden'
+                assign cart_count = cart_count | minus: item.quantity
+              endif
+            endfor
+          -%}
+          {%- if cart_count > 0 -%}
+            <div class="cart-count-bubble">
+              {%- if cart_count < 100 -%}
+                <span aria-hidden="true">{{ cart_count }}</span>
+              {%- endif -%}
+              <span class="visually-hidden">{{ 'sections.header.cart_count' | t: count: cart_count }}</span>
+            </div>
+          {%- endif -%}
+        </div>
+      </a>
+    </div>
+  </div>
+</dm-header>
+
+{%- if reserve_space -%}
+  <div class="dm-header__spacer" aria-hidden="true"></div>
+{%- endif -%}
+
+{% javascript %}
+  class DmHeader extends HTMLElement {
+    connectedCallback() {
+      this.sticky = this.dataset.sticky === 'true';
+      this.lastScroll = window.scrollY || 0;
+      this.ticking = false;
+
+      // dockOffset = combined height of everything above the header in the
+      // header group (ticker, announcement bar). Used as the threshold before
+      // hide/reveal kicks in.
+      this.measureOffset();
+      this.onResize = () => { this.measureOffset(); this.update(); };
+      window.addEventListener('resize', this.onResize, { passive: true });
+      // Re-measure once everything (fonts, announcement bar images) has loaded.
+      window.addEventListener('load', this.onResize, { once: true });
+
+      this.onScroll = this.onScroll.bind(this);
+      window.addEventListener('scroll', this.onScroll, { passive: true });
+
+      this.update();
+    }
+
+    measureOffset() {
+      // Sum the layout height of the preceding header-group sections — this is
+      // scroll-independent.
+      let h = 0;
+      let sib = this.parentElement && this.parentElement.previousElementSibling;
+      while (sib) {
+        h += sib.offsetHeight || 0;
+        sib = sib.previousElementSibling;
+      }
+      this.dockOffset = h;
+    }
+
+    liveTop() {
+      // The live bottom edge of whatever sits above the header right now. This
+      // tracks both a normal announcement bar (scrolls away → bottom goes to 0)
+      // and a sticky one (stays pinned → header stays docked below it), so the
+      // pills never overlap the announcement bar in either case.
+      let bottom = 0;
+      let sib = this.parentElement && this.parentElement.previousElementSibling;
+      while (sib) {
+        if (sib.getBoundingClientRect) {
+          const b = sib.getBoundingClientRect().bottom;
+          if (b > bottom) bottom = b;
+        }
+        sib = sib.previousElementSibling;
+      }
+      return Math.max(0, bottom);
+    }
+
+    disconnectedCallback() {
+      if (this.onScroll) window.removeEventListener('scroll', this.onScroll);
+      if (this.onResize) window.removeEventListener('resize', this.onResize);
+    }
+
+    onScroll() {
+      if (this.ticking) return;
+      this.ticking = true;
+      window.requestAnimationFrame(() => {
+        this.update();
+        this.ticking = false;
+      });
+    }
+
+    update() {
+      const y = window.scrollY || document.documentElement.scrollTop || 0;
+      const dock = this.dockOffset || 0;
+
+      // Dock the header right below whatever is above it (announcement bar etc.).
+      this.style.top = Math.round(this.liveTop()) + 'px';
+
+      // No hide/reveal while still within the announcement-bar region,
+      // or when sticky behaviour is disabled.
+      if (!this.sticky || y <= dock + 4) {
+        this.classList.remove('dm-header--hidden');
+        this.lastScroll = y;
+        return;
+      }
+
+      if (y > this.lastScroll + 4) {
+        // Scrolling down → hide and close the drawer if it is open.
+        this.classList.add('dm-header--hidden');
+        this.closeDrawer();
+      } else if (y < this.lastScroll - 4) {
+        // Scrolling up → reveal.
+        this.classList.remove('dm-header--hidden');
+      }
+
+      this.lastScroll = y;
+    }
+
+    closeDrawer() {
+      const details = this.querySelector('header-drawer details[open]');
+      if (details) details.removeAttribute('open');
+    }
+  }
+
+  if (!customElements.get('dm-header')) {
+    customElements.define('dm-header', DmHeader);
+  }
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "DM Header",
+  "tag": "section",
+  "class": "dm-header-section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Floating glass header based on the Figma design. The hamburger opens the theme's mobile menu drawer."
+    },
+    {
+      "type": "header",
+      "content": "Behaviour"
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky_header",
+      "label": "Sticky (hide on scroll down, show on scroll up)",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "reserve_space",
+      "label": "Reserve space below header",
+      "info": "Off = floating overlay over the first section (matches Figma). On = pushes content down so nothing sits under the header.",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "paragraph",
+      "content": "Uses the theme logo (Settings → Logo) when set. Otherwise the Daily Matters wordmark is shown."
+    },
+    {
+      "type": "url",
+      "id": "logo_link",
+      "label": "Logo link",
+      "default": "/"
+    },
+    {
+      "type": "header",
+      "content": "Menu (drawer)"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "default": "main-menu",
+      "label": "Menu"
+    },
+    {
+      "type": "link_list",
+      "id": "secondary_menu",
+      "label": "Secondary menu"
+    },
+    {
+      "type": "text",
+      "id": "mobile_menu_title",
+      "label": "Drawer title",
+      "default": "Menu"
+    },
+    {
+      "type": "select",
+      "id": "menu_color_scheme",
+      "options": [
+        { "value": "accent-1", "label": "Accent 1" },
+        { "value": "accent-2", "label": "Accent 2" },
+        { "value": "background-1", "label": "Background 1" },
+        { "value": "background-2", "label": "Background 2" },
+        { "value": "inverse", "label": "Inverse" }
+      ],
+      "default": "background-1",
+      "label": "Drawer color scheme"
+    },
+    {
+      "type": "header",
+      "content": "Account & cart"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_account",
+      "label": "Show account button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "account_label",
+      "label": "Account button label",
+      "default": "Account"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "dark_color",
+      "label": "Dark color (logo, cart, text)",
+      "default": "#243511"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color (lime)",
+      "default": "#CBFF78"
+    },
+    {
+      "type": "range",
+      "id": "glass_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Glass background opacity",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "icons_thickness",
+      "min": 1,
+      "max": 3,
+      "step": 0.5,
+      "unit": "px",
+      "label": "Hamburger line thickness",
+      "default": 1.5
+    },
+    {
+      "type": "select",
+      "id": "menu_icon",
+      "options": [
+        { "value": "style_1", "label": "Style 1" },
+        { "value": "style_2", "label": "Style 2" },
+        { "value": "style_3", "label": "Style 3" }
+      ],
+      "default": "style_1",
+      "label": "Hamburger icon style"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Top offset",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_side",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Side padding",
+      "default": 16
+    }
+  ],
+  "presets": [
+    {
+      "name": "DM Header"
+    }
+  ]
+}
+{% endschema %}

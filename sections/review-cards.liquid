@@ -1,0 +1,773 @@
+{%- style -%}
+  .review-cards-{{ section.id }} {
+    --rc-card-width: {{ section.settings.card_width_mobile }}px;
+    --rc-card-radius: {{ section.settings.card_radius }}px;
+    --rc-gap: {{ section.settings.card_gap_mobile | divided_by: 10.0 }}rem;
+  }
+
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .review-cards-{{ section.id }} {
+      --rc-card-width: {{ section.settings.card_width_desktop }}px;
+      --rc-gap: {{ section.settings.card_gap_desktop | divided_by: 10.0 }}rem;
+    }
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .review-cards__heading {
+    text-align: center;
+    font-size: {{ section.settings.heading_size | divided_by: 10.0 }}rem;
+    margin: 0.8rem 0 2.4rem;
+  }
+{%- endstyle -%}
+
+<style>
+  .review-cards {
+    margin: 0 auto;
+  }
+
+  /* Summary row */
+  .review-cards__summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+  }
+
+  .review-cards__stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  .review-cards__stars svg {
+    width: 1.6rem;
+    height: 1.6rem;
+    display: block;
+    color: {{ section.settings.star_color }};
+  }
+
+  .review-cards__summary-text {
+    margin: 0;
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: {{ section.settings.heading_color }};
+  }
+
+  .review-cards__summary-text .review-cards__dot {
+    color: {{ section.settings.star_color }};
+    padding: 0 0.4rem;
+  }
+
+  .review-cards__heading {
+    color: {{ section.settings.heading_color }};
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+
+  /* Track */
+  .review-cards__track {
+    display: flex;
+    gap: var(--rc-gap);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 0.4rem;
+  }
+
+  .review-cards__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Card */
+  .review-cards__card {
+    position: relative;
+    flex: 0 0 var(--rc-card-width);
+    display: flex;
+    flex-direction: column;
+    min-height: 35.6rem;
+    border-radius: var(--rc-card-radius);
+    overflow: hidden;
+    scroll-snap-align: start;
+    padding: 1.4rem;
+    background: {{ section.settings.card_background }};
+    color: {{ section.settings.card_text_color }};
+  }
+
+  .review-cards__card-stars {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 1.8rem;
+  }
+
+  .review-cards__card-stars svg {
+    width: 1.6rem;
+    height: 1.6rem;
+    display: block;
+    color: {{ section.settings.star_color }};
+  }
+
+  .review-cards__card-title {
+    margin: 0 0 0.8rem;
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: 1.6rem;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: {{ section.settings.card_text_color }};
+  }
+
+  .review-cards__card-body {
+    margin: 0;
+    font-size: 1.4rem;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: {{ section.settings.card_text_color | color_modify: 'alpha', 0.8 }};
+  }
+
+  .review-cards__card-author {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+    margin-top: 1.6rem;
+  }
+
+  .review-cards__card-name {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.4rem;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: {{ section.settings.card_text_color }};
+    white-space: nowrap;
+  }
+
+  .review-cards__verified {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.4rem;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: {{ section.settings.card_text_color }};
+    white-space: nowrap;
+  }
+
+  .review-cards__verified svg {
+    width: 1.6rem;
+    height: 1.6rem;
+    display: block;
+    color: {{ section.settings.verified_color }};
+    flex-shrink: 0;
+  }
+
+  /* "Reviewed product" pill */
+  .review-cards__product {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: auto;
+    padding: 0.7rem;
+    border-radius: 0.8rem;
+    background: {{ section.settings.pill_background }};
+  }
+
+  .review-cards__product-img {
+    flex: 0 0 auto;
+    width: 4.4rem;
+    height: 4.4rem;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 0.4rem;
+  }
+
+  .review-cards__product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .review-cards__product-label {
+    margin: 0;
+    font-size: 1.2rem;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: {{ section.settings.card_text_color | color_modify: 'alpha', 0.7 }};
+  }
+
+  .review-cards__product-name {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.4rem;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: {{ section.settings.card_text_color }};
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .review-cards__shop {
+    flex: 0 0 auto;
+    appearance: none;
+    border: 0;
+    cursor: pointer;
+    min-width: 5.8rem;
+    height: 3.6rem;
+    padding: 0 1rem;
+    border-radius: 0.8rem;
+    background: {{ section.settings.shop_button_background }};
+    color: {{ section.settings.shop_button_text_color }};
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: 1.1rem;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+
+  .review-cards__shop:hover {
+    opacity: 0.9;
+  }
+
+  .review-cards__shop:active {
+    transform: scale(0.97);
+  }
+
+  /* Progress slider */
+  {%- assign rc_progress = section.settings.progress_color | default: '#25162f' -%}
+  .review-cards__progress {
+    position: relative;
+    height: 6px;
+    width: 100%;
+    max-width: 35.8rem;
+    margin: 2rem auto 0;
+    border-radius: 56px;
+    background: {{ rc_progress | color_modify: 'alpha', 0.15 }};
+    cursor: pointer;
+    touch-action: none;
+  }
+
+  /* Parent-scoped selector beats the theme's `div:empty { display: none }` rule. */
+  .review-cards__progress .review-cards__progress-thumb {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 30%;
+    min-width: 24px;
+    border-radius: 56px;
+    background: {{ rc_progress }};
+    transform: translateX(0);
+  }
+
+  .review-cards--no-overflow .review-cards__progress {
+    display: none;
+  }
+</style>
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width section-{{ section.id }}-padding">
+    <div
+      class="review-cards review-cards-{{ section.id }}"
+      data-review-cards
+    >
+      {%- if section.settings.show_summary -%}
+        <div class="review-cards__summary">
+          <span class="review-cards__stars" aria-hidden="true">
+            {%- for i in (1..5) -%}{%- render 'icon-review-star' -%}{%- endfor -%}
+          </span>
+          {%- if section.settings.summary_text != blank -%}
+            <p class="review-cards__summary-text">{{ section.settings.summary_text }}</p>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.heading != blank -%}
+        <h2 class="review-cards__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+
+      <div class="review-cards__track" data-rc-track>
+        {%- for block in section.blocks -%}
+          {%- assign rating = block.settings.rating | default: 5 -%}
+          <div class="review-cards__card" {{ block.shopify_attributes }}>
+            <span class="review-cards__card-stars" aria-label="{{ rating }} out of 5 stars">
+              {%- for i in (1..rating) -%}{%- render 'icon-review-star' -%}{%- endfor -%}
+            </span>
+
+            {%- if block.settings.title != blank -%}
+              <h3 class="review-cards__card-title">{{ block.settings.title }}</h3>
+            {%- endif -%}
+
+            {%- if block.settings.body != blank -%}
+              <p class="review-cards__card-body">{{ block.settings.body }}</p>
+            {%- endif -%}
+
+            <div class="review-cards__card-author">
+              {%- if block.settings.author != blank -%}
+                <p class="review-cards__card-name">{{ block.settings.author }}</p>
+              {%- endif -%}
+              {%- if block.settings.verified -%}
+                <span class="review-cards__verified">
+                  {%- render 'icon-review-verified' -%}
+                  {{ block.settings.verified_label }}
+                </span>
+              {%- endif -%}
+            </div>
+
+            {%- if block.settings.product_name != blank or block.settings.product_image != blank -%}
+              <div class="review-cards__product">
+                {%- if block.settings.product_image != blank -%}
+                  {{
+                    block.settings.product_image
+                    | image_url: width: 120
+                    | image_tag:
+                      class: 'review-cards__product-img',
+                      loading: 'lazy',
+                      widths: '34, 68, 102',
+                      sizes: '34px',
+                      alt: block.settings.product_name
+                  }}
+                {%- endif -%}
+                <div class="review-cards__product-info">
+                  <p class="review-cards__product-label">{{ block.settings.product_label }}</p>
+                  <p class="review-cards__product-name">{{ block.settings.product_name }}</p>
+                </div>
+                <button
+                  type="button"
+                  class="review-cards__shop"
+                  data-rc-shop
+                >
+                  {{ section.settings.shop_button_label }}
+                </button>
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <div class="review-cards__progress" data-rc-progress>
+        <div class="review-cards__progress-thumb" data-rc-thumb></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    function scrollToPackBuilder(selector) {
+      var target =
+        document.querySelector(selector || 'pack-builder') ||
+        document.querySelector('.pack-builder');
+      if (!target) return;
+      if (typeof target.setMode === 'function') {
+        target.setMode('subscription');
+      }
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function initReviewCards(root) {
+      if (!root || root.dataset.rcInit === 'true') return;
+      var track = root.querySelector('[data-rc-track]');
+      var progress = root.querySelector('[data-rc-progress]');
+      var thumb = root.querySelector('[data-rc-thumb]');
+      if (!track) return;
+      root.dataset.rcInit = 'true';
+
+      // Shop buttons scroll to the pack builder so the visitor can build a pack.
+      root.querySelectorAll('[data-rc-shop]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          scrollToPackBuilder(root.dataset.rcPackBuilder);
+        });
+      });
+
+      if (!progress || !thumb) return;
+
+      function maxScroll() {
+        return track.scrollWidth - track.clientWidth;
+      }
+
+      var raf = null;
+      function update() {
+        var max = maxScroll();
+        if (max <= 1) {
+          root.classList.add('review-cards--no-overflow');
+          return;
+        }
+        root.classList.remove('review-cards--no-overflow');
+        var ratio = track.clientWidth / track.scrollWidth;
+        var thumbWidth = Math.min(Math.max(ratio * 100, 12), 90);
+        thumb.style.width = thumbWidth + '%';
+        var progress01 = track.scrollLeft / max;
+        var travel = progress.clientWidth * (1 - thumbWidth / 100);
+        thumb.style.transform = 'translateX(' + progress01 * travel + 'px)';
+      }
+      function requestUpdate() {
+        if (raf) return;
+        raf = requestAnimationFrame(function () {
+          raf = null;
+          update();
+        });
+      }
+
+      track.addEventListener('scroll', requestUpdate, { passive: true });
+      window.addEventListener('resize', requestUpdate);
+
+      // Recalculate when card images finish loading (they change scrollWidth).
+      root.querySelectorAll('img').forEach(function (img) {
+        if (!img.complete) img.addEventListener('load', requestUpdate);
+      });
+
+      if ('ResizeObserver' in window) {
+        new ResizeObserver(requestUpdate).observe(track);
+      }
+
+      // Drag the progress thumb to scroll the cards.
+      var dragging = false;
+
+      function scrollFromPointer(clientX) {
+        var rect = progress.getBoundingClientRect();
+        var thumbWidthPx = thumb.getBoundingClientRect().width;
+        var usable = rect.width - thumbWidthPx;
+        var x = clientX - rect.left - thumbWidthPx / 2;
+        var pct = usable > 0 ? Math.min(Math.max(x / usable, 0), 1) : 0;
+        track.scrollLeft = pct * maxScroll();
+      }
+
+      progress.addEventListener('pointerdown', function (e) {
+        dragging = true;
+        progress.setPointerCapture(e.pointerId);
+        scrollFromPointer(e.clientX);
+      });
+      progress.addEventListener('pointermove', function (e) {
+        if (dragging) scrollFromPointer(e.clientX);
+      });
+      progress.addEventListener('pointerup', function () {
+        dragging = false;
+      });
+      progress.addEventListener('pointercancel', function () {
+        dragging = false;
+      });
+
+      update();
+      window.addEventListener('load', update);
+      setTimeout(update, 300);
+    }
+
+    function initAll(scope) {
+      (scope || document).querySelectorAll('[data-review-cards]').forEach(initReviewCards);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { initAll(); });
+    } else {
+      initAll();
+    }
+
+    document.addEventListener('shopify:section:load', function (e) {
+      e.target.querySelectorAll('[data-review-cards]').forEach(function (el) {
+        el.dataset.rcInit = '';
+        initReviewCards(el);
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Review cards",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Summary"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_summary",
+      "label": "Show rating summary",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "summary_text",
+      "label": "Summary text",
+      "default": "4.7/5 ∙ 36 reviews",
+      "info": "Use ∙ to show the accent dot between the score and the review count."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The reviews are in!"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 40
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading & summary color",
+      "default": "#25162f"
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star color",
+      "default": "#cbff78"
+    },
+    {
+      "type": "header",
+      "content": "Cards"
+    },
+    {
+      "type": "range",
+      "id": "card_width_mobile",
+      "min": 200,
+      "max": 320,
+      "step": 2,
+      "unit": "px",
+      "label": "Card width (mobile)",
+      "default": 266
+    },
+    {
+      "type": "range",
+      "id": "card_width_desktop",
+      "min": 220,
+      "max": 420,
+      "step": 2,
+      "unit": "px",
+      "label": "Card width (desktop)",
+      "default": 300
+    },
+    {
+      "type": "range",
+      "id": "card_gap_mobile",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Gap between cards (mobile)",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "card_gap_desktop",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between cards (desktop)",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Card corner radius",
+      "default": 24
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#cac0f7"
+    },
+    {
+      "type": "color",
+      "id": "card_text_color",
+      "label": "Card text color",
+      "default": "#25162f"
+    },
+    {
+      "type": "color",
+      "id": "verified_color",
+      "label": "Verified badge color",
+      "default": "#25162f"
+    },
+    {
+      "type": "header",
+      "content": "Reviewed product pill"
+    },
+    {
+      "type": "color",
+      "id": "pill_background",
+      "label": "Pill background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "shop_button_label",
+      "label": "Shop button label",
+      "default": "Shop"
+    },
+    {
+      "type": "color",
+      "id": "shop_button_background",
+      "label": "Shop button background",
+      "default": "#cbff78"
+    },
+    {
+      "type": "color",
+      "id": "shop_button_text_color",
+      "label": "Shop button text",
+      "default": "#25162f"
+    },
+    {
+      "type": "header",
+      "content": "Slider"
+    },
+    {
+      "type": "color",
+      "id": "progress_color",
+      "label": "Progress bar color",
+      "default": "#25162f"
+    },
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        { "value": "accent-1", "label": "Accent 1" },
+        { "value": "accent-2", "label": "Accent 2" },
+        { "value": "background-1", "label": "Background 1" },
+        { "value": "background-2", "label": "Background 2" },
+        { "value": "inverse", "label": "Inverse" }
+      ],
+      "default": "background-1",
+      "label": "Color scheme"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        {
+          "type": "range",
+          "id": "rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "label": "Star rating",
+          "default": 5
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Review title",
+          "default": "Didn't expect the brain benefits"
+        },
+        {
+          "type": "textarea",
+          "id": "body",
+          "label": "Review text",
+          "default": "Bought these for the gym but the mental clarity has been the biggest win. I work a demanding job and used to hit a wall every afternoon. Since taking these daily I'm sharper, more focused and sleeping better."
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Reviewer name",
+          "default": "Markus L."
+        },
+        {
+          "type": "checkbox",
+          "id": "verified",
+          "label": "Show verified badge",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "verified_label",
+          "label": "Verified label",
+          "default": "Verified reviewer"
+        },
+        {
+          "type": "header",
+          "content": "Reviewed product"
+        },
+        {
+          "type": "image_picker",
+          "id": "product_image",
+          "label": "Product image"
+        },
+        {
+          "type": "text",
+          "id": "product_label",
+          "label": "Small label",
+          "default": "Reviewed"
+        },
+        {
+          "type": "text",
+          "id": "product_name",
+          "label": "Product name",
+          "default": "Black Cherry"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "Review cards",
+      "blocks": [
+        { "type": "review" },
+        { "type": "review" },
+        { "type": "review" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,76 +1,44 @@
 {%- liquid
-  assign track_color = section.settings.track_color
-  assign fill_color = section.settings.fill_color
-  assign label_color = section.settings.label_color
-  assign title_color = section.settings.title_color
-  assign body_color = section.settings.body_color
-  assign eyebrow_color = section.settings.eyebrow_color
+  assign track_color = block.settings.track_color
+  assign fill_color = block.settings.fill_color
+  assign label_color = block.settings.label_color
+  assign title_color = block.settings.title_color
+  assign body_color = block.settings.body_color
+  assign eyebrow_color = block.settings.eyebrow_color
 -%}
 
 {%- style -%}
-  .dm-bars-{{ section.id }} {
+  .dm-bars-{{ block.id }} {
     --dmb-track: {{ track_color }};
     --dmb-fill: {{ fill_color }};
     --dmb-label: {{ label_color }};
     --dmb-title: {{ title_color }};
     --dmb-body: {{ body_color }};
     --dmb-eyebrow: {{ eyebrow_color }};
-    --dmb-height: {{ section.settings.bar_height }}px;
-    --dmb-radius: {{ section.settings.bar_radius }}px;
-    --dmb-gap: {{ section.settings.bar_gap | divided_by: 10.0 }}rem;
-  }
-
-  .section-{{ section.id }}-padding {
-    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
-  }
-
-  @media screen and (min-width: 750px) {
-    .section-{{ section.id }}-padding {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
-    }
+    --dmb-height: {{ block.settings.bar_height }}px;
+    --dmb-radius: {{ block.settings.bar_radius }}px;
+    --dmb-gap: {{ block.settings.bar_gap | divided_by: 10.0 }}rem;
+    margin-top: {{ block.settings.margin_top | divided_by: 10.0 }}rem;
+    margin-bottom: {{ block.settings.margin_bottom | divided_by: 10.0 }}rem;
   }
 {%- endstyle -%}
 
-<div class="color-{{ section.settings.color_scheme }} gradient">
-  <div class="page-width section-{{ section.id }}-padding">
-    <div class="dm-bars dm-bars-{{ section.id }}" data-dm-bars>
-      {%- if section.settings.eyebrow != blank -%}
-        <p class="dm-bars__eyebrow">{{ section.settings.eyebrow | escape }}</p>
-      {%- endif -%}
+<div class="dm-bars dm-bars-{{ block.id }}" data-dm-bars {{ block.shopify_attributes }}>
+  {%- if block.settings.eyebrow != blank -%}
+    <p class="dm-bars__eyebrow">{{ block.settings.eyebrow | escape }}</p>
+  {%- endif -%}
 
-      {%- if section.settings.title != blank -%}
-        <h2 class="dm-bars__title">{{ section.settings.title }}</h2>
-      {%- endif -%}
+  {%- if block.settings.title != blank -%}
+    <h2 class="dm-bars__title">{{ block.settings.title }}</h2>
+  {%- endif -%}
 
-      {%- if section.blocks.size > 0 -%}
-        <div class="dm-bars__list">
-          {%- for block in section.blocks -%}
-            {%- liquid
-              assign pct = block.settings.percentage | at_most: 100 | at_least: 0
-              assign block_fill = block.settings.fill_color
-            -%}
-            <div
-              class="dm-bars__bar"
-              style="--dmb-pct: {{ pct }}%;{% if block_fill != blank %} --dmb-fill: {{ block_fill }};{% endif %}"
-              {{ block.shopify_attributes }}
-            >
-              <div class="dm-bars__fill"></div>
-              <span class="dm-bars__label">
-                {%- if block.settings.show_percentage -%}{{ pct }}% {% endif -%}
-                {{- block.settings.label | escape -}}
-              </span>
-            </div>
-          {%- endfor -%}
-        </div>
-      {%- endif -%}
-
-      {%- if section.settings.body != blank -%}
-        <div class="dm-bars__body">{{ section.settings.body }}</div>
-      {%- endif -%}
-    </div>
+  <div class="dm-bars__list">
+    {% content_for 'blocks' %}
   </div>
+
+  {%- if block.settings.body != blank -%}
+    <div class="dm-bars__body">{{ block.settings.body }}</div>
+  {%- endif -%}
 </div>
 
 {% stylesheet %}
@@ -227,8 +195,12 @@
 {% schema %}
 {
   "name": "Stat bars",
-  "tag": "section",
-  "class": "section",
+  "tag": null,
+  "blocks": [
+    {
+      "type": "stat-bar"
+    }
+  ],
   "settings": [
     {
       "type": "text",
@@ -239,14 +211,12 @@
     {
       "type": "richtext",
       "id": "title",
-      "label": "Title",
-      "default": "<p>Plaats hier een titel</p>"
+      "label": "Title"
     },
     {
       "type": "richtext",
       "id": "body",
-      "label": "Body text",
-      "default": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p>"
+      "label": "Body text"
     },
     {
       "type": "header",
@@ -324,93 +294,41 @@
     },
     {
       "type": "header",
-      "content": "Section"
-    },
-    {
-      "type": "select",
-      "id": "color_scheme",
-      "label": "Color scheme",
-      "options": [
-        { "value": "accent-1", "label": "Accent 1" },
-        { "value": "accent-2", "label": "Accent 2" },
-        { "value": "background-1", "label": "Background 1" },
-        { "value": "background-2", "label": "Background 2" },
-        { "value": "inverse", "label": "Inverse" }
-      ],
-      "default": "background-1"
+      "content": "Spacing"
     },
     {
       "type": "range",
-      "id": "padding_top",
+      "id": "margin_top",
       "min": 0,
       "max": 100,
       "step": 4,
       "unit": "px",
-      "label": "Padding top",
-      "default": 40
+      "label": "Margin top",
+      "default": 24
     },
     {
       "type": "range",
-      "id": "padding_bottom",
+      "id": "margin_bottom",
       "min": 0,
       "max": 100,
       "step": 4,
       "unit": "px",
-      "label": "Padding bottom",
-      "default": 40
+      "label": "Margin bottom",
+      "default": 24
     }
   ],
-  "blocks": [
-    {
-      "type": "bar",
-      "name": "Bar",
-      "settings": [
-        {
-          "type": "text",
-          "id": "label",
-          "label": "Label",
-          "default": "Lorem ipsum dolor"
-        },
-        {
-          "type": "range",
-          "id": "percentage",
-          "min": 0,
-          "max": 100,
-          "step": 1,
-          "unit": "%",
-          "label": "Percentage",
-          "default": 80
-        },
-        {
-          "type": "checkbox",
-          "id": "show_percentage",
-          "label": "Show percentage in label",
-          "default": true
-        },
-        {
-          "type": "color",
-          "id": "fill_color",
-          "label": "Bar fill (override)",
-          "info": "Leave empty to use the section fill color."
-        }
-      ]
-    }
-  ],
-  "max_blocks": 12,
   "presets": [
     {
       "name": "Stat bars",
+      "category": "Product information",
       "blocks": [
-        { "type": "bar", "settings": { "label": "Lorem ipsum dolor", "percentage": 80 } },
-        { "type": "bar", "settings": { "label": "Lorem ipsum dolor", "percentage": 74 } },
-        { "type": "bar", "settings": { "label": "Lorem ipsum dolor", "percentage": 68 } },
-        { "type": "bar", "settings": { "label": "Lorem ipsum dolor", "percentage": 63 } },
-        { "type": "bar", "settings": { "label": "Lorem ipsum dolor", "percentage": 58 } }
+        { "type": "stat-bar", "settings": { "label": "Lorem ipsum dolor", "percentage": 80 } },
+        { "type": "stat-bar", "settings": { "label": "Lorem ipsum dolor", "percentage": 74 } },
+        { "type": "stat-bar", "settings": { "label": "Lorem ipsum dolor", "percentage": 68 } },
+        { "type": "stat-bar", "settings": { "label": "Lorem ipsum dolor", "percentage": 63 } },
+        { "type": "stat-bar", "settings": { "label": "Lorem ipsum dolor", "percentage": 58 } }
       ]
     }
-  ],
-  "disabled_on": {
-    "groups": ["header", "footer"]
-  }
+  ]
 }
 {% endschema %}

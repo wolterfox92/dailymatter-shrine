@@ -1,0 +1,589 @@
+{%- style -%}
+  .color-switch-{{ section.id }} {
+    --cs-radius: {{ section.settings.image_radius }}px;
+    --cs-btn-radius: {{ section.settings.button_radius }}px;
+    --cs-gap: {{ section.settings.button_gap | divided_by: 10.0 }}rem;
+    --cs-active-bg: {{ section.settings.button_active_background }};
+    --cs-active-text: {{ section.settings.button_active_text }};
+    --cs-inactive-text: {{ section.settings.button_inactive_text }};
+    --cs-inactive-border: {{ section.settings.button_inactive_border }};
+  }
+
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .color-switch-{{ section.id }} .color-switch__heading {
+    font-size: {{ section.settings.heading_size | times: 0.85 | round: 0 | divided_by: 10.0 }}rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .color-switch-{{ section.id }} .color-switch__heading {
+      font-size: {{ section.settings.heading_size | divided_by: 10.0 }}rem;
+    }
+  }
+{%- endstyle -%}
+
+<style>
+  .color-switch {
+    margin: 0 auto;
+    max-width: {{ section.settings.max_width }}px;
+  }
+
+  .color-switch__heading {
+    text-align: center;
+    margin: 0 0 0.8rem;
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: {{ section.settings.heading_color }};
+  }
+
+  .color-switch__subs {
+    margin: 0 auto 2.4rem;
+    max-width: 36rem;
+  }
+
+  .color-switch__subheading {
+    text-align: center;
+    margin: 0;
+    font-size: 1.6rem;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: {{ section.settings.heading_color | color_modify: 'alpha', 0.8 }};
+  }
+
+  /* Only the subheading for the selected option is shown. */
+  .color-switch__subheading:not(.is-active) {
+    display: none;
+  }
+
+  /* Stacked, full-width buttons */
+  .color-switch__buttons {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cs-gap);
+    margin-bottom: 2.4rem;
+  }
+
+  .color-switch__btn {
+    appearance: none;
+    cursor: pointer;
+    width: 100%;
+    min-height: 4rem;
+    padding: 1rem 1.6rem;
+    border: 1px solid var(--cs-inactive-border);
+    border-radius: var(--cs-btn-radius);
+    background: transparent;
+    color: var(--cs-inactive-text);
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: 1.4rem;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    text-align: center;
+    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.15s ease;
+  }
+
+  .color-switch__btn:hover {
+    border-color: {{ section.settings.button_inactive_text | color_modify: 'alpha', 0.45 }};
+  }
+
+  .color-switch__btn:active {
+    transform: scale(0.99);
+  }
+
+  /* Active state: only the selected button gets the accent color. */
+  .color-switch__btn.is-active {
+    background: var(--cs-active-bg);
+    color: var(--cs-active-text);
+    border-color: transparent;
+  }
+
+  /* Image stage */
+  .color-switch__stage {
+    position: relative;
+    border-radius: var(--cs-radius);
+    overflow: hidden;
+    background: {{ section.settings.stage_background }};
+    aspect-ratio: {{ section.settings.image_ratio }};
+  }
+
+  .color-switch__panel {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease;
+  }
+
+  .color-switch__panel.is-active {
+    position: relative;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .color-switch__panel img,
+  .color-switch__panel .placeholder-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: {{ section.settings.image_fit }};
+  }
+
+  .color-switch__caption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    padding: 1.6rem 2rem;
+    font-size: 1.4rem;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: #ffffff;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
+  }
+
+  /* Desktop: text + buttons in a left column, image in a right column. */
+  @media screen and (min-width: 990px) {
+    .color-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      column-gap: {{ section.settings.column_gap | divided_by: 10.0 }}rem;
+    }
+
+    .color-switch--img-left .color-switch__content {
+      order: 2;
+    }
+
+    .color-switch--img-left .color-switch__stage {
+      order: 1;
+    }
+
+    .color-switch__content {
+      min-width: 0;
+    }
+
+    .color-switch__heading {
+      text-align: left;
+    }
+
+    .color-switch__subs {
+      margin-left: 0;
+      margin-right: 0;
+      max-width: none;
+    }
+
+    .color-switch__subheading {
+      text-align: left;
+    }
+
+    .color-switch__buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin-bottom: 0;
+    }
+
+    .color-switch__stage {
+      margin: 0;
+    }
+  }
+</style>
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width section-{{ section.id }}-padding">
+    <div
+      class="color-switch color-switch-{{ section.id }} color-switch--img-{{ section.settings.image_position }}"
+      data-color-switch
+    >
+      <div class="color-switch__content">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="color-switch__heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+
+        {%- if section.blocks.size > 0 -%}
+          <div class="color-switch__subs">
+            {%- for block in section.blocks -%}
+              {%- if block.settings.subheading != blank -%}
+                <p
+                  class="color-switch__subheading{% if forloop.first %} is-active{% endif %}"
+                  data-cs-sub="{{ forloop.index0 }}"
+                >
+                  {{ block.settings.subheading }}
+                </p>
+              {%- else -%}
+                <p
+                  class="color-switch__subheading{% if forloop.first %} is-active{% endif %}"
+                  data-cs-sub="{{ forloop.index0 }}"
+                  aria-hidden="true"
+                ></p>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+          <div class="color-switch__buttons" role="tablist">
+            {%- for block in section.blocks -%}
+              <button
+                type="button"
+                role="tab"
+                class="color-switch__btn{% if forloop.first %} is-active{% endif %}"
+                data-cs-btn="{{ forloop.index0 }}"
+                aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                aria-controls="cs-panel-{{ section.id }}-{{ forloop.index0 }}"
+                {{ block.shopify_attributes }}
+              >
+                {{ block.settings.label | default: 'Option' }}
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- if section.blocks.size > 0 -%}
+        <div class="color-switch__stage">
+          {%- for block in section.blocks -%}
+            <div
+              class="color-switch__panel{% if forloop.first %} is-active{% endif %}"
+              id="cs-panel-{{ section.id }}-{{ forloop.index0 }}"
+              data-cs-panel="{{ forloop.index0 }}"
+              role="tabpanel"
+              {% unless forloop.first %}hidden{% endunless %}
+            >
+              {%- if block.settings.image != blank -%}
+                {{
+                  block.settings.image
+                  | image_url: width: 1400
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '350, 535, 750, 1070, 1400',
+                    sizes: '(min-width: 990px) 600px, 100vw',
+                    alt: block.settings.label
+                }}
+              {%- else -%}
+                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+              {%- endif -%}
+
+              {%- if block.settings.caption != blank -%}
+                <p class="color-switch__caption">{{ block.settings.caption }}</p>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    function initColorSwitch(root) {
+      if (!root || root.dataset.csInit === 'true') return;
+      root.dataset.csInit = 'true';
+
+      var buttons = Array.prototype.slice.call(root.querySelectorAll('[data-cs-btn]'));
+      var panels = Array.prototype.slice.call(root.querySelectorAll('[data-cs-panel]'));
+      var subs = Array.prototype.slice.call(root.querySelectorAll('[data-cs-sub]'));
+      if (!buttons.length) return;
+
+      function select(index) {
+        buttons.forEach(function (btn) {
+          var active = btn.getAttribute('data-cs-btn') === String(index);
+          btn.classList.toggle('is-active', active);
+          btn.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+
+        subs.forEach(function (sub) {
+          sub.classList.toggle('is-active', sub.getAttribute('data-cs-sub') === String(index));
+        });
+
+        panels.forEach(function (panel) {
+          var active = panel.getAttribute('data-cs-panel') === String(index);
+          panel.classList.toggle('is-active', active);
+          if (active) {
+            panel.removeAttribute('hidden');
+          } else {
+            panel.setAttribute('hidden', '');
+          }
+        });
+      }
+
+      buttons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          select(btn.getAttribute('data-cs-btn'));
+        });
+      });
+    }
+
+    function initAll(scope) {
+      (scope || document).querySelectorAll('[data-color-switch]').forEach(initColorSwitch);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { initAll(); });
+    } else {
+      initAll();
+    }
+
+    document.addEventListener('shopify:section:load', function (e) {
+      e.target.querySelectorAll('[data-color-switch]').forEach(function (el) {
+        el.dataset.csInit = '';
+        initColorSwitch(el);
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Color switch",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "When does it matter?"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 40
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading & subheading color",
+      "default": "#25162f"
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    {
+      "type": "range",
+      "id": "button_gap",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Gap between buttons",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Button corner radius",
+      "default": 8
+    },
+    {
+      "type": "color",
+      "id": "button_active_background",
+      "label": "Active background",
+      "default": "#cbff78",
+      "info": "Only the selected button gets this color."
+    },
+    {
+      "type": "color",
+      "id": "button_active_text",
+      "label": "Active text",
+      "default": "#25162f"
+    },
+    {
+      "type": "color",
+      "id": "button_inactive_text",
+      "label": "Inactive text",
+      "default": "#25162f"
+    },
+    {
+      "type": "color",
+      "id": "button_inactive_border",
+      "label": "Inactive border",
+      "default": "#d2cdc7"
+    },
+    {
+      "type": "header",
+      "content": "Layout (desktop)"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 600,
+      "max": 1400,
+      "step": 20,
+      "unit": "px",
+      "label": "Max content width",
+      "default": 1100
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position",
+      "options": [
+        { "value": "right", "label": "Right" },
+        { "value": "left", "label": "Left" }
+      ],
+      "default": "right",
+      "info": "On mobile the image always sits below the buttons."
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Gap between columns",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        { "value": "1 / 1", "label": "Square (1:1)" },
+        { "value": "4 / 3", "label": "Landscape (4:3)" },
+        { "value": "3 / 2", "label": "Landscape (3:2)" },
+        { "value": "16 / 9", "label": "Wide (16:9)" },
+        { "value": "3 / 4", "label": "Portrait (3:4)" }
+      ],
+      "default": "3 / 2"
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Image fit",
+      "options": [
+        { "value": "cover", "label": "Cover (fill & crop)" },
+        { "value": "contain", "label": "Contain (fit inside)" }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Image corner radius",
+      "default": 23
+    },
+    {
+      "type": "color",
+      "id": "stage_background",
+      "label": "Image area background",
+      "default": "#f4f0ec"
+    },
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        { "value": "accent-1", "label": "Accent 1" },
+        { "value": "accent-2", "label": "Accent 2" },
+        { "value": "background-1", "label": "Background 1" },
+        { "value": "background-2", "label": "Background 2" },
+        { "value": "inverse", "label": "Inverse" }
+      ],
+      "default": "background-1",
+      "label": "Color scheme"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "option",
+      "name": "Option",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Button label",
+          "default": "First thing"
+        },
+        {
+          "type": "textarea",
+          "id": "subheading",
+          "label": "Subheading",
+          "info": "Shown above the buttons when this option is selected."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Image caption",
+          "info": "Optional. Shown over the bottom of the image."
+        }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {
+      "name": "Color switch",
+      "blocks": [
+        { "type": "option", "settings": { "label": "First thing", "subheading": "Start your day right — a clean boost the moment you wake up." } },
+        { "type": "option", "settings": { "label": "Low energy", "subheading": "Beat the afternoon slump without the crash." } },
+        { "type": "option", "settings": { "label": "Pre/post workout", "subheading": "Fuel up before and recover faster after training." } },
+        { "type": "option", "settings": { "label": "Hangover", "subheading": "Rehydrate and bounce back the morning after." } }
+      ]
+    }
+  ]
+}
+{% endschema %}
