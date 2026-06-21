@@ -47,6 +47,62 @@
         "padding_bottom": 48
       }
     },
+    "selling_points_ticker_d6UNRw": {
+      "type": "selling-points-ticker",
+      "blocks": {
+        "selling_point_xVdQpc": {
+          "type": "selling_point",
+          "settings": {
+            "text": "Shake",
+            "icon": "local_bar",
+            "filled_icon": true
+          }
+        },
+        "selling_point_wy7jrJ": {
+          "type": "selling_point",
+          "settings": {
+            "text": "Sip",
+            "icon": "bolt",
+            "filled_icon": true
+          }
+        },
+        "selling_point_VrmpF4": {
+          "type": "selling_point",
+          "settings": {
+            "text": "Get Energized",
+            "icon": "mood",
+            "filled_icon": true
+          }
+        }
+      },
+      "block_order": [
+        "selling_point_xVdQpc",
+        "selling_point_wy7jrJ",
+        "selling_point_VrmpF4"
+      ],
+      "name": "Selling points ticker",
+      "settings": {
+        "visibility": "always-display",
+        "speed": 3,
+        "direction": "normal",
+        "stop_on_hover": false,
+        "mobile_text_size": 24,
+        "desktop_text_size": 40,
+        "bold_text": true,
+        "italic_text": false,
+        "uppercase_text": false,
+        "mobile_icon_size": 22,
+        "desktop_icon_size": 32,
+        "icon_gap": 20,
+        "background_color": "#ffffff",
+        "text_color": "#25162f",
+        "icon_color": "#25162f",
+        "mobile_padding_top": 20,
+        "mobile_padding_bottom": 20,
+        "desktop_padding_top": 16,
+        "desktop_padding_bottom": 16
+      }
+    },
     "why_daily_matters_home": {
       "type": "custom-why-daily-matters",
       "blocks": {
@@ -747,6 +803,7 @@
   },
   "order": [
     "custom_hero_home",
+    "selling_points_ticker_d6UNRw",
     "why_daily_matters_home",
     "cfca4268-6358-426c-98ab-d292aeef11e5",
     "d2d3417b-e92f-428c-b221-5bceffb552be",
