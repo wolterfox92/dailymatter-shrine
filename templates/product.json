@@ -539,8 +539,8 @@
         "background_color": "#ffffff",
         "text_color": "#25162f",
         "icon_color": "#CAC0FF",
-        "mobile_padding_top": 28,
-        "mobile_padding_bottom": 28,
+        "mobile_padding_top": 20,
+        "mobile_padding_bottom": 20,
         "desktop_padding_top": 20,
         "desktop_padding_bottom": 20
       }
