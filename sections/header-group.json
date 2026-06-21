@@ -126,6 +126,28 @@
         "padding_bottom": 16
       }
     },
+    "dm_header_QNzkcR": {
+      "type": "dm-header",
+      "name": "DM Header",
+      "settings": {
+        "sticky_header": true,
+        "reserve_space": false,
+        "logo_link": "/",
+        "menu": "main-menu",
+        "secondary_menu": "",
+        "mobile_menu_title": "Menu",
+        "menu_color_scheme": "background-1",
+        "show_account": true,
+        "account_label": "Account",
+        "dark_color": "#243511",
+        "accent_color": "#CBFF78",
+        "glass_opacity": 60,
+        "icons_thickness": 1.5,
+        "menu_icon": "style_1",
+        "padding_top": 16,
+        "padding_side": 16
+      }
+    },
     "header": {
       "type": "header",
       "blocks": {
@@ -359,6 +381,7 @@
   "order": [
     "2c2ec774-3430-481f-b927-e9c035b9d24e",
     "fe1c8c67-b84c-4466-a515-70df3134c1c0",
+    "dm_header_QNzkcR",
     "header"
   ]
 }
