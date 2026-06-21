@@ -545,14 +545,32 @@
         "desktop_padding_bottom": 20
       }
     },
+    "divider_REjeeQ": {
+      "type": "divider",
+      "name": "Divider",
+      "settings": {
+        "visibility": "always-display",
+        "color": "#E1E1E1",
+        "height": 1,
+        "width": 100,
+        "Full_mobile_width": false,
+        "alignment": "center",
+        "border_radius": 0,
+        "margin_top": 15,
+        "margin_bottom": 15,
+        "color_scheme": "background-1",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
     "benefit_cards_kaCtrq": {
       "type": "benefit-cards",
       "blocks": {
         "card_JLBdB8": {
           "type": "card",
           "settings": {
-            "badge": "Lorem ipsum",
-            "title": "Show up with lorem ipsum",
+            "badge": "Werkende ouders",
+            "title": "Op je best ook na de school-run",
             "link": ""
           }
         },
@@ -607,7 +625,7 @@
           "settings": {
             "rating": 5,
             "title": "Didn't expect the brain benefits",
-            "body": "Bought these for the gym but the mental clarity has been the biggest win. I work a demanding job and used to hit a wall every afternoon. Since taking these daily I'm sharper, more focused and sleeping better.",
+            "body": "Gekocht voor de sportschool, maar de mentale helderheid is de grootste winst. Ik heb een veeleisende baan en zat rond 15:00 altijd tegen een muur. Sinds ik deze dagelijks neem ben ik scherper, gefocuster en slaap ik beter.",
             "author": "Markus L.",
             "verified": true,
             "verified_label": "Verified reviewer",
@@ -619,13 +637,13 @@
           "type": "review",
           "settings": {
             "rating": 5,
-            "title": "Part of my daily routine now",
-            "body": "I was skeptical at first but after a few weeks the difference is real. Steady energy through the day with none of the crash I got from coffee. The taste is great too.",
+            "title": "Mijn vaste ochtendritueel",
+            "body": "Heb dit voor 3 andere supplementen kunnen vervangen. Heb standaard paar zakjes in mijn tas zitten. De smaken zijn ook helemaal top. Peach is mijn favo!",
             "author": "Sophie B.",
             "verified": true,
             "verified_label": "Verified reviewer",
             "product_label": "Reviewed",
-            "product_name": "Black Cherry"
+            "product_name": "Peach"
           }
         },
         "review_3": {
@@ -750,6 +768,7 @@
   "order": [
     "main",
     "selling_points_ticker_Ga3hed",
+    "divider_REjeeQ",
     "benefit_cards_kaCtrq",
     "review_cards_dm",
     "related-products",
