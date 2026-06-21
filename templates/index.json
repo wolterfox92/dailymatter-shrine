@@ -9,6 +9,84 @@
  */
 {
   "sections": {
+    "custom_hero_home": {
+      "type": "custom-hero",
+      "settings": {}
+    },
+    "why_daily_matters_home": {
+      "type": "custom-why-daily-matters",
+      "blocks": {
+        "card_energy": {
+          "type": "card",
+          "settings": {
+            "icon": "energy",
+            "title": "Dagelijkse energie",
+            "text": "<p>Een stabiele basis zonder pieken of crash.</p>",
+            "card_bg": "#C9F25C",
+            "card_text": "#1E1B2E",
+            "icon_bg": "#1E1B2E",
+            "icon_color": "#C9F25C"
+          }
+        },
+        "card_focus": {
+          "type": "card",
+          "settings": {
+            "icon": "focus",
+            "title": "Mentale scherpte",
+            "text": "<p>Helder hoofd voor werk en alles erna.</p>",
+            "card_bg": "#C9BDF7",
+            "card_text": "#1E1B2E",
+            "icon_bg": "#1E1B2E",
+            "icon_color": "#C9BDF7"
+          }
+        },
+        "card_hydration": {
+          "type": "card",
+          "settings": {
+            "icon": "hydration",
+            "title": "Hydratatie",
+            "text": "<p>Elektrolyten vullen aan wat je verliest.</p>",
+            "card_bg": "#BFDDF0",
+            "card_text": "#1E1B2E",
+            "icon_bg": "#1E1B2E",
+            "icon_color": "#BFDDF0"
+          }
+        },
+        "card_recovery": {
+          "type": "card",
+          "settings": {
+            "icon": "recovery",
+            "title": "Inspanning & herstel",
+            "text": "<p>Creatine ondersteunt kracht en herstel.</p>",
+            "card_bg": "#F4CAD2",
+            "card_text": "#1E1B2E",
+            "icon_bg": "#1E1B2E",
+            "icon_color": "#F4CAD2"
+          }
+        },
+        "card_simple": {
+          "type": "card",
+          "settings": {
+            "icon": "simple",
+            "title": "Eenvoudig dagelijks gebruik",
+            "text": "<p>Eén sachet, één moment. Geen schema, geen gedoe.</p>",
+            "full_width": true,
+            "card_bg": "#ECEAE4",
+            "card_text": "#1E1B2E",
+            "icon_bg": "#1E1B2E",
+            "icon_color": "#C9F25C"
+          }
+        }
+      },
+      "block_order": [
+        "card_energy",
+        "card_focus",
+        "card_hydration",
+        "card_recovery",
+        "card_simple"
+      ],
+      "settings": {}
+    },
     "cfca4268-6358-426c-98ab-d292aeef11e5": {
       "type": "slideshow",
       "blocks": {
@@ -620,6 +698,8 @@
     }
   },
   "order": [
+    "custom_hero_home",
+    "why_daily_matters_home",
     "cfca4268-6358-426c-98ab-d292aeef11e5",
     "d2d3417b-e92f-428c-b221-5bceffb552be",
     "6aa09428-a417-429d-9159-a4e8afd49590",

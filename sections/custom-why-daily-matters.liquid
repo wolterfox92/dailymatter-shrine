@@ -1,0 +1,439 @@
+{%- liquid
+  assign bg_color = section.settings.bg_color
+  assign text_color = section.settings.text_color
+  assign muted_color = section.settings.muted_color
+  assign eyebrow_color = section.settings.eyebrow_color
+-%}
+
+{%- style -%}
+  .wdm-{{ section.id }} {
+    --wdm-bg: {{ bg_color }};
+    --wdm-text: {{ text_color }};
+    --wdm-muted: {{ muted_color }};
+    --wdm-eyebrow: {{ eyebrow_color }};
+    background-color: var(--wdm-bg);
+    color: var(--wdm-text);
+    padding-top: {{ section.settings.padding_top | times: 0.6 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.6 | round: 0 }}px;
+  }
+
+  .wdm-{{ section.id }} .wdm__header {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 28px;
+    max-width: 52ch;
+  }
+
+  .wdm-{{ section.id }} .wdm__eyebrow {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--wdm-eyebrow);
+  }
+
+  .wdm-{{ section.id }} .wdm__title {
+    margin: 0;
+    font-size: 3rem;
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--wdm-text);
+  }
+
+  .wdm-{{ section.id }} .wdm__title * {
+    margin: 0;
+  }
+
+  .wdm-{{ section.id }} .wdm__intro {
+    margin: 0;
+    font-size: 1.6rem;
+    line-height: 1.55;
+    color: var(--wdm-muted);
+  }
+
+  .wdm-{{ section.id }} .wdm__intro * {
+    margin: 0;
+  }
+
+  .wdm-{{ section.id }} .wdm__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .wdm-{{ section.id }} .wdm__card {
+    box-sizing: border-box;
+    border-radius: 20px;
+    padding: 18px;
+    background-color: var(--card-bg);
+    color: var(--card-text);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .wdm-{{ section.id }} .wdm__card--wide {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .wdm-{{ section.id }} .wdm__icon {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    background-color: var(--icon-bg);
+    color: var(--icon-color);
+  }
+
+  .wdm-{{ section.id }} .wdm__icon svg {
+    width: 22px;
+    height: 22px;
+    display: block;
+  }
+
+  .wdm-{{ section.id }} .wdm__card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .wdm-{{ section.id }} .wdm__card-title {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--card-text);
+  }
+
+  .wdm-{{ section.id }} .wdm__card-text {
+    margin: 0;
+    font-size: 1.45rem;
+    line-height: 1.45;
+    color: var(--card-text);
+    opacity: 0.85;
+  }
+
+  .wdm-{{ section.id }} .wdm__card-text * {
+    margin: 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    .wdm-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+
+    .wdm-{{ section.id }} .wdm__title {
+      font-size: 3.8rem;
+    }
+
+    .wdm-{{ section.id }} .wdm__grid {
+      gap: 16px;
+    }
+
+    .wdm-{{ section.id }} .wdm__card {
+      padding: 26px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="wdm-{{ section.id }} wdm">
+  <div class="page-width">
+    {%- if section.settings.eyebrow != blank or section.settings.title != blank or section.settings.intro != blank -%}
+      <div class="wdm__header">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="wdm__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h2 class="wdm__title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.intro != blank -%}
+          <div class="wdm__intro">{{ section.settings.intro }}</div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="wdm__grid">
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign icon_bg = block.settings.icon_bg
+            assign icon_color = block.settings.icon_color
+          -%}
+          <div
+            class="wdm__card{% if block.settings.full_width %} wdm__card--wide{% endif %}"
+            style="--card-bg: {{ block.settings.card_bg }}; --card-text: {{ block.settings.card_text }}; --icon-bg: {{ icon_bg }}; --icon-color: {{ icon_color }};"
+            {{ block.shopify_attributes }}
+          >
+            <span class="wdm__icon" aria-hidden="true">
+              {%- case block.settings.icon -%}
+                {%- when 'energy' -%}
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5Z" fill="currentColor"/></svg>
+                {%- when 'focus' -%}
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2.6"/><path d="M12 18.9v2.6"/><path d="M2.5 12h2.6"/><path d="M18.9 12h2.6"/><path d="m5.3 5.3 1.8 1.8"/><path d="m16.9 16.9 1.8 1.8"/><path d="m18.7 5.3-1.8 1.8"/><path d="m7.1 16.9-1.8 1.8"/></g></svg>
+                {%- when 'hydration' -%}
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.5c4 5 6.5 8.2 6.5 11.4A6.5 6.5 0 0 1 12 20.4a6.5 6.5 0 0 1-6.5-6.5C5.5 10.7 8 7.5 12 2.5Z" fill="currentColor"/></svg>
+                {%- when 'recovery' -%}
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 20.5 4.2 13a4.7 4.7 0 0 1 0-6.7 4.7 4.7 0 0 1 6.7 0l1.1 1.1 1.1-1.1a4.7 4.7 0 0 1 6.7 0 4.7 4.7 0 0 1 0 6.7L12 20.5Z" fill="currentColor"/></svg>
+                {%- when 'simple' -%}
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 12.5h3.5l2-6 3.5 12 2.5-8 1.5 2H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                {%- when 'check' -%}
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                {%- when 'leaf' -%}
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 4S6 4 5 14c-.5 5 3 6 3 6S6 10 20 4Z" fill="currentColor"/><path d="M8 20S9 11 17 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                {%- when 'moon' -%}
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z" fill="currentColor"/></svg>
+                {%- when 'sleep' -%}
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z" fill="currentColor"/></svg>
+                {%- when 'star' -%}
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m12 2.5 2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9L12 2.5Z" fill="currentColor"/></svg>
+                {%- else -%}
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="8" fill="currentColor"/></svg>
+              {%- endcase -%}
+            </span>
+            <div class="wdm__card-body">
+              {%- if block.settings.title != blank -%}
+                <h3 class="wdm__card-title">{{ block.settings.title | escape }}</h3>
+              {%- endif -%}
+              {%- if block.settings.text != blank -%}
+                <div class="wdm__card-text">{{ block.settings.text }}</div>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Why Daily Matters",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "WAAROM DAILY MATTERS"
+    },
+    {
+      "type": "richtext",
+      "id": "title",
+      "label": "Title",
+      "default": "<p>Feeling good should not feel like another full-time job.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Intro text",
+      "default": "<p>Gezonder leven vraagt al genoeg aandacht. Geen kast vol potten, geen ingewikkelde schema's. Daarom combineert Daily Matters dagelijkse ondersteuning in eenvoudige formules die je makkelijk blijft gebruiken.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Title text",
+      "default": "#1E1B2E"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "Intro text",
+      "default": "#5B5768"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow text",
+      "default": "#9A95A8"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 48
+    }
+  ],
+  "max_blocks": 12,
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "energy", "label": "Energy (bolt)" },
+            { "value": "focus", "label": "Focus (sun)" },
+            { "value": "hydration", "label": "Hydration (drop)" },
+            { "value": "recovery", "label": "Recovery (heart)" },
+            { "value": "simple", "label": "Simple (pulse)" },
+            { "value": "check", "label": "Check" },
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "moon", "label": "Moon" },
+            { "value": "star", "label": "Star" }
+          ],
+          "default": "energy"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Dagelijkse energie"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Een stabiele basis zonder pieken of crash.</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "full_width",
+          "label": "Full width (horizontal layout)",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Colors"
+        },
+        {
+          "type": "color",
+          "id": "card_bg",
+          "label": "Card background",
+          "default": "#C9F25C"
+        },
+        {
+          "type": "color",
+          "id": "card_text",
+          "label": "Card text",
+          "default": "#1E1B2E"
+        },
+        {
+          "type": "color",
+          "id": "icon_bg",
+          "label": "Icon circle background",
+          "default": "#1E1B2E"
+        },
+        {
+          "type": "color",
+          "id": "icon_color",
+          "label": "Icon color",
+          "default": "#C9F25C"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Why Daily Matters",
+      "blocks": [
+        {
+          "type": "card",
+          "settings": {
+            "icon": "energy",
+            "title": "Dagelijkse energie",
+            "text": "<p>Een stabiele basis zonder pieken of crash.</p>",
+            "card_bg": "#C9F25C",
+            "card_text": "#1E1B2E",
+            "icon_bg": "#1E1B2E",
+            "icon_color": "#C9F25C"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "icon": "focus",
+            "title": "Mentale scherpte",
+            "text": "<p>Helder hoofd voor werk en alles erna.</p>",
+            "card_bg": "#C9BDF7",
+            "card_text": "#1E1B2E",
+            "icon_bg": "#1E1B2E",
+            "icon_color": "#C9BDF7"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "icon": "hydration",
+            "title": "Hydratatie",
+            "text": "<p>Elektrolyten vullen aan wat je verliest.</p>",
+            "card_bg": "#BFDDF0",
+            "card_text": "#1E1B2E",
+            "icon_bg": "#1E1B2E",
+            "icon_color": "#BFDDF0"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "icon": "recovery",
+            "title": "Inspanning & herstel",
+            "text": "<p>Creatine ondersteunt kracht en herstel.</p>",
+            "card_bg": "#F4CAD2",
+            "card_text": "#1E1B2E",
+            "icon_bg": "#1E1B2E",
+            "icon_color": "#F4CAD2"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "icon": "simple",
+            "title": "Eenvoudig dagelijks gebruik",
+            "text": "<p>Eén sachet, één moment. Geen schema, geen gedoe.</p>",
+            "full_width": true,
+            "card_bg": "#ECEAE4",
+            "card_text": "#1E1B2E",
+            "icon_bg": "#1E1B2E",
+            "icon_color": "#C9F25C"
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

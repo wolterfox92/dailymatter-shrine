@@ -1,0 +1,601 @@
+{%- liquid
+  assign bg_color = section.settings.bg_color
+  assign text_color = section.settings.text_color
+  assign muted_color = section.settings.muted_color
+  assign eyebrow_bg = section.settings.eyebrow_bg
+  assign eyebrow_text = section.settings.eyebrow_text
+  assign accent_color = section.settings.accent_color
+  assign primary_bg = section.settings.primary_bg
+  assign primary_text = section.settings.primary_text
+  assign secondary_bg = section.settings.secondary_bg
+  assign secondary_text = section.settings.secondary_text
+  assign secondary_border = section.settings.secondary_border
+  assign star_color = section.settings.star_color
+  assign badge_bg = section.settings.badge_bg
+  assign badge_text = section.settings.badge_text
+  assign rating_badge_bg = section.settings.rating_badge_bg
+  assign rating_badge_text = section.settings.rating_badge_text
+-%}
+
+{%- style -%}
+  .custom-hero-{{ section.id }} {
+    --ch-bg: {{ bg_color }};
+    --ch-text: {{ text_color }};
+    --ch-muted: {{ muted_color }};
+    --ch-eyebrow-bg: {{ eyebrow_bg }};
+    --ch-eyebrow-text: {{ eyebrow_text }};
+    --ch-accent: {{ accent_color }};
+    --ch-primary-bg: {{ primary_bg }};
+    --ch-primary-text: {{ primary_text }};
+    --ch-secondary-bg: {{ secondary_bg }};
+    --ch-secondary-text: {{ secondary_text }};
+    --ch-secondary-border: {{ secondary_border }};
+    --ch-star: {{ star_color }};
+    --ch-badge-bg: {{ badge_bg }};
+    --ch-badge-text: {{ badge_text }};
+    --ch-rating-badge-bg: {{ rating_badge_bg }};
+    --ch-rating-badge-text: {{ rating_badge_text }};
+    background-color: var(--ch-bg);
+    color: var(--ch-text);
+    padding-top: {{ section.settings.padding_top | times: 0.6 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.6 | round: 0 }}px;
+  }
+
+  .custom-hero-{{ section.id }} .custom-hero__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .custom-hero-{{ section.id }} .custom-hero__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .custom-hero-{{ section.id }} .custom-hero__eyebrow {
+    display: inline-block;
+    margin: 0;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background-color: var(--ch-eyebrow-bg);
+    color: var(--ch-eyebrow-text);
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .custom-hero-{{ section.id }} .custom-hero__title {
+    margin: 0;
+    font-size: 3.4rem;
+    line-height: 1.08;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .custom-hero-{{ section.id }} .custom-hero__title * {
+    margin: 0;
+  }
+
+  .custom-hero-{{ section.id }} .custom-hero__text {
+    margin: 0;
+    max-width: 46ch;
+    font-size: 1.6rem;
+    line-height: 1.55;
+    color: var(--ch-muted);
+  }
+
+  .custom-hero-{{ section.id }} .custom-hero__text * {
+    margin: 0;
+  }
+
+  .custom-hero-{{ section.id }} .custom-hero__buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .custom-hero-{{ section.id }} .custom-hero__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 18px 28px;
+    border-radius: 999px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-align: center;
+    transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease;
+  }
+
+  .custom-hero-{{ section.id }} .custom-hero__btn:hover {
+    transform: translateY(-1px);
+    opacity: 0.94;
+  }
+
+  .custom-hero-{{ section.id }} .custom-hero__btn--primary {
+    background-color: var(--ch-primary-bg);
+    color: var(--ch-primary-text);
+    border: 1px solid var(--ch-primary-bg);
+  }
+
+  .custom-hero-{{ section.id }} .custom-hero__btn--secondary {
+    background-color: var(--ch-secondary-bg);
+    color: var(--ch-secondary-text);
+    border: 1px solid var(--ch-secondary-border);
+  }
+
+  .custom-hero-{{ section.id }} .custom-hero__rating {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    font-size: 1.4rem;
+    color: var(--ch-muted);
+  }
+
+  .custom-hero-{{ section.id }} .custom-hero__stars {
+    display: inline-flex;
+    color: var(--ch-star);
+  }
+
+  .custom-hero-{{ section.id }} .custom-hero__stars svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .custom-hero-{{ section.id }} .custom-hero__rating-score {
+    font-weight: 700;
+    color: var(--ch-text);
+  }
+
+  .custom-hero-{{ section.id }} .custom-hero__rating-sep {
+    color: var(--ch-muted);
+    opacity: 0.5;
+  }
+
+  .custom-hero-{{ section.id }} .custom-hero__media {
+    position: relative;
+    width: 100%;
+    border-radius: 24px;
+    overflow: hidden;
+    aspect-ratio: {{ section.settings.image_ratio }};
+    background-color: #ece8e2;
+  }
+
+  .custom-hero-{{ section.id }} .custom-hero__media img,
+  .custom-hero-{{ section.id }} .custom-hero__media svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .custom-hero-{{ section.id }} .custom-hero__media-badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    display: inline-flex;
+    align-items: center;
+    padding: 9px 16px;
+    border-radius: 999px;
+    background-color: var(--ch-badge-bg);
+    color: var(--ch-badge-text);
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .custom-hero-{{ section.id }} .custom-hero__media-rating {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background-color: var(--ch-rating-badge-bg);
+    color: var(--ch-rating-badge-text);
+    font-size: 1.35rem;
+    font-weight: 700;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  }
+
+  .custom-hero-{{ section.id }} .custom-hero__media-rating .custom-hero__stars svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  @media screen and (min-width: 990px) {
+    .custom-hero-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+
+    .custom-hero-{{ section.id }} .custom-hero__inner {
+      flex-direction: row;
+      align-items: center;
+      gap: 56px;
+    }
+
+    .custom-hero-{{ section.id }} .custom-hero__content {
+      flex: 1 1 0;
+      gap: 24px;
+    }
+
+    .custom-hero-{{ section.id }} .custom-hero__media {
+      flex: 1 1 0;
+    }
+
+    .custom-hero-{{ section.id }} .custom-hero__title {
+      font-size: 4.6rem;
+    }
+
+    .custom-hero-{{ section.id }} .custom-hero__buttons {
+      max-width: 420px;
+    }
+  }
+{%- endstyle -%}
+
+{%- capture stars -%}
+  <span class="custom-hero__stars" aria-hidden="true">
+    {%- for i in (1..5) -%}{% render 'icon-review-star' %}{%- endfor -%}
+  </span>
+{%- endcapture -%}
+
+<div class="custom-hero-{{ section.id }} custom-hero">
+  <div class="custom-hero__inner page-width">
+    <div class="custom-hero__content">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="custom-hero__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.title != blank -%}
+        <h1 class="custom-hero__title">{{ section.settings.title }}</h1>
+      {%- endif -%}
+
+      {%- if section.settings.text != blank -%}
+        <div class="custom-hero__text">{{ section.settings.text }}</div>
+      {%- endif -%}
+
+      {%- if section.settings.primary_label != blank or section.settings.secondary_label != blank -%}
+        <div class="custom-hero__buttons">
+          {%- if section.settings.primary_label != blank -%}
+            <a
+              href="{{ section.settings.primary_link | default: '#' }}"
+              class="custom-hero__btn custom-hero__btn--primary"
+            >
+              {{ section.settings.primary_label | escape }}
+            </a>
+          {%- endif -%}
+          {%- if section.settings.secondary_label != blank -%}
+            <a
+              href="{{ section.settings.secondary_link | default: '#' }}"
+              class="custom-hero__btn custom-hero__btn--secondary"
+            >
+              {{ section.settings.secondary_label | escape }}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.show_rating -%}
+        <div class="custom-hero__rating">
+          {{ stars }}
+          {%- if section.settings.rating_score != blank -%}
+            <span class="custom-hero__rating-score">{{ section.settings.rating_score | escape }}</span>
+          {%- endif -%}
+          {%- if section.settings.rating_reviews != blank -%}
+            <span class="custom-hero__rating-sep">·</span>
+            <span>{{ section.settings.rating_reviews | escape }}</span>
+          {%- endif -%}
+          {%- if section.settings.rating_extra != blank -%}
+            <span class="custom-hero__rating-sep">·</span>
+            <span>{{ section.settings.rating_extra | escape }}</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="custom-hero__media">
+      {%- if section.settings.image != blank -%}
+        {{
+          section.settings.image
+          | image_url: width: 1200
+          | image_tag:
+            loading: 'eager',
+            fetchpriority: 'high',
+            sizes: '(min-width: 990px) 50vw, 100vw',
+            widths: '400, 600, 800, 1000, 1200, 1600',
+            alt: section.settings.image.alt | default: section.settings.title
+        }}
+      {%- else -%}
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+
+      {%- if section.settings.media_badge != blank -%}
+        <span class="custom-hero__media-badge">{{ section.settings.media_badge | escape }}</span>
+      {%- endif -%}
+
+      {%- if section.settings.show_media_rating -%}
+        <span class="custom-hero__media-rating">
+          {{ stars }}
+          {%- if section.settings.media_rating_score != blank -%}
+            <span>{{ section.settings.media_rating_score | escape }}</span>
+          {%- endif -%}
+        </span>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Hero",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Energie · Focus · Hydratatie"
+    },
+    {
+      "type": "richtext",
+      "id": "title",
+      "label": "Title",
+      "default": "<p>Your daily foundation for better energy.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Body text",
+      "default": "<p>Eenvoudige dagelijkse supplementen voor energie, focus en hydratatie. Eén sachet, gemengd met water — gemaakt om in je routine te passen.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    {
+      "type": "text",
+      "id": "primary_label",
+      "label": "Primary button label",
+      "default": "Shop Energy Foundation"
+    },
+    {
+      "type": "url",
+      "id": "primary_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "Secondary button label",
+      "default": "Discover the formula"
+    },
+    {
+      "type": "url",
+      "id": "secondary_link",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "header",
+      "content": "Rating row"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show rating row",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "rating_score",
+      "label": "Score",
+      "default": "4,7/5"
+    },
+    {
+      "type": "text",
+      "id": "rating_reviews",
+      "label": "Reviews",
+      "default": "1.284 reviews"
+    },
+    {
+      "type": "text",
+      "id": "rating_extra",
+      "label": "Extra label",
+      "default": "100% vegan"
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "image_ratio",
+      "label": "Image ratio (e.g. 4 / 5)",
+      "info": "Width / height. Use 4 / 5 for a portrait image.",
+      "default": "4 / 5"
+    },
+    {
+      "type": "text",
+      "id": "media_badge",
+      "label": "Image badge",
+      "default": "Energy Foundation · 30 sachets"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_media_rating",
+      "label": "Show rating badge on image",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "media_rating_score",
+      "label": "Image rating score",
+      "default": "4,7/5"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#2E2A39"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "Muted text",
+      "default": "#6B6776"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent",
+      "default": "#CBFF78"
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Stars",
+      "default": "#9FE05A"
+    },
+    {
+      "type": "header",
+      "content": "Eyebrow colors"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_bg",
+      "label": "Eyebrow background",
+      "default": "#F1F0EE"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_text",
+      "label": "Eyebrow text",
+      "default": "#2E2A39"
+    },
+    {
+      "type": "header",
+      "content": "Primary button colors"
+    },
+    {
+      "type": "color",
+      "id": "primary_bg",
+      "label": "Primary background",
+      "default": "#CBFF78"
+    },
+    {
+      "type": "color",
+      "id": "primary_text",
+      "label": "Primary text",
+      "default": "#2E2A39"
+    },
+    {
+      "type": "header",
+      "content": "Secondary button colors"
+    },
+    {
+      "type": "color",
+      "id": "secondary_bg",
+      "label": "Secondary background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "secondary_text",
+      "label": "Secondary text",
+      "default": "#2E2A39"
+    },
+    {
+      "type": "color",
+      "id": "secondary_border",
+      "label": "Secondary border",
+      "default": "#E3E1DD"
+    },
+    {
+      "type": "header",
+      "content": "Image badge colors"
+    },
+    {
+      "type": "color",
+      "id": "badge_bg",
+      "label": "Image badge background",
+      "default": "#2E2A39"
+    },
+    {
+      "type": "color",
+      "id": "badge_text",
+      "label": "Image badge text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "rating_badge_bg",
+      "label": "Rating badge background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "rating_badge_text",
+      "label": "Rating badge text",
+      "default": "#2E2A39"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 48
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}
