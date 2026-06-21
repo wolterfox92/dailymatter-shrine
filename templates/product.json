@@ -178,6 +178,74 @@
               },
               "blocks": {}
             },
+            "stat_bars_gacJ3J": {
+              "type": "stat-bars",
+              "name": "Stat bars",
+              "settings": {
+                "eyebrow": "Na 30 dagen",
+                "title": "<h2>Wat onze klanten merken</h2>",
+                "body": "<p>Uit een onderzoek onder 87 gebruikers die Daily Matters 30 dagen lang dagelijks namen.</p>",
+                "track_color": "#f4f0ec",
+                "fill_color": "#cbff78",
+                "label_color": "#25162f",
+                "eyebrow_color": "#9a8fa0",
+                "title_color": "#25162f",
+                "body_color": "#3d2e3c",
+                "bar_height": 40,
+                "bar_radius": 8,
+                "bar_gap": 12,
+                "margin_top": 24,
+                "margin_bottom": 24
+              },
+              "blocks": {
+                "stat_bar_EdeqkM": {
+                  "type": "stat-bar",
+                  "settings": {
+                    "label": "Lorem ipsum dolor",
+                    "percentage": 80,
+                    "show_percentage": true,
+                    "fill_color": ""
+                  },
+                  "blocks": {}
+                },
+                "stat_bar_AgEBqY": {
+                  "type": "stat-bar",
+                  "settings": {
+                    "label": "Lorem ipsum dolor",
+                    "percentage": 74,
+                    "show_percentage": true,
+                    "fill_color": ""
+                  },
+                  "blocks": {}
+                },
+                "stat_bar_ec6XKV": {
+                  "type": "stat-bar",
+                  "settings": {
+                    "label": "Lorem ipsum dolor",
+                    "percentage": 68,
+                    "show_percentage": true,
+                    "fill_color": ""
+                  },
+                  "blocks": {}
+                },
+                "stat_bar_d8kmAh": {
+                  "type": "stat-bar",
+                  "settings": {
+                    "label": "Lorem ipsum dolor",
+                    "percentage": 63,
+                    "show_percentage": true,
+                    "fill_color": ""
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "stat_bar_EdeqkM",
+                "stat_bar_AgEBqY",
+                "stat_bar_ec6XKV",
+                "stat_bar_d8kmAh"
+              ]
+            },
             "collapsible_row_KpF4Qh": {
               "type": "collapsible-row",
               "name": "Collapsible row",
@@ -336,6 +404,7 @@
             "product_pack_builder_xpTLmr",
             "product_delivery_time_eFfQFz",
             "product_nutrition_info_modal_tUi7nb",
+            "stat_bars_gacJ3J",
             "collapsible_row_KpF4Qh",
             "collapsible_row_j7tkC3",
             "collapsible_row_pFGxx3"
@@ -470,8 +539,8 @@
         "background_color": "#ffffff",
         "text_color": "#25162f",
         "icon_color": "#CAC0FF",
-        "mobile_padding_top": 12,
-        "mobile_padding_bottom": 12,
+        "mobile_padding_top": 28,
+        "mobile_padding_bottom": 28,
         "desktop_padding_top": 16,
         "desktop_padding_bottom": 16
       }
@@ -515,9 +584,9 @@
         "heading_alignment": "center",
         "heading_size": 40,
         "card_width_mobile": 267,
-        "card_width_desktop": 300,
+        "card_width_desktop": 350,
         "card_gap_mobile": 12,
-        "card_gap_desktop": 24,
+        "card_gap_desktop": 28,
         "card_radius": 24,
         "card_text_color": "#25162f",
         "overlay_color": "#cac0ff",
