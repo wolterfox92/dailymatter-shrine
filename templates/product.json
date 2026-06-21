@@ -183,7 +183,7 @@
               "name": "Stat bars",
               "settings": {
                 "eyebrow": "Na 30 dagen",
-                "title": "<h2>Wat onze klanten merken</h2>",
+                "title": "<p>Wat onze klanten merken</p>",
                 "body": "<p>Uit een onderzoek onder 87 gebruikers die Daily Matters 30 dagen lang dagelijks namen.</p>",
                 "track_color": "#f4f0ec",
                 "fill_color": "#cbff78",
