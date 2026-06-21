@@ -128,7 +128,6 @@
     },
     "dm_header_QNzkcR": {
       "type": "dm-header",
-      "disabled": true,
       "name": "DM Header",
       "settings": {
         "sticky_header": true,
@@ -141,7 +140,7 @@
         "show_account": true,
         "account_label": "Account",
         "dark_color": "#243511",
-        "accent_color": "#CBFF78",
+        "accent_color": "#cbff78",
         "glass_opacity": 60,
         "icons_thickness": 1.5,
         "menu_icon": "style_1",
@@ -327,6 +326,7 @@
           "block_order": []
         }
       },
+      "disabled": true,
       "settings": {
         "sticky_header_type": "on-scroll-up",
         "show_line_separator": true,
