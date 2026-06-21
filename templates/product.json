@@ -617,6 +617,214 @@
         "padding_bottom": 40
       }
     },
+    "review_cards_dm": {
+      "type": "review-cards",
+      "blocks": {
+        "review_1": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "title": "Didn't expect the brain benefits",
+            "body": "Gekocht voor de sportschool, maar de mentale helderheid is de grootste winst. Ik heb een veeleisende baan en zat rond 15:00 altijd tegen een muur. Sinds ik deze dagelijks neem ben ik scherper, gefocuster en slaap ik beter.",
+            "author": "Markus L.",
+            "verified": true,
+            "verified_label": "Verified reviewer",
+            "product_label": "Reviewed",
+            "product_name": "Black Cherry"
+          }
+        },
+        "review_2": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "title": "Mijn vaste ochtendritueel",
+            "body": "Heb dit voor 3 andere supplementen kunnen vervangen. Heb standaard paar zakjes in mijn tas zitten. De smaken zijn ook helemaal top. Peach is mijn favo!",
+            "author": "Sophie B.",
+            "verified": true,
+            "verified_label": "Verified reviewer",
+            "product_label": "Reviewed",
+            "product_name": "Peach"
+          }
+        },
+        "review_3": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "title": "Worth every penny",
+            "body": "Recovery after training feels faster and I'm sleeping deeper. Easy to take, mixes well and I actually look forward to it. Reordering for sure.",
+            "author": "Daniel K.",
+            "verified": true,
+            "verified_label": "Verified reviewer",
+            "product_label": "Reviewed",
+            "product_name": "Black Cherry"
+          }
+        }
+      },
+      "block_order": [
+        "review_1",
+        "review_2",
+        "review_3"
+      ],
+      "name": "Review cards",
+      "settings": {
+        "show_summary": true,
+        "summary_text": "4.7/5 ∙ 36 reviews",
+        "heading": "The reviews are in!",
+        "heading_size": 34,
+        "heading_color": "#25162f",
+        "star_color": "#cbff78",
+        "card_width_mobile": 266,
+        "card_width_desktop": 300,
+        "card_gap_mobile": 12,
+        "card_gap_desktop": 24,
+        "card_radius": 24,
+        "card_background": "#cac0f7",
+        "card_text_color": "#25162f",
+        "verified_color": "#25162f",
+        "pill_background": "#ffffff",
+        "shop_button_label": "Shop",
+        "shop_button_background": "#cbff78",
+        "shop_button_text_color": "#25162f",
+        "progress_color": "#25162f",
+        "color_scheme": "background-1",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "color_switch_6FNyPd": {
+      "type": "color-switch",
+      "blocks": {
+        "option_iJbyDh": {
+          "type": "option",
+          "settings": {
+            "label": "First thing",
+            "subheading": "Start your day right — a clean boost the moment you wake up.",
+            "image": "shopify://shop_images/ChatGPT_Image_May_3_2026_01_02_17_PM.png",
+            "caption": ""
+          }
+        },
+        "option_GtNYEn": {
+          "type": "option",
+          "settings": {
+            "label": "Low energy",
+            "subheading": "Beat the afternoon slump without the crash.",
+            "caption": ""
+          }
+        },
+        "option_Tmq8aC": {
+          "type": "option",
+          "settings": {
+            "label": "Pre/post workout",
+            "subheading": "Fuel up before and recover faster after training.",
+            "caption": ""
+          }
+        },
+        "option_APHdEb": {
+          "type": "option",
+          "settings": {
+            "label": "Hangover",
+            "subheading": "Rehydrate and bounce back the morning after.",
+            "caption": ""
+          }
+        }
+      },
+      "block_order": [
+        "option_iJbyDh",
+        "option_GtNYEn",
+        "option_Tmq8aC",
+        "option_APHdEb"
+      ],
+      "name": "Color switch",
+      "settings": {
+        "heading": "When does it matter?",
+        "heading_size": 40,
+        "heading_color": "#25162f",
+        "button_gap": 8,
+        "button_radius": 8,
+        "button_active_background": "#cbff78",
+        "button_active_text": "#25162f",
+        "button_inactive_text": "#25162f",
+        "button_inactive_border": "#d2cdc7",
+        "max_width": 1100,
+        "image_position": "right",
+        "column_gap": 60,
+        "image_ratio": "3 / 2",
+        "image_fit": "cover",
+        "image_radius": 23,
+        "stage_background": "#f4f0ec",
+        "color_scheme": "background-1",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "color_switch_2_pEptPF": {
+      "type": "color-switch-2",
+      "blocks": {
+        "option_GbEekU": {
+          "type": "option",
+          "settings": {
+            "label": "First thing",
+            "image": "shopify://shop_images/ChatGPT_Image_May_3_2026_01_02_17_PM.png",
+            "overlay_title": "Start sharp, not on coffee",
+            "overlay_text": "Clear before your first meeting. Electrolytes and B-vitamins give you a calm start without the caffeine rush."
+          }
+        },
+        "option_7q3TLr": {
+          "type": "option",
+          "settings": {
+            "label": "Low energy",
+            "overlay_title": "Beat the afternoon slump",
+            "overlay_text": "Steady focus without the crash."
+          }
+        },
+        "option_nbdzLc": {
+          "type": "option",
+          "settings": {
+            "label": "Pre/post workout",
+            "overlay_title": "Fuel and recover",
+            "overlay_text": "Power up before training and bounce back faster after."
+          }
+        },
+        "option_96tPCY": {
+          "type": "option",
+          "settings": {
+            "label": "Hangover",
+            "overlay_title": "Bounce back faster",
+            "overlay_text": "Rehydrate and feel human again the morning after."
+          }
+        }
+      },
+      "block_order": [
+        "option_GbEekU",
+        "option_7q3TLr",
+        "option_nbdzLc",
+        "option_96tPCY"
+      ],
+      "name": "Color switch 2",
+      "settings": {
+        "heading": "When does it matter?",
+        "heading_size": 40,
+        "heading_color": "#25162f",
+        "button_gap": 8,
+        "button_radius": 8,
+        "button_active_background": "#cbff78",
+        "button_active_text": "#25162f",
+        "button_inactive_text": "#25162f",
+        "button_inactive_border": "#d2cdc7",
+        "max_width": 1100,
+        "image_position": "right",
+        "column_gap": 60,
+        "image_ratio": "3 / 4",
+        "image_fit": "cover",
+        "image_radius": 23,
+        "stage_background": "#f4f0ec",
+        "overlay_text_color": "#ffffff",
+        "overlay_gradient_color": "#25162f",
+        "color_scheme": "background-1",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
     "custom_stack_comparison_AXk6jC": {
       "type": "custom-stack-comparison",
       "blocks": {
@@ -705,80 +913,6 @@
         "padding_bottom": 64
       }
     },
-    "review_cards_dm": {
-      "type": "review-cards",
-      "blocks": {
-        "review_1": {
-          "type": "review",
-          "settings": {
-            "rating": 5,
-            "title": "Didn't expect the brain benefits",
-            "body": "Gekocht voor de sportschool, maar de mentale helderheid is de grootste winst. Ik heb een veeleisende baan en zat rond 15:00 altijd tegen een muur. Sinds ik deze dagelijks neem ben ik scherper, gefocuster en slaap ik beter.",
-            "author": "Markus L.",
-            "verified": true,
-            "verified_label": "Verified reviewer",
-            "product_label": "Reviewed",
-            "product_name": "Black Cherry"
-          }
-        },
-        "review_2": {
-          "type": "review",
-          "settings": {
-            "rating": 5,
-            "title": "Mijn vaste ochtendritueel",
-            "body": "Heb dit voor 3 andere supplementen kunnen vervangen. Heb standaard paar zakjes in mijn tas zitten. De smaken zijn ook helemaal top. Peach is mijn favo!",
-            "author": "Sophie B.",
-            "verified": true,
-            "verified_label": "Verified reviewer",
-            "product_label": "Reviewed",
-            "product_name": "Peach"
-          }
-        },
-        "review_3": {
-          "type": "review",
-          "settings": {
-            "rating": 5,
-            "title": "Worth every penny",
-            "body": "Recovery after training feels faster and I'm sleeping deeper. Easy to take, mixes well and I actually look forward to it. Reordering for sure.",
-            "author": "Daniel K.",
-            "verified": true,
-            "verified_label": "Verified reviewer",
-            "product_label": "Reviewed",
-            "product_name": "Black Cherry"
-          }
-        }
-      },
-      "block_order": [
-        "review_1",
-        "review_2",
-        "review_3"
-      ],
-      "name": "Review cards",
-      "settings": {
-        "show_summary": true,
-        "summary_text": "4.7/5 ∙ 36 reviews",
-        "heading": "The reviews are in!",
-        "heading_size": 34,
-        "heading_color": "#25162f",
-        "star_color": "#cbff78",
-        "card_width_mobile": 266,
-        "card_width_desktop": 300,
-        "card_gap_mobile": 12,
-        "card_gap_desktop": 24,
-        "card_radius": 24,
-        "card_background": "#cac0f7",
-        "card_text_color": "#25162f",
-        "verified_color": "#25162f",
-        "pill_background": "#ffffff",
-        "shop_button_label": "Shop",
-        "shop_button_background": "#cbff78",
-        "shop_button_text_color": "#25162f",
-        "progress_color": "#25162f",
-        "color_scheme": "background-1",
-        "padding_top": 40,
-        "padding_bottom": 40
-      }
-    },
     "related-products": {
       "type": "related-products",
       "disabled": true,
@@ -855,11 +989,13 @@
   },
   "order": [
     "main",
-    "selling_points_ticker_Ga3hed",
     "divider_REjeeQ",
     "benefit_cards_kaCtrq",
-    "custom_stack_comparison_AXk6jC",
+    "selling_points_ticker_Ga3hed",
     "review_cards_dm",
+    "color_switch_6FNyPd",
+    "color_switch_2_pEptPF",
+    "custom_stack_comparison_AXk6jC",
     "related-products",
     "custom_sticky_pack_cta_fzfBUB"
   ]
