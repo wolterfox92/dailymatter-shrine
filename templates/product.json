@@ -459,7 +459,6 @@
         "speed": 3,
         "direction": "normal",
         "stop_on_hover": false,
-        "spacing": 16,
         "mobile_text_size": 24,
         "desktop_text_size": 40,
         "bold_text": true,
@@ -467,10 +466,10 @@
         "uppercase_text": false,
         "mobile_icon_size": 22,
         "desktop_icon_size": 32,
-        "icon_gap": 8,
+        "icon_gap": 40,
         "background_color": "#ffffff",
         "text_color": "#25162f",
-        "icon_color": "#25162f",
+        "icon_color": "#CAC0FF",
         "mobile_padding_top": 12,
         "mobile_padding_bottom": 12,
         "desktop_padding_top": 16,
@@ -525,6 +524,80 @@
         "overlay_opacity": 100,
         "badge_background": "#cac0ff",
         "badge_text_color": "#25162f",
+        "progress_color": "#25162f",
+        "color_scheme": "background-1",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "review_cards_dm": {
+      "type": "review-cards",
+      "blocks": {
+        "review_1": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "title": "Didn't expect the brain benefits",
+            "body": "Bought these for the gym but the mental clarity has been the biggest win. I work a demanding job and used to hit a wall every afternoon. Since taking these daily I'm sharper, more focused and sleeping better.",
+            "author": "Markus L.",
+            "verified": true,
+            "verified_label": "Verified reviewer",
+            "product_label": "Reviewed",
+            "product_name": "Black Cherry"
+          }
+        },
+        "review_2": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "title": "Part of my daily routine now",
+            "body": "I was skeptical at first but after a few weeks the difference is real. Steady energy through the day with none of the crash I got from coffee. The taste is great too.",
+            "author": "Sophie B.",
+            "verified": true,
+            "verified_label": "Verified reviewer",
+            "product_label": "Reviewed",
+            "product_name": "Black Cherry"
+          }
+        },
+        "review_3": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "title": "Worth every penny",
+            "body": "Recovery after training feels faster and I'm sleeping deeper. Easy to take, mixes well and I actually look forward to it. Reordering for sure.",
+            "author": "Daniel K.",
+            "verified": true,
+            "verified_label": "Verified reviewer",
+            "product_label": "Reviewed",
+            "product_name": "Black Cherry"
+          }
+        }
+      },
+      "block_order": [
+        "review_1",
+        "review_2",
+        "review_3"
+      ],
+      "name": "Review cards",
+      "settings": {
+        "show_summary": true,
+        "summary_text": "4.7/5 ∙ 36 reviews",
+        "heading": "The reviews are in!",
+        "heading_size": 40,
+        "heading_color": "#25162f",
+        "star_color": "#cbff78",
+        "card_width_mobile": 266,
+        "card_width_desktop": 300,
+        "card_gap_mobile": 12,
+        "card_gap_desktop": 24,
+        "card_radius": 24,
+        "card_background": "#cac0f7",
+        "card_text_color": "#25162f",
+        "verified_color": "#25162f",
+        "pill_background": "#ffffff",
+        "shop_button_label": "Shop",
+        "shop_button_background": "#cbff78",
+        "shop_button_text_color": "#25162f",
         "progress_color": "#25162f",
         "color_scheme": "background-1",
         "padding_top": 40,
@@ -588,57 +661,6 @@
         "columns_mobile": "2",
         "padding_top": 36,
         "padding_bottom": 24
-      }
-    },
-    "review_cards_dm": {
-      "type": "review-cards",
-      "name": "Review cards",
-      "blocks": {
-        "review_1": {
-          "type": "review",
-          "settings": {
-            "rating": 5,
-            "title": "Didn't expect the brain benefits",
-            "body": "Bought these for the gym but the mental clarity has been the biggest win. I work a demanding job and used to hit a wall every afternoon. Since taking these daily I'm sharper, more focused and sleeping better.",
-            "author": "Markus L.",
-            "verified": true,
-            "verified_label": "Verified reviewer",
-            "product_label": "Reviewed",
-            "product_name": "Black Cherry"
-          }
-        },
-        "review_2": {
-          "type": "review",
-          "settings": {
-            "rating": 5,
-            "title": "Part of my daily routine now",
-            "body": "I was skeptical at first but after a few weeks the difference is real. Steady energy through the day with none of the crash I got from coffee. The taste is great too.",
-            "author": "Sophie B.",
-            "verified": true,
-            "verified_label": "Verified reviewer",
-            "product_label": "Reviewed",
-            "product_name": "Black Cherry"
-          }
-        },
-        "review_3": {
-          "type": "review",
-          "settings": {
-            "rating": 5,
-            "title": "Worth every penny",
-            "body": "Recovery after training feels faster and I'm sleeping deeper. Easy to take, mixes well and I actually look forward to it. Reordering for sure.",
-            "author": "Daniel K.",
-            "verified": true,
-            "verified_label": "Verified reviewer",
-            "product_label": "Reviewed",
-            "product_name": "Black Cherry"
-          }
-        }
-      },
-      "block_order": ["review_1", "review_2", "review_3"],
-      "settings": {
-        "show_summary": true,
-        "summary_text": "4.7/5 ∙ 36 reviews",
-        "heading": "The reviews are in!"
       }
     },
     "custom_sticky_pack_cta_fzfBUB": {
