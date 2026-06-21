@@ -538,7 +538,7 @@
         "icon_gap": 40,
         "background_color": "#ffffff",
         "text_color": "#25162f",
-        "icon_color": "#CAC0FF",
+        "icon_color": "#cac0ff",
         "mobile_padding_top": 20,
         "mobile_padding_bottom": 20,
         "desktop_padding_top": 20,
@@ -550,7 +550,7 @@
       "name": "Divider",
       "settings": {
         "visibility": "always-display",
-        "color": "#E1E1E1",
+        "color": "#e1e1e1",
         "height": 1,
         "width": 100,
         "Full_mobile_width": false,
@@ -615,6 +615,94 @@
         "color_scheme": "background-1",
         "padding_top": 40,
         "padding_bottom": 40
+      }
+    },
+    "custom_stack_comparison_AXk6jC": {
+      "type": "custom-stack-comparison",
+      "blocks": {
+        "ingredient_n3DnHj": {
+          "type": "ingredient",
+          "settings": {
+            "label": "Creatine",
+            "note": "",
+            "alt_price": 18
+          }
+        },
+        "ingredient_WF4Yqr": {
+          "type": "ingredient",
+          "settings": {
+            "label": "Electrolytes",
+            "note": "",
+            "alt_price": 19
+          }
+        },
+        "ingredient_Uamggq": {
+          "type": "ingredient",
+          "settings": {
+            "label": "Magnesium",
+            "note": "",
+            "alt_price": 11
+          }
+        },
+        "ingredient_WHWN6E": {
+          "type": "ingredient",
+          "settings": {
+            "label": "B-Vitamines",
+            "note": "",
+            "alt_price": 14
+          }
+        }
+      },
+      "block_order": [
+        "ingredient_n3DnHj",
+        "ingredient_WF4Yqr",
+        "ingredient_Uamggq",
+        "ingredient_WHWN6E"
+      ],
+      "name": "Stack comparison",
+      "settings": {
+        "heading": "Eén sachet. Alles inbegrepen.",
+        "subtext": "<p>Drie bewezen ingrediënten, slim gecombineerd in één sachet per dag. Alles wat je nodig hebt voor minder dan wanneer je dezelfde stack los samenstelt.</p>",
+        "stack_badge": "Jouw stack",
+        "stack_title": "Daily Matters",
+        "stack_subtitle": "1 sachet per dag",
+        "price_source": "product",
+        "product": "",
+        "stack_total": 40,
+        "show_was": true,
+        "was_manual": 49,
+        "discount_label": "[pct]% korting",
+        "stack_foot": "Alles in 1 sachet",
+        "alt_badge": "Alternatief",
+        "alt_title": "Los samenstellen",
+        "alt_subtitle": "4 potten, 4 routines",
+        "alt_foot": "Meerdere potten",
+        "total_label": "Per maand",
+        "per_day_suffix": "per dag",
+        "days_per_month": 30,
+        "vs_label": "VS",
+        "cta_label": "Start je routine vandaag",
+        "cta_link": "",
+        "bg_color": "#FFFFFF",
+        "text_color": "#25162F",
+        "text_muted": "#5C5266",
+        "stack_bg": "#CAC0FF",
+        "stack_badge_bg": "#CBFF78",
+        "stack_badge_text": "#25162F",
+        "stack_foot_bg": "#221B3B",
+        "stack_foot_text": "#FFFFFF",
+        "alt_bg": "#F4F1EB",
+        "alt_badge_bg": "#E2DDD2",
+        "alt_badge_text": "#25162F",
+        "rule_color": "#C9BFB0",
+        "image_placeholder_bg": "#D9D9D9",
+        "vs_bg": "#CBFF78",
+        "vs_text": "#25162F",
+        "cta_bg": "#CBFF78",
+        "cta_text": "#25162F",
+        "corner_radius": 20,
+        "padding_top": 64,
+        "padding_bottom": 64
       }
     },
     "review_cards_dm": {
@@ -770,6 +858,7 @@
     "selling_points_ticker_Ga3hed",
     "divider_REjeeQ",
     "benefit_cards_kaCtrq",
+    "custom_stack_comparison_AXk6jC",
     "review_cards_dm",
     "related-products",
     "custom_sticky_pack_cta_fzfBUB"
