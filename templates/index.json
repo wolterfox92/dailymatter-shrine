@@ -11,7 +11,41 @@
   "sections": {
     "custom_hero_home": {
       "type": "custom-hero",
-      "settings": {}
+      "settings": {
+        "eyebrow": "Energie · Focus · Hydratatie",
+        "title": "<p>Your daily foundation for better energy.</p>",
+        "text": "<p>Eenvoudige dagelijkse supplementen voor energie, focus en hydratatie. Eén sachet, gemengd met water — gemaakt om in je routine te passen.</p>",
+        "primary_label": "Shop Energy Foundation",
+        "primary_link": "",
+        "secondary_label": "Discover the formula",
+        "secondary_link": "",
+        "show_rating": false,
+        "rating_score": "4,7/5",
+        "rating_reviews": "1.284 reviews",
+        "rating_extra": "",
+        "image_ratio": "4 / 5",
+        "media_badge": "Energy Foundation · 30 sachets",
+        "show_media_rating": true,
+        "media_rating_score": "4,7/5",
+        "bg_color": "#ffffff",
+        "text_color": "#2e2a39",
+        "muted_color": "#6b6776",
+        "accent_color": "#cbff78",
+        "star_color": "#9fe05a",
+        "eyebrow_bg": "#f1f0ee",
+        "eyebrow_text": "#2e2a39",
+        "primary_bg": "#cbff78",
+        "primary_text": "#2e2a39",
+        "secondary_bg": "#ffffff",
+        "secondary_text": "#2e2a39",
+        "secondary_border": "#e3e1dd",
+        "badge_bg": "#2e2a39",
+        "badge_text": "#ffffff",
+        "rating_badge_bg": "#ffffff",
+        "rating_badge_text": "#2e2a39",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
     },
     "why_daily_matters_home": {
       "type": "custom-why-daily-matters",
@@ -22,10 +56,11 @@
             "icon": "energy",
             "title": "Dagelijkse energie",
             "text": "<p>Een stabiele basis zonder pieken of crash.</p>",
-            "card_bg": "#C9F25C",
-            "card_text": "#1E1B2E",
-            "icon_bg": "#1E1B2E",
-            "icon_color": "#C9F25C"
+            "full_width": false,
+            "card_bg": "#c9f25c",
+            "card_text": "#1e1b2e",
+            "icon_bg": "#1e1b2e",
+            "icon_color": "#c9f25c"
           }
         },
         "card_focus": {
@@ -34,10 +69,11 @@
             "icon": "focus",
             "title": "Mentale scherpte",
             "text": "<p>Helder hoofd voor werk en alles erna.</p>",
-            "card_bg": "#C9BDF7",
-            "card_text": "#1E1B2E",
-            "icon_bg": "#1E1B2E",
-            "icon_color": "#C9BDF7"
+            "full_width": false,
+            "card_bg": "#c9bdf7",
+            "card_text": "#1e1b2e",
+            "icon_bg": "#1e1b2e",
+            "icon_color": "#c9bdf7"
           }
         },
         "card_hydration": {
@@ -46,10 +82,11 @@
             "icon": "hydration",
             "title": "Hydratatie",
             "text": "<p>Elektrolyten vullen aan wat je verliest.</p>",
-            "card_bg": "#BFDDF0",
-            "card_text": "#1E1B2E",
-            "icon_bg": "#1E1B2E",
-            "icon_color": "#BFDDF0"
+            "full_width": false,
+            "card_bg": "#bfddf0",
+            "card_text": "#1e1b2e",
+            "icon_bg": "#1e1b2e",
+            "icon_color": "#bfddf0"
           }
         },
         "card_recovery": {
@@ -58,10 +95,11 @@
             "icon": "recovery",
             "title": "Inspanning & herstel",
             "text": "<p>Creatine ondersteunt kracht en herstel.</p>",
-            "card_bg": "#F4CAD2",
-            "card_text": "#1E1B2E",
-            "icon_bg": "#1E1B2E",
-            "icon_color": "#F4CAD2"
+            "full_width": false,
+            "card_bg": "#f4cad2",
+            "card_text": "#1e1b2e",
+            "icon_bg": "#1e1b2e",
+            "icon_color": "#f4cad2"
           }
         },
         "card_simple": {
@@ -71,10 +109,10 @@
             "title": "Eenvoudig dagelijks gebruik",
             "text": "<p>Eén sachet, één moment. Geen schema, geen gedoe.</p>",
             "full_width": true,
-            "card_bg": "#ECEAE4",
-            "card_text": "#1E1B2E",
-            "icon_bg": "#1E1B2E",
-            "icon_color": "#C9F25C"
+            "card_bg": "#eceae4",
+            "card_text": "#1e1b2e",
+            "icon_bg": "#1e1b2e",
+            "icon_color": "#c9f25c"
           }
         }
       },
@@ -85,7 +123,17 @@
         "card_recovery",
         "card_simple"
       ],
-      "settings": {}
+      "settings": {
+        "eyebrow": "WAAROM DAILY MATTERS",
+        "title": "<p>Feeling good should not feel like another full-time job.</p>",
+        "intro": "<p>Gezonder leven vraagt al genoeg aandacht. Geen kast vol potten, geen ingewikkelde schema's. Daarom combineert Daily Matters dagelijkse ondersteuning in eenvoudige formules die je makkelijk blijft gebruiken.</p>",
+        "bg_color": "#ffffff",
+        "text_color": "#1e1b2e",
+        "muted_color": "#5b5768",
+        "eyebrow_color": "#9a95a8",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
     },
     "cfca4268-6358-426c-98ab-d292aeef11e5": {
       "type": "slideshow",
