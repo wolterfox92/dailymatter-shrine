@@ -1,0 +1,963 @@
+{%- liquid
+  assign days = section.settings.days_per_month | default: 30
+
+  comment
+    Alt total = sum of ingredient prices (whole euros). Stack total is either derived
+    from a product's variant price, or set manually. Per-day figures follow the totals.
+  endcomment
+  assign alt_total_cents = 0
+  for block in section.blocks
+    if block.type == 'ingredient'
+      assign item_cents = block.settings.alt_price | times: 100
+      assign alt_total_cents = alt_total_cents | plus: item_cents
+    endif
+  endfor
+
+  assign stack_product = section.settings.product
+  if stack_product == blank and template.name == 'product'
+    assign stack_product = product
+  endif
+
+  comment
+    stack_total_cents = the price you pay (subscription / discounted).
+    stack_was_cents   = the struck-through one-time price (compare-at, or manual fallback).
+  endcomment
+  assign stack_was_cents = 0
+  assign manual_was_cents = section.settings.was_manual | times: 100 | round
+
+  if section.settings.price_source == 'product' and stack_product != blank
+    assign stack_variant = stack_product.selected_or_first_available_variant
+    assign stack_total_cents = stack_variant.price
+    assign variant_compare = stack_variant.compare_at_price | default: 0
+    if variant_compare > stack_total_cents
+      assign stack_was_cents = variant_compare
+    elsif manual_was_cents > stack_total_cents
+      assign stack_was_cents = manual_was_cents
+    endif
+  else
+    assign stack_total_cents = section.settings.stack_total | times: 100 | round
+    if manual_was_cents > stack_total_cents
+      assign stack_was_cents = manual_was_cents
+    endif
+  endif
+
+  assign savings_pct = 0
+  if section.settings.show_was and stack_was_cents > stack_total_cents
+    assign savings_cents = stack_was_cents | minus: stack_total_cents
+    assign savings_pct = savings_cents | times: 100 | times: 1.0 | divided_by: stack_was_cents | round
+  endif
+  assign stack_was_display = stack_was_cents | money_without_trailing_zeros
+  assign discount_label_html = section.settings.discount_label | replace: '[pct]', savings_pct
+
+  assign stack_per_day_cents = 0
+  assign alt_per_day_cents = 0
+  if days > 0
+    if stack_total_cents > 0
+      assign stack_per_day_cents = stack_total_cents | times: 1.0 | divided_by: days | round
+    endif
+    if alt_total_cents > 0
+      assign alt_per_day_cents = alt_total_cents | times: 1.0 | divided_by: days | round
+    endif
+  endif
+
+  assign stack_total_display = stack_total_cents | money_without_trailing_zeros
+  assign alt_total_display = alt_total_cents | money_without_trailing_zeros
+  assign stack_per_day_display = stack_per_day_cents | money
+  assign alt_per_day_display = alt_per_day_cents | money
+-%}
+
+{%- style -%}
+  .stkcmp-{{ section.id }} {
+    --sc-page: {{ section.settings.bg_color }};
+    --sc-ink: {{ section.settings.text_color }};
+    --sc-muted: {{ section.settings.text_muted }};
+    --sc-stack-bg: {{ section.settings.stack_bg }};
+    --sc-stack-badge-bg: {{ section.settings.stack_badge_bg }};
+    --sc-stack-badge-ink: {{ section.settings.stack_badge_text }};
+    --sc-stack-foot-bg: {{ section.settings.stack_foot_bg }};
+    --sc-stack-foot-ink: {{ section.settings.stack_foot_text }};
+    --sc-alt-bg: {{ section.settings.alt_bg }};
+    --sc-alt-badge-bg: {{ section.settings.alt_badge_bg }};
+    --sc-alt-badge-ink: {{ section.settings.alt_badge_text }};
+    --sc-rule: {{ section.settings.rule_color }};
+    --sc-img-bg: {{ section.settings.image_placeholder_bg }};
+    --sc-vs-bg: {{ section.settings.vs_bg }};
+    --sc-vs-ink: {{ section.settings.vs_text }};
+    --sc-cta-bg: {{ section.settings.cta_bg }};
+    --sc-cta-ink: {{ section.settings.cta_text }};
+    --sc-radius: {{ section.settings.corner_radius }}px;
+    background: var(--sc-page);
+    color: var(--sc-ink);
+    padding-top: {{ section.settings.padding_top | times: 0.7 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.7 | round: 0 }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .stkcmp-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="stkcmp stkcmp-{{ section.id }}">
+  <div class="stkcmp__inner">
+
+    {%- if section.settings.heading != blank -%}
+      <h2 class="stkcmp__heading">{{ section.settings.heading | escape }}</h2>
+    {%- endif -%}
+    {%- if section.settings.subtext != blank -%}
+      <div class="stkcmp__subtext">{{ section.settings.subtext }}</div>
+    {%- endif -%}
+
+    <div class="stkcmp__grid">
+
+      {%- comment -%} Stack card (hero) {%- endcomment -%}
+      <article class="stkcmp__card stkcmp__card--stack">
+        {%- if section.settings.stack_badge != blank -%}
+          <span class="stkcmp__badge stkcmp__badge--stack">{{ section.settings.stack_badge | escape }}</span>
+        {%- endif -%}
+
+        {%- if section.settings.stack_title != blank -%}
+          <h3 class="stkcmp__title">{{ section.settings.stack_title | escape }}</h3>
+        {%- endif -%}
+
+        <div class="stkcmp__media">
+          {%- if section.settings.stack_image != blank -%}
+            {{ section.settings.stack_image | image_url: width: 400 | image_tag: loading: 'lazy', alt: section.settings.stack_title }}
+          {%- else -%}
+            <span class="stkcmp__media-ph">{{ 'image' | upcase }}</span>
+          {%- endif -%}
+        </div>
+
+        {%- if section.settings.stack_subtitle != blank -%}
+          <p class="stkcmp__cardsub">{{ section.settings.stack_subtitle | escape }}</p>
+        {%- endif -%}
+
+        <hr class="stkcmp__rule stkcmp__rule--top" />
+
+        <ul class="stkcmp__list" role="list">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'ingredient' -%}
+              <li class="stkcmp__row" {{ block.shopify_attributes }}>
+                <span class="stkcmp__mark stkcmp__mark--check" aria-hidden="true">
+                  <svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="7" fill="currentColor"/><path d="M4 7.2l2 2L10 5" stroke="var(--sc-stack-bg)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <span class="stkcmp__rowname">
+                  {{ block.settings.label | escape }}
+                  {%- if block.settings.note != blank -%}
+                    <span class="stkcmp__rownote">{{ block.settings.note | escape }}</span>
+                  {%- endif -%}
+                </span>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+
+        <hr class="stkcmp__rule stkcmp__rule--bottom" />
+
+        {%- if section.settings.total_label != blank -%}
+          <p class="stkcmp__pricelabel">{{ section.settings.total_label | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.show_was and stack_was_cents > stack_total_cents -%}
+          <p class="stkcmp__wasrow">
+            <span class="stkcmp__was">{{ stack_was_display }}</span>
+            {%- if savings_pct > 0 and section.settings.discount_label != blank -%}
+              <span class="stkcmp__save">{{ discount_label_html }}</span>
+            {%- endif -%}
+          </p>
+        {%- endif -%}
+        <p class="stkcmp__priceval">{{ stack_total_display }}</p>
+        {%- if stack_per_day_cents > 0 -%}
+          <p class="stkcmp__perday">{{ stack_per_day_display }} {{ section.settings.per_day_suffix | escape }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.stack_foot != blank -%}
+          <span class="stkcmp__foot stkcmp__foot--stack">{{ section.settings.stack_foot | escape }}</span>
+        {%- endif -%}
+      </article>
+
+      {%- comment -%} Alternative card {%- endcomment -%}
+      <article class="stkcmp__card stkcmp__card--alt">
+        {%- if section.settings.alt_badge != blank -%}
+          <span class="stkcmp__badge stkcmp__badge--alt">{{ section.settings.alt_badge | escape }}</span>
+        {%- endif -%}
+
+        {%- if section.settings.alt_title != blank -%}
+          <h3 class="stkcmp__title">{{ section.settings.alt_title | escape }}</h3>
+        {%- endif -%}
+
+        <div class="stkcmp__media">
+          {%- if section.settings.alt_image != blank -%}
+            {{ section.settings.alt_image | image_url: width: 400 | image_tag: loading: 'lazy', alt: section.settings.alt_title }}
+          {%- else -%}
+            <span class="stkcmp__media-ph">{{ 'image' | upcase }}</span>
+          {%- endif -%}
+        </div>
+
+        {%- if section.settings.alt_subtitle != blank -%}
+          <p class="stkcmp__cardsub">{{ section.settings.alt_subtitle | escape }}</p>
+        {%- endif -%}
+
+        <hr class="stkcmp__rule stkcmp__rule--top" />
+
+        <ul class="stkcmp__list" role="list">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'ingredient' -%}
+              <li class="stkcmp__row stkcmp__row--priced" {{ block.shopify_attributes }}>
+                <span class="stkcmp__mark stkcmp__mark--circle" aria-hidden="true"></span>
+                <span class="stkcmp__rowname">
+                  {{ block.settings.label | escape }}
+                  {%- if block.settings.note != blank -%}
+                    <span class="stkcmp__rownote">{{ block.settings.note | escape }}</span>
+                  {%- endif -%}
+                </span>
+                <span class="stkcmp__rowprice">{{ block.settings.alt_price | times: 100 | money_without_trailing_zeros }}</span>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+
+        <hr class="stkcmp__rule stkcmp__rule--bottom" />
+
+        {%- if section.settings.total_label != blank -%}
+          <p class="stkcmp__pricelabel">{{ section.settings.total_label | escape }}</p>
+        {%- endif -%}
+        {%- comment -%} Spacer keeps the big price aligned with the stack card's was-price row {%- endcomment -%}
+        {%- if section.settings.show_was and stack_was_cents > stack_total_cents -%}
+          <p class="stkcmp__wasrow" aria-hidden="true">&nbsp;</p>
+        {%- endif -%}
+        <p class="stkcmp__priceval">{{ alt_total_display }}</p>
+        {%- if alt_per_day_cents > 0 -%}
+          <p class="stkcmp__perday">{{ alt_per_day_display }} {{ section.settings.per_day_suffix | escape }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.alt_foot != blank -%}
+          <span class="stkcmp__foot stkcmp__foot--alt">{{ section.settings.alt_foot | escape }}</span>
+        {%- endif -%}
+      </article>
+
+      {%- if section.settings.vs_label != blank -%}
+        <span class="stkcmp__vs" aria-hidden="true">{{ section.settings.vs_label | escape }}</span>
+      {%- endif -%}
+
+    </div>
+
+    {%- if section.settings.cta_label != blank -%}
+      <a class="stkcmp__cta" href="{{ section.settings.cta_link | default: '#' }}">
+        {{ section.settings.cta_label | escape }}
+      </a>
+    {%- endif -%}
+
+  </div>
+</div>
+
+{% stylesheet %}
+  .stkcmp { box-sizing: border-box; }
+  .stkcmp *, .stkcmp *::before, .stkcmp *::after { box-sizing: border-box; }
+  .stkcmp__inner {
+    max-width: 76rem;
+    margin: 0 auto;
+    padding: 0 1.6rem;
+  }
+  .stkcmp__heading {
+    margin: 0 auto;
+    max-width: 16ch;
+    text-align: center;
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: clamp(3.2rem, 7vw, 4.8rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--sc-ink);
+  }
+  .stkcmp__subtext {
+    margin: 1.6rem auto 0;
+    max-width: 46ch;
+    text-align: center;
+    font-size: 1.6rem;
+    line-height: 1.4;
+    color: var(--sc-muted);
+  }
+  .stkcmp__subtext p { margin: 0; }
+
+  .stkcmp__grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.6rem;
+    margin-top: 3.2rem;
+    align-items: stretch;
+  }
+
+  .stkcmp__card {
+    position: relative;
+    border-radius: var(--sc-radius);
+    padding: 1.6rem 1.4rem;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .stkcmp__card--stack { background: var(--sc-stack-bg); }
+  .stkcmp__card--alt { background: var(--sc-alt-bg); }
+
+  .stkcmp__badge {
+    align-self: center;
+    font-family: var(--font-heading-family);
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    padding: 0.4rem 1.2rem;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .stkcmp__badge--stack { background: var(--sc-stack-badge-bg); color: var(--sc-stack-badge-ink); }
+  .stkcmp__badge--alt { background: var(--sc-alt-badge-bg); color: var(--sc-alt-badge-ink); }
+
+  .stkcmp__title {
+    margin: 0.9rem 0 0;
+    text-align: center;
+    font-family: var(--font-heading-family);
+    font-weight: 800;
+    font-size: 1.6rem;
+    letter-spacing: -0.01em;
+    color: var(--sc-ink);
+  }
+
+  .stkcmp__media {
+    margin: 1.2rem 0;
+    aspect-ratio: 134 / 95;
+    background: var(--sc-img-bg);
+    border-radius: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .stkcmp__media img { width: 100%; height: 100%; object-fit: cover; }
+  .stkcmp__media-ph {
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: -0.01em;
+    color: rgba(0, 0, 0, 0.55);
+  }
+
+  .stkcmp__cardsub {
+    margin: 0;
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--sc-muted);
+  }
+
+  .stkcmp__rule {
+    width: 100%;
+    height: 0;
+    border: 0;
+    border-top: 1px solid var(--sc-rule);
+    margin: 1.2rem 0;
+  }
+
+  .stkcmp__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex: 1;
+  }
+  .stkcmp__row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .stkcmp__row--priced { grid-template-columns: auto 1fr auto; }
+
+  .stkcmp__mark {
+    width: 1.6rem;
+    height: 1.6rem;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .stkcmp__mark--check { color: var(--sc-ink); }
+  .stkcmp__mark--check svg { width: 100%; height: 100%; display: block; }
+  .stkcmp__mark--circle {
+    border-radius: 999px;
+    border: 1.5px solid var(--sc-muted);
+  }
+
+  .stkcmp__rowname {
+    min-width: 0;
+    font-family: var(--font-heading-family);
+    font-weight: 800;
+    font-size: 1.3rem;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--sc-ink);
+  }
+  .stkcmp__rownote {
+    display: block;
+    font-family: var(--font-body-family);
+    font-weight: 400;
+    font-size: 1.3rem;
+    line-height: 1.2;
+    color: var(--sc-muted);
+  }
+  .stkcmp__rowprice {
+    font-family: var(--font-heading-family);
+    font-weight: 800;
+    font-size: 1.3rem;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--sc-ink);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .stkcmp__pricelabel,
+  .stkcmp__priceval,
+  .stkcmp__perday { text-align: center; }
+  .stkcmp__pricelabel {
+    margin: 0;
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: -0.01em;
+    color: var(--sc-ink);
+  }
+  .stkcmp__wasrow {
+    margin: 0.4rem 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+  .stkcmp__was {
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--sc-muted);
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+    font-variant-numeric: tabular-nums;
+  }
+  .stkcmp__save {
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--sc-stack-foot-ink);
+    background: var(--sc-stack-foot-bg);
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .stkcmp__priceval {
+    margin: 0.4rem 0 0;
+    font-family: var(--font-heading-family);
+    font-weight: 800;
+    font-size: clamp(4rem, 11vw, 4.4rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--sc-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .stkcmp__perday {
+    margin: 0.6rem 0 0;
+    text-transform: uppercase;
+    font-size: 1.2rem;
+    letter-spacing: 0.01em;
+    color: var(--sc-muted);
+  }
+
+  .stkcmp__foot {
+    margin: 1rem auto 0;
+    align-self: center;
+    font-family: var(--font-heading-family);
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 0.7rem 1.2rem;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .stkcmp__foot--stack { background: var(--sc-stack-foot-bg); color: var(--sc-stack-foot-ink); }
+  .stkcmp__foot--alt { background: var(--sc-alt-badge-bg); color: var(--sc-alt-badge-ink); }
+
+  .stkcmp__vs {
+    position: absolute;
+    top: 23%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 3px solid var(--sc-page);
+    background: var(--sc-vs-bg);
+    color: var(--sc-vs-ink);
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+
+  /* Align every row across both cards: each card adopts the parent grid's row
+     tracks via subgrid, so badge / title / image / list / price / footer line up
+     even when a title or subtitle wraps. Falls back to the flex layout above. */
+  @supports (grid-template-rows: subgrid) {
+    .stkcmp__grid {
+      grid-template-rows: repeat(12, auto);
+      row-gap: 0;
+    }
+    .stkcmp__card {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: subgrid;
+      grid-row: 1 / -1;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+    /* Pin each card to its own column so the full-width VS overlay below
+       can't push them into implicit columns. */
+    .stkcmp__card--stack { grid-column: 1; }
+    .stkcmp__card--alt { grid-column: 2; }
+    .stkcmp__badge { grid-row: 1; justify-self: center; margin-top: 1.6rem; }
+    .stkcmp__title { grid-row: 2; }
+    .stkcmp__media { grid-row: 3; }
+    .stkcmp__cardsub { grid-row: 4; align-self: center; }
+    .stkcmp__rule--top { grid-row: 5; }
+    .stkcmp__list { grid-row: 6; }
+    .stkcmp__rule--bottom { grid-row: 7; }
+    .stkcmp__pricelabel { grid-row: 8; }
+    .stkcmp__wasrow { grid-row: 9; }
+    .stkcmp__priceval { grid-row: 10; }
+    .stkcmp__perday { grid-row: 11; }
+    .stkcmp__foot { grid-row: 12; justify-self: center; align-self: start; margin-bottom: 1.6rem; }
+    .stkcmp__vs {
+      position: static;
+      transform: none;
+      grid-column: 1 / -1;
+      grid-row: 3;
+      justify-self: center;
+      align-self: center;
+    }
+  }
+
+  .stkcmp__cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.6rem;
+    width: 100%;
+    padding: 1.6rem;
+    border-radius: 999px;
+    background: var(--sc-cta-bg);
+    color: var(--sc-cta-ink);
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    transition: transform 200ms ease;
+  }
+  .stkcmp__cta:hover { transform: translateY(-1px); }
+
+  @media screen and (min-width: 750px) {
+    .stkcmp__grid { gap: 2rem; }
+    .stkcmp__card { padding: 2.2rem 2rem; }
+    .stkcmp__badge { font-size: 1.1rem; }
+    .stkcmp__title { font-size: 2rem; }
+    .stkcmp__cardsub { font-size: 1.5rem; }
+    .stkcmp__rowname { font-size: 1.5rem; }
+    .stkcmp__rowprice { font-size: 1.5rem; }
+    .stkcmp__mark { width: 1.8rem; height: 1.8rem; }
+    .stkcmp__pricelabel { font-size: 1.4rem; }
+    .stkcmp__priceval { font-size: 5.2rem; }
+    .stkcmp__perday { font-size: 1.3rem; }
+    .stkcmp__foot { font-size: 1.1rem; }
+    .stkcmp__vs { width: 5.2rem; height: 5.2rem; font-size: 1.4rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .stkcmp__cta { transition: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Stack comparison",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Eén sachet. Alles inbegrepen."
+    },
+    {
+      "type": "richtext",
+      "id": "subtext",
+      "label": "Subtext",
+      "default": "<p>Drie bewezen ingrediënten, slim gecombineerd in één sachet per dag. Alles wat je nodig hebt voor minder dan wanneer je dezelfde stack los samenstelt.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Your stack (left card)"
+    },
+    {
+      "type": "text",
+      "id": "stack_badge",
+      "label": "Badge",
+      "default": "Jouw stack"
+    },
+    {
+      "type": "text",
+      "id": "stack_title",
+      "label": "Title",
+      "default": "Daily Matters"
+    },
+    {
+      "type": "image_picker",
+      "id": "stack_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "stack_subtitle",
+      "label": "Subtitle",
+      "default": "1 sachet per dag"
+    },
+    {
+      "type": "select",
+      "id": "price_source",
+      "label": "Monthly price source",
+      "options": [
+        { "value": "product", "label": "Derive from product variant" },
+        { "value": "manual", "label": "Manual" }
+      ],
+      "default": "product"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product",
+      "info": "Monthly price = first/selected variant price. Defaults to the current product on a product page."
+    },
+    {
+      "type": "number",
+      "id": "stack_total",
+      "label": "Monthly price (€) — manual",
+      "info": "Used only when source is Manual. Whole euros or a decimal, e.g. 39.5.",
+      "default": 40
+    },
+    {
+      "type": "checkbox",
+      "id": "show_was",
+      "label": "Show one-time price struck through",
+      "info": "The displayed price is the subscription price; this shows the higher one-time price crossed out.",
+      "default": true
+    },
+    {
+      "type": "number",
+      "id": "was_manual",
+      "label": "One-time price (€)",
+      "info": "Used as the struck-through price when the variant has no compare-at price, or in Manual mode.",
+      "default": 49
+    },
+    {
+      "type": "text",
+      "id": "discount_label",
+      "label": "Discount badge",
+      "info": "Shown next to the struck price. Use [pct] for the saving %. Leave blank to hide.",
+      "default": "[pct]% korting"
+    },
+    {
+      "type": "text",
+      "id": "stack_foot",
+      "label": "Footer badge",
+      "default": "Alles in 1 sachet"
+    },
+    {
+      "type": "header",
+      "content": "Alternative (right card)"
+    },
+    {
+      "type": "text",
+      "id": "alt_badge",
+      "label": "Badge",
+      "default": "Alternatief"
+    },
+    {
+      "type": "text",
+      "id": "alt_title",
+      "label": "Title",
+      "default": "Los samenstellen"
+    },
+    {
+      "type": "image_picker",
+      "id": "alt_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "alt_subtitle",
+      "label": "Subtitle",
+      "default": "4 potten, 4 routines"
+    },
+    {
+      "type": "text",
+      "id": "alt_foot",
+      "label": "Footer badge",
+      "default": "Meerdere potten"
+    },
+    {
+      "type": "header",
+      "content": "Pricing labels"
+    },
+    {
+      "type": "text",
+      "id": "total_label",
+      "label": "Total label",
+      "default": "Per maand"
+    },
+    {
+      "type": "text",
+      "id": "per_day_suffix",
+      "label": "Per-day suffix",
+      "default": "per dag"
+    },
+    {
+      "type": "range",
+      "id": "days_per_month",
+      "label": "Days per month (per-day divisor)",
+      "min": 1,
+      "max": 60,
+      "step": 1,
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Middle & CTA"
+    },
+    {
+      "type": "text",
+      "id": "vs_label",
+      "label": "Versus label",
+      "default": "VS"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Start je routine vandaag"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#25162F"
+    },
+    {
+      "type": "color",
+      "id": "text_muted",
+      "label": "Muted text",
+      "default": "#5C5266"
+    },
+    {
+      "type": "color",
+      "id": "stack_bg",
+      "label": "Stack card background",
+      "default": "#CAC0FF"
+    },
+    {
+      "type": "color",
+      "id": "stack_badge_bg",
+      "label": "Stack badge background",
+      "default": "#CBFF78"
+    },
+    {
+      "type": "color",
+      "id": "stack_badge_text",
+      "label": "Stack badge text",
+      "default": "#25162F"
+    },
+    {
+      "type": "color",
+      "id": "stack_foot_bg",
+      "label": "Stack footer badge background",
+      "default": "#221B3B"
+    },
+    {
+      "type": "color",
+      "id": "stack_foot_text",
+      "label": "Stack footer badge text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "alt_bg",
+      "label": "Alt card background",
+      "default": "#F4F1EB"
+    },
+    {
+      "type": "color",
+      "id": "alt_badge_bg",
+      "label": "Alt badge / footer background",
+      "default": "#E2DDD2"
+    },
+    {
+      "type": "color",
+      "id": "alt_badge_text",
+      "label": "Alt badge / footer text",
+      "default": "#25162F"
+    },
+    {
+      "type": "color",
+      "id": "rule_color",
+      "label": "Divider lines",
+      "default": "#C9BFB0"
+    },
+    {
+      "type": "color",
+      "id": "image_placeholder_bg",
+      "label": "Image placeholder",
+      "default": "#D9D9D9"
+    },
+    {
+      "type": "color",
+      "id": "vs_bg",
+      "label": "VS circle background",
+      "default": "#CBFF78"
+    },
+    {
+      "type": "color",
+      "id": "vs_text",
+      "label": "VS circle text",
+      "default": "#25162F"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg",
+      "label": "Button background",
+      "default": "#CBFF78"
+    },
+    {
+      "type": "color",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "#25162F"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "corner_radius",
+      "label": "Card corner radius",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "blocks": [
+    {
+      "type": "ingredient",
+      "name": "Ingredient",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Creatine"
+        },
+        {
+          "type": "text",
+          "id": "note",
+          "label": "Note",
+          "info": "Optional second line, e.g. \"5g\" or \"B5 · B6 · B12\"."
+        },
+        {
+          "type": "number",
+          "id": "alt_price",
+          "label": "Alternative price (€)",
+          "info": "Whole euros. Used in the alternative card and its total.",
+          "default": 18
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Stack comparison",
+      "blocks": [
+        { "type": "ingredient", "settings": { "label": "Creatine", "note": "5g", "alt_price": 18 } },
+        { "type": "ingredient", "settings": { "label": "Electrolytes", "alt_price": 19 } },
+        { "type": "ingredient", "settings": { "label": "Magnesium", "alt_price": 11 } },
+        { "type": "ingredient", "settings": { "label": "B-Vitamines", "note": "B5 · B6 · B12", "alt_price": 14 } }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}
