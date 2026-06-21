@@ -40,31 +40,12 @@
 
   .color-switch__heading {
     text-align: center;
-    margin: 0 0 0.8rem;
+    margin: 0 0 2.4rem;
     font-family: var(--font-heading-family);
     font-weight: 700;
     line-height: 1.05;
     letter-spacing: -0.01em;
     color: {{ section.settings.heading_color }};
-  }
-
-  .color-switch__subs {
-    margin: 0 auto 2.4rem;
-    max-width: 36rem;
-  }
-
-  .color-switch__subheading {
-    text-align: center;
-    margin: 0;
-    font-size: 1.6rem;
-    line-height: 1.4;
-    letter-spacing: -0.01em;
-    color: {{ section.settings.heading_color | color_modify: 'alpha', 0.8 }};
-  }
-
-  /* Only the subheading for the selected option is shown. */
-  .color-switch__subheading:not(.is-active) {
-    display: none;
   }
 
   /* Stacked, full-width buttons */
@@ -141,18 +122,37 @@
     object-fit: {{ section.settings.image_fit }};
   }
 
-  .color-switch__caption {
+  /* Text + subtext overlaid on the bottom of the image. */
+  .color-switch__overlay {
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
     margin: 0;
-    padding: 1.6rem 2rem;
-    font-size: 1.4rem;
-    line-height: 1.4;
+    padding: 6rem 2.4rem 2.4rem;
+    color: {{ section.settings.overlay_text_color }};
+    background: linear-gradient(
+      to top,
+      {{ section.settings.overlay_gradient_color | color_modify: 'alpha', 0.85 }},
+      {{ section.settings.overlay_gradient_color | color_modify: 'alpha', 0 }}
+    );
+  }
+
+  .color-switch__overlay-title {
+    margin: 0 0 0.6rem;
+    font-family: var(--font-heading-family);
+    font-weight: 700;
+    font-size: 2.2rem;
+    line-height: 1.15;
     letter-spacing: -0.01em;
-    color: #ffffff;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
+  }
+
+  .color-switch__overlay-text {
+    margin: 0;
+    font-size: 1.5rem;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+    color: {{ section.settings.overlay_text_color | color_modify: 'alpha', 0.9 }};
   }
 
   /* Desktop: text + buttons in a left column, image in a right column. */
@@ -180,16 +180,6 @@
       text-align: left;
     }
 
-    .color-switch__subs {
-      margin-left: 0;
-      margin-right: 0;
-      max-width: none;
-    }
-
-    .color-switch__subheading {
-      text-align: left;
-    }
-
     .color-switch__buttons {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -214,25 +204,6 @@
         {%- endif -%}
 
         {%- if section.blocks.size > 0 -%}
-          <div class="color-switch__subs">
-            {%- for block in section.blocks -%}
-              {%- if block.settings.subheading != blank -%}
-                <p
-                  class="color-switch__subheading{% if forloop.first %} is-active{% endif %}"
-                  data-cs-sub="{{ forloop.index0 }}"
-                >
-                  {{ block.settings.subheading }}
-                </p>
-              {%- else -%}
-                <p
-                  class="color-switch__subheading{% if forloop.first %} is-active{% endif %}"
-                  data-cs-sub="{{ forloop.index0 }}"
-                  aria-hidden="true"
-                ></p>
-              {%- endif -%}
-            {%- endfor -%}
-          </div>
-
           <div class="color-switch__buttons" role="tablist">
             {%- for block in section.blocks -%}
               <button
@@ -275,8 +246,15 @@
                 {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
               {%- endif -%}
 
-              {%- if block.settings.caption != blank -%}
-                <p class="color-switch__caption">{{ block.settings.caption }}</p>
+              {%- if block.settings.overlay_title != blank or block.settings.overlay_text != blank -%}
+                <div class="color-switch__overlay">
+                  {%- if block.settings.overlay_title != blank -%}
+                    <p class="color-switch__overlay-title">{{ block.settings.overlay_title }}</p>
+                  {%- endif -%}
+                  {%- if block.settings.overlay_text != blank -%}
+                    <p class="color-switch__overlay-text">{{ block.settings.overlay_text }}</p>
+                  {%- endif -%}
+                </div>
               {%- endif -%}
             </div>
           {%- endfor -%}
@@ -294,7 +272,6 @@
 
       var buttons = Array.prototype.slice.call(root.querySelectorAll('[data-cs-btn]'));
       var panels = Array.prototype.slice.call(root.querySelectorAll('[data-cs-panel]'));
-      var subs = Array.prototype.slice.call(root.querySelectorAll('[data-cs-sub]'));
       if (!buttons.length) return;
 
       function select(index) {
@@ -302,10 +279,6 @@
           var active = btn.getAttribute('data-cs-btn') === String(index);
           btn.classList.toggle('is-active', active);
           btn.setAttribute('aria-selected', active ? 'true' : 'false');
-        });
-
-        subs.forEach(function (sub) {
-          sub.classList.toggle('is-active', sub.getAttribute('data-cs-sub') === String(index));
         });
 
         panels.forEach(function (panel) {
@@ -347,7 +320,7 @@
 
 {% schema %}
 {
-  "name": "Color switch",
+  "name": "Color switch 2",
   "tag": "section",
   "class": "section",
   "settings": [
@@ -374,7 +347,7 @@
     {
       "type": "color",
       "id": "heading_color",
-      "label": "Heading & subheading color",
+      "label": "Heading color",
       "default": "#25162f"
     },
     {
@@ -476,7 +449,7 @@
         { "value": "16 / 9", "label": "Wide (16:9)" },
         { "value": "3 / 4", "label": "Portrait (3:4)" }
       ],
-      "default": "3 / 2"
+      "default": "3 / 4"
     },
     {
       "type": "select",
@@ -503,6 +476,23 @@
       "id": "stage_background",
       "label": "Image area background",
       "default": "#f4f0ec"
+    },
+    {
+      "type": "header",
+      "content": "Image overlay text"
+    },
+    {
+      "type": "color",
+      "id": "overlay_text_color",
+      "label": "Overlay text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "overlay_gradient_color",
+      "label": "Overlay gradient color",
+      "default": "#25162f",
+      "info": "Fades from this color at the bottom to transparent."
     },
     {
       "type": "header",
@@ -554,21 +544,21 @@
           "default": "First thing"
         },
         {
-          "type": "textarea",
-          "id": "subheading",
-          "label": "Subheading",
-          "info": "Shown above the buttons when this option is selected."
-        },
-        {
           "type": "image_picker",
           "id": "image",
           "label": "Image"
         },
         {
           "type": "text",
-          "id": "caption",
-          "label": "Image caption",
-          "info": "Optional. Shown over the bottom of the image."
+          "id": "overlay_title",
+          "label": "Overlay title",
+          "info": "Bold text shown over the bottom of the image."
+        },
+        {
+          "type": "textarea",
+          "id": "overlay_text",
+          "label": "Overlay text",
+          "info": "Smaller text shown under the overlay title."
         }
       ]
     }
@@ -576,12 +566,12 @@
   "max_blocks": 8,
   "presets": [
     {
-      "name": "Color switch",
+      "name": "Color switch 2",
       "blocks": [
-        { "type": "option", "settings": { "label": "First thing", "subheading": "Start your day right — a clean boost the moment you wake up." } },
-        { "type": "option", "settings": { "label": "Low energy", "subheading": "Beat the afternoon slump without the crash." } },
-        { "type": "option", "settings": { "label": "Pre/post workout", "subheading": "Fuel up before and recover faster after training." } },
-        { "type": "option", "settings": { "label": "Hangover", "subheading": "Rehydrate and bounce back the morning after." } }
+        { "type": "option", "settings": { "label": "First thing", "overlay_title": "Start sharp, not on coffee", "overlay_text": "Clear before your first meeting. Electrolytes and B-vitamins give you a calm start without the caffeine rush." } },
+        { "type": "option", "settings": { "label": "Low energy", "overlay_title": "Beat the afternoon slump", "overlay_text": "Steady focus without the crash." } },
+        { "type": "option", "settings": { "label": "Pre/post workout", "overlay_title": "Fuel and recover", "overlay_text": "Power up before training and bounce back faster after." } },
+        { "type": "option", "settings": { "label": "Hangover", "overlay_title": "Bounce back faster", "overlay_text": "Rehydrate and feel human again the morning after." } }
       ]
     }
   ]
