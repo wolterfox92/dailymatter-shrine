@@ -600,7 +600,7 @@
       "settings": {
         "heading": "Benefits for everybody",
         "heading_alignment": "center",
-        "heading_size": 40,
+        "heading_size": 34,
         "card_width_mobile": 267,
         "card_width_desktop": 350,
         "card_gap_mobile": 12,
@@ -670,7 +670,7 @@
         "show_summary": true,
         "summary_text": "4.7/5 ∙ 36 reviews",
         "heading": "The reviews are in!",
-        "heading_size": 40,
+        "heading_size": 34,
         "heading_color": "#25162f",
         "star_color": "#cbff78",
         "card_width_mobile": 266,
