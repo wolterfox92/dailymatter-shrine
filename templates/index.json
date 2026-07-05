@@ -47,6 +47,76 @@
         "padding_bottom": 48
       }
     },
+    "custom_step_slider_JamrRz": {
+      "type": "custom-step-slider",
+      "blocks": {
+        "step_AWA84C": {
+          "type": "step",
+          "settings": {
+            "step_label": "STAP 01",
+            "title": "<p>Vul je fles met water.</p>",
+            "subtitle": "<p>Kraanwater is top.</p>",
+            "card_bg": "#eaf5d8",
+            "text_color": "#2e4a20"
+          }
+        },
+        "step_JKeK3C": {
+          "type": "step",
+          "settings": {
+            "step_label": "STAP 02",
+            "title": "<p>Gebruik je pod.</p>",
+            "subtitle": "<p>Kies uit een van je 25 smaken.</p>",
+            "card_bg": "#f6e4da",
+            "text_color": "#2e4a20"
+          }
+        },
+        "step_U8xipR": {
+          "type": "step",
+          "settings": {
+            "step_label": "STAP 03",
+            "title": "<p>Schud en geniet.</p>",
+            "subtitle": "<p>Klaar in seconden.</p>",
+            "card_bg": "#eaf5d8",
+            "text_color": "#2e4a20"
+          }
+        },
+        "step_DY6Eah": {
+          "type": "step",
+          "settings": {
+            "step_label": "STAP 04",
+            "title": "<p>Wissel je pods.</p>",
+            "subtitle": "<p>Nieuwe smaak, nieuw water.</p>",
+            "card_bg": "#f7dde0",
+            "text_color": "#7a2230"
+          }
+        }
+      },
+      "block_order": [
+        "step_AWA84C",
+        "step_JKeK3C",
+        "step_U8xipR",
+        "step_DY6Eah"
+      ],
+      "name": "Step slider",
+      "settings": {
+        "eyebrow": "WAAROM DAILY MATTERS",
+        "heading": "<p>Feeling good should not feel like another full-time job.</p>",
+        "subtext": "<p>Simpele dagelijkse supplementen die passen in het leven dat je al hebt.</p>",
+        "card_width": 280,
+        "card_ratio": "1.4",
+        "bg_color": "#FFFFFF",
+        "eyebrow_color": "#25321B",
+        "heading_color": "#25321B",
+        "subtext_color": "#5B6152",
+        "nav_color": "#25321B",
+        "nav_border": "#D6D8D0",
+        "counter_color": "#25321B",
+        "dot_color": "#D6D8D0",
+        "dot_active_color": "#A8E05F",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
     "selling_points_ticker_d6UNRw": {
       "type": "selling-points-ticker",
       "blocks": {
@@ -101,94 +171,6 @@
         "mobile_padding_bottom": 20,
         "desktop_padding_top": 16,
         "desktop_padding_bottom": 16
-      }
-    },
-    "why_daily_matters_home": {
-      "type": "custom-why-daily-matters",
-      "blocks": {
-        "card_energy": {
-          "type": "card",
-          "settings": {
-            "icon": "energy",
-            "title": "Dagelijkse energie",
-            "text": "<p>Een stabiele basis zonder pieken of crash.</p>",
-            "full_width": false,
-            "card_bg": "#c9f25c",
-            "card_text": "#1e1b2e",
-            "icon_bg": "#1e1b2e",
-            "icon_color": "#c9f25c"
-          }
-        },
-        "card_focus": {
-          "type": "card",
-          "settings": {
-            "icon": "focus",
-            "title": "Mentale scherpte",
-            "text": "<p>Helder hoofd voor werk en alles erna.</p>",
-            "full_width": false,
-            "card_bg": "#c9bdf7",
-            "card_text": "#1e1b2e",
-            "icon_bg": "#1e1b2e",
-            "icon_color": "#c9bdf7"
-          }
-        },
-        "card_hydration": {
-          "type": "card",
-          "settings": {
-            "icon": "hydration",
-            "title": "Hydratatie",
-            "text": "<p>Elektrolyten vullen aan wat je verliest.</p>",
-            "full_width": false,
-            "card_bg": "#bfddf0",
-            "card_text": "#1e1b2e",
-            "icon_bg": "#1e1b2e",
-            "icon_color": "#bfddf0"
-          }
-        },
-        "card_recovery": {
-          "type": "card",
-          "settings": {
-            "icon": "recovery",
-            "title": "Inspanning & herstel",
-            "text": "<p>Creatine ondersteunt kracht en herstel.</p>",
-            "full_width": false,
-            "card_bg": "#f4cad2",
-            "card_text": "#1e1b2e",
-            "icon_bg": "#1e1b2e",
-            "icon_color": "#f4cad2"
-          }
-        },
-        "card_simple": {
-          "type": "card",
-          "settings": {
-            "icon": "simple",
-            "title": "Eenvoudig dagelijks gebruik",
-            "text": "<p>Eén sachet, één moment. Geen schema, geen gedoe.</p>",
-            "full_width": true,
-            "card_bg": "#eceae4",
-            "card_text": "#1e1b2e",
-            "icon_bg": "#1e1b2e",
-            "icon_color": "#c9f25c"
-          }
-        }
-      },
-      "block_order": [
-        "card_energy",
-        "card_focus",
-        "card_hydration",
-        "card_recovery",
-        "card_simple"
-      ],
-      "settings": {
-        "eyebrow": "WAAROM DAILY MATTERS",
-        "title": "<p>Feeling good should not feel like another full-time job.</p>",
-        "intro": "<p>Gezonder leven vraagt al genoeg aandacht. Geen kast vol potten, geen ingewikkelde schema's. Daarom combineert Daily Matters dagelijkse ondersteuning in eenvoudige formules die je makkelijk blijft gebruiken.</p>",
-        "bg_color": "#ffffff",
-        "text_color": "#1e1b2e",
-        "muted_color": "#5b5768",
-        "eyebrow_color": "#9a95a8",
-        "padding_top": 48,
-        "padding_bottom": 48
       }
     },
     "cfca4268-6358-426c-98ab-d292aeef11e5": {
@@ -872,8 +854,8 @@
   },
   "order": [
     "custom_hero_home",
+    "custom_step_slider_JamrRz",
     "selling_points_ticker_d6UNRw",
-    "why_daily_matters_home",
     "cfca4268-6358-426c-98ab-d292aeef11e5",
     "d2d3417b-e92f-428c-b221-5bceffb552be",
     "custom_step_slider",
