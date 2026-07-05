@@ -695,6 +695,58 @@
         "padding_top": 36,
         "padding_bottom": 36
       }
+    },
+    "custom_step_slider": {
+      "type": "custom-step-slider",
+      "blocks": {
+        "step_1": {
+          "type": "step",
+          "settings": {
+            "step_label": "STAP 01",
+            "title": "<p>Vul je fles met water.</p>",
+            "subtitle": "<p>Kraanwater is top.</p>",
+            "card_bg": "#EAF5D8",
+            "text_color": "#2E4A20"
+          }
+        },
+        "step_2": {
+          "type": "step",
+          "settings": {
+            "step_label": "STAP 02",
+            "title": "<p>Gebruik je pod.</p>",
+            "subtitle": "<p>Kies uit een van je 25 smaken.</p>",
+            "card_bg": "#F6E4DA",
+            "text_color": "#2E4A20"
+          }
+        },
+        "step_3": {
+          "type": "step",
+          "settings": {
+            "step_label": "STAP 03",
+            "title": "<p>Schud en geniet.</p>",
+            "subtitle": "<p>Klaar in seconden.</p>",
+            "card_bg": "#EAF5D8",
+            "text_color": "#2E4A20"
+          }
+        },
+        "step_4": {
+          "type": "step",
+          "settings": {
+            "step_label": "STAP 04",
+            "title": "<p>Wissel je pods.</p>",
+            "subtitle": "<p>Nieuwe smaak, nieuw water.</p>",
+            "card_bg": "#F7DDE0",
+            "text_color": "#7A2230"
+          }
+        }
+      },
+      "block_order": [
+        "step_1",
+        "step_2",
+        "step_3",
+        "step_4"
+      ],
+      "settings": {}
     }
   },
   "order": [
@@ -702,6 +754,7 @@
     "why_daily_matters_home",
     "cfca4268-6358-426c-98ab-d292aeef11e5",
     "d2d3417b-e92f-428c-b221-5bceffb552be",
+    "custom_step_slider",
     "6aa09428-a417-429d-9159-a4e8afd49590",
     "0f1fc9e4-bc4c-4052-9747-62d1f8472caa",
     "contact_form_WHP8G7"
