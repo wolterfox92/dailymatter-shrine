@@ -1,0 +1,531 @@
+{%- liquid
+  assign card_bg = section.settings.card_bg
+  assign title_color = section.settings.title_color
+  assign body_color = section.settings.body_color
+  assign muted_color = section.settings.muted_color
+  assign pill_bg = section.settings.pill_bg
+  assign pill_text = section.settings.pill_text
+  assign meta_color = section.settings.meta_color
+  assign price_color = section.settings.price_color
+  assign compare_color = section.settings.compare_color
+  assign cta_bg = section.settings.cta_bg
+  assign cta_text = section.settings.cta_text
+  assign media_grad_start = section.settings.media_grad_start
+  assign media_grad_end = section.settings.media_grad_end
+-%}
+
+{%- style -%}
+  .product-spotlight-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top | times: 0.6 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.6 | round: 0 }}px;
+  }
+
+  .product-spotlight-{{ section.id }} .product-spotlight__card {
+    --ps-card-bg: {{ card_bg }};
+    --ps-title: {{ title_color }};
+    --ps-body: {{ body_color }};
+    --ps-muted: {{ muted_color }};
+    --ps-pill-bg: {{ pill_bg }};
+    --ps-pill-text: {{ pill_text }};
+    --ps-meta: {{ meta_color }};
+    --ps-price: {{ price_color }};
+    --ps-compare: {{ compare_color }};
+    --ps-cta-bg: {{ cta_bg }};
+    --ps-cta-text: {{ cta_text }};
+    max-width: {{ section.settings.card_max_width }}px;
+    margin: 0 auto;
+    border-radius: 28px;
+    overflow: hidden;
+    background-color: var(--ps-card-bg);
+    box-shadow: 0 24px 60px rgba(20, 17, 40, 0.18);
+  }
+
+  .product-spotlight-{{ section.id }} .product-spotlight__media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: {{ section.settings.image_ratio }};
+    background: linear-gradient(180deg, {{ media_grad_start }} 0%, {{ media_grad_end }} 100%);
+  }
+
+  .product-spotlight-{{ section.id }} .product-spotlight__media img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .product-spotlight-{{ section.id }} .product-spotlight__placeholder {
+    position: absolute;
+    inset: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    border: 2px dashed rgba(46, 42, 57, 0.32);
+    border-radius: 18px;
+    color: rgba(46, 42, 57, 0.62);
+    text-align: center;
+    padding: 24px;
+  }
+
+  .product-spotlight-{{ section.id }} .product-spotlight__placeholder svg {
+    width: 44px;
+    height: 44px;
+    opacity: 0.7;
+  }
+
+  .product-spotlight-{{ section.id }} .product-spotlight__placeholder-label {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 500;
+  }
+
+  .product-spotlight-{{ section.id }} .product-spotlight__body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 32px 28px 34px;
+  }
+
+  .product-spotlight-{{ section.id }} .product-spotlight__eyebrow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .product-spotlight-{{ section.id }} .product-spotlight__pill {
+    display: inline-block;
+    margin: 0;
+    padding: 7px 16px;
+    border-radius: 999px;
+    background-color: var(--ps-pill-bg);
+    color: var(--ps-pill-text);
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .product-spotlight-{{ section.id }} .product-spotlight__meta {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--ps-meta);
+  }
+
+  .product-spotlight-{{ section.id }} .product-spotlight__title {
+    margin: 0;
+    font-size: 3.4rem;
+    line-height: 1.05;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ps-title);
+  }
+
+  .product-spotlight-{{ section.id }} .product-spotlight__title * {
+    margin: 0;
+  }
+
+  .product-spotlight-{{ section.id }} .product-spotlight__text {
+    margin: 0;
+    max-width: 42ch;
+    font-size: 1.7rem;
+    line-height: 1.5;
+    color: var(--ps-body);
+  }
+
+  .product-spotlight-{{ section.id }} .product-spotlight__text * {
+    margin: 0;
+  }
+
+  .product-spotlight-{{ section.id }} .product-spotlight__buy {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    margin-top: 6px;
+  }
+
+  .product-spotlight-{{ section.id }} .product-spotlight__prices {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.1;
+  }
+
+  .product-spotlight-{{ section.id }} .product-spotlight__compare {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--ps-compare);
+    text-decoration: line-through;
+  }
+
+  .product-spotlight-{{ section.id }} .product-spotlight__price {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--ps-price);
+  }
+
+  .product-spotlight-{{ section.id }} .product-spotlight__cta {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 24px;
+    border-radius: 999px;
+    background-color: var(--ps-cta-bg);
+    color: var(--ps-cta-text);
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+
+  .product-spotlight-{{ section.id }} .product-spotlight__cta:hover {
+    transform: translateY(-1px);
+    opacity: 0.94;
+  }
+
+  .product-spotlight-{{ section.id }} .product-spotlight__footnote {
+    margin: 0;
+    max-width: 46ch;
+    font-size: 1.4rem;
+    line-height: 1.5;
+    color: var(--ps-muted);
+  }
+
+  @media screen and (min-width: 750px) {
+    .product-spotlight-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+
+    .product-spotlight-{{ section.id }} .product-spotlight__body {
+      padding: 40px 40px 44px;
+      gap: 22px;
+    }
+
+    .product-spotlight-{{ section.id }} .product-spotlight__title {
+      font-size: 4.4rem;
+    }
+  }
+{%- endstyle -%}
+
+<div class="product-spotlight-{{ section.id }} product-spotlight page-width">
+  <div class="product-spotlight__card">
+    <div class="product-spotlight__media">
+      {%- if section.settings.image != blank -%}
+        {{
+          section.settings.image
+          | image_url: width: 1200
+          | image_tag:
+            loading: 'lazy',
+            sizes: '(min-width: 750px) 480px, 100vw',
+            widths: '400, 600, 800, 1000, 1200',
+            alt: section.settings.image.alt | default: section.settings.title
+        }}
+      {%- else -%}
+        <div class="product-spotlight__placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="2.5" />
+            <circle cx="8.5" cy="8.5" r="1.6" />
+            <path d="M21 15l-5-5L5 21" />
+          </svg>
+          {%- if section.settings.placeholder_label != blank -%}
+            <p class="product-spotlight__placeholder-label">{{ section.settings.placeholder_label | escape }}</p>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="product-spotlight__body">
+      {%- if section.settings.pill_label != blank or section.settings.meta != blank -%}
+        <div class="product-spotlight__eyebrow">
+          {%- if section.settings.pill_label != blank -%}
+            <span class="product-spotlight__pill">{{ section.settings.pill_label | escape }}</span>
+          {%- endif -%}
+          {%- if section.settings.meta != blank -%}
+            <span class="product-spotlight__meta">{{ section.settings.meta | escape }}</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.title != blank -%}
+        <h2 class="product-spotlight__title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+
+      {%- if section.settings.text != blank -%}
+        <div class="product-spotlight__text">{{ section.settings.text }}</div>
+      {%- endif -%}
+
+      {%- if section.settings.cta_label != blank or section.settings.price != blank -%}
+        <div class="product-spotlight__buy">
+          {%- if section.settings.price != blank or section.settings.compare_price != blank -%}
+            <div class="product-spotlight__prices">
+              {%- if section.settings.compare_price != blank -%}
+                <span class="product-spotlight__compare">{{ section.settings.compare_price | escape }}</span>
+              {%- endif -%}
+              {%- if section.settings.price != blank -%}
+                <span class="product-spotlight__price">{{ section.settings.price | escape }}</span>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+          {%- if section.settings.cta_label != blank -%}
+            <a href="{{ section.settings.cta_link | default: '#' }}" class="product-spotlight__cta">
+              {{ section.settings.cta_label | escape }}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.footnote != blank -%}
+        <div class="product-spotlight__footnote">{{ section.settings.footnote }}</div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Product spotlight",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Product image"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_label",
+      "label": "Placeholder text",
+      "info": "Shown when no image is selected.",
+      "default": "Productfoto (sachets uitgewaaierd)"
+    },
+    {
+      "type": "text",
+      "id": "image_ratio",
+      "label": "Image ratio (width / height)",
+      "info": "Use 4 / 5 for portrait, 1 / 1 for square.",
+      "default": "1 / 1"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "pill_label",
+      "label": "Pill label",
+      "default": "Hero-product"
+    },
+    {
+      "type": "text",
+      "id": "meta",
+      "label": "Meta line",
+      "default": "Energie · Focus · Hydratatie"
+    },
+    {
+      "type": "richtext",
+      "id": "title",
+      "label": "Title",
+      "default": "<p>Energy Foundation</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Description",
+      "default": "<p>Creatine, elektrolyten & B-vitamines in één sachet per dag. 30 sachets per doos — vanaf €1,57 per dag.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Price & button"
+    },
+    {
+      "type": "text",
+      "id": "compare_price",
+      "label": "Compare-at price",
+      "default": "€59"
+    },
+    {
+      "type": "text",
+      "id": "price",
+      "label": "Price",
+      "default": "€47"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Shop Energy Foundation"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "richtext",
+      "id": "footnote",
+      "label": "Footnote",
+      "default": "<p>Eerste in de Daily Matters-lijn. Binnenkort: formules voor slaap, focus en herstel.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "card_max_width",
+      "min": 360,
+      "max": 720,
+      "step": 20,
+      "unit": "px",
+      "label": "Card max width",
+      "default": 440
+    },
+    {
+      "type": "header",
+      "content": "Image colors"
+    },
+    {
+      "type": "color",
+      "id": "media_grad_start",
+      "label": "Gradient top",
+      "default": "#F3CCA0"
+    },
+    {
+      "type": "color",
+      "id": "media_grad_end",
+      "label": "Gradient bottom",
+      "default": "#E59C5B"
+    },
+    {
+      "type": "header",
+      "content": "Card colors"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card background",
+      "default": "#211C39"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Description",
+      "default": "#D6D2E2"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "Footnote",
+      "default": "#8E89A3"
+    },
+    {
+      "type": "color",
+      "id": "meta_color",
+      "label": "Meta line",
+      "default": "#C9C5D6"
+    },
+    {
+      "type": "header",
+      "content": "Pill colors"
+    },
+    {
+      "type": "color",
+      "id": "pill_bg",
+      "label": "Pill background",
+      "default": "#CBFF78"
+    },
+    {
+      "type": "color",
+      "id": "pill_text",
+      "label": "Pill text",
+      "default": "#211C39"
+    },
+    {
+      "type": "header",
+      "content": "Price colors"
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "compare_color",
+      "label": "Compare-at price",
+      "default": "#8E89A3"
+    },
+    {
+      "type": "header",
+      "content": "Button colors"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg",
+      "label": "Button background",
+      "default": "#CBFF78"
+    },
+    {
+      "type": "color",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "#211C39"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 48
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product spotlight"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}
