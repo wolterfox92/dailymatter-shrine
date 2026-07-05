@@ -1,0 +1,834 @@
+{%- liquid
+  assign bg_color = section.settings.bg_color
+  assign text_color = section.settings.text_color
+  assign muted_color = section.settings.muted_color
+  assign eyebrow_color = section.settings.eyebrow_color
+  assign card_bg = section.settings.card_bg
+  assign tab_bg = section.settings.tab_bg
+  assign tab_text = section.settings.tab_text
+  assign tab_border = section.settings.tab_border
+  assign tab_active_bg = section.settings.tab_active_bg
+  assign tab_active_text = section.settings.tab_active_text
+  assign badge_bg = section.settings.badge_bg
+  assign badge_text = section.settings.badge_text
+  assign label_color = section.settings.label_color
+  assign divider_color = section.settings.divider_color
+  assign link_color = section.settings.link_color
+-%}
+
+{%- style -%}
+  .cie-{{ section.id }} {
+    --cie-bg: {{ bg_color }};
+    --cie-text: {{ text_color }};
+    --cie-muted: {{ muted_color }};
+    --cie-eyebrow: {{ eyebrow_color }};
+    --cie-card-bg: {{ card_bg }};
+    --cie-tab-bg: {{ tab_bg }};
+    --cie-tab-text: {{ tab_text }};
+    --cie-tab-border: {{ tab_border }};
+    --cie-tab-active-bg: {{ tab_active_bg }};
+    --cie-tab-active-text: {{ tab_active_text }};
+    --cie-badge-bg: {{ badge_bg }};
+    --cie-badge-text: {{ badge_text }};
+    --cie-label: {{ label_color }};
+    --cie-divider: {{ divider_color }};
+    --cie-link: {{ link_color }};
+    background-color: var(--cie-bg);
+    color: var(--cie-text);
+    padding-top: {{ section.settings.padding_top | times: 0.6 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.6 | round: 0 }}px;
+  }
+
+  .cie-{{ section.id }} .cie__header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+    max-width: 52ch;
+  }
+
+  .cie-{{ section.id }} .cie__eyebrow {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--cie-eyebrow);
+  }
+
+  .cie-{{ section.id }} .cie__title {
+    margin: 0;
+    font-size: 3.2rem;
+    line-height: 1.05;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--cie-text);
+  }
+
+  .cie-{{ section.id }} .cie__title * {
+    margin: 0;
+  }
+
+  .cie-{{ section.id }} .cie__intro {
+    margin: 0;
+    font-size: 1.4rem;
+    line-height: 1.4;
+    color: var(--cie-muted);
+  }
+
+  .cie-{{ section.id }} .cie__intro * {
+    margin: 0;
+  }
+
+  /* Segmented control tabs */
+  .cie-{{ section.id }} .cie__tabs {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-evenly;
+    gap: 4px;
+    box-sizing: border-box;
+    background-color: var(--cie-tab-bg);
+    border: 1px solid var(--cie-tab-border);
+    border-radius: 999px;
+    padding: 5px 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+
+  .cie-{{ section.id }} .cie__tab-highlight {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    display: block;
+    background-color: var(--cie-tab-active-bg);
+    border-radius: 999px;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .cie-{{ section.id }} .cie__tabs.is-ready .cie__tab-highlight {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .cie-{{ section.id }} .cie__tab {
+    position: relative;
+    z-index: 1;
+    flex: 0 1 auto;
+    box-sizing: border-box;
+    border: 0;
+    background: transparent;
+    padding: 9px 12px;
+    border-radius: 999px;
+    color: var(--cie-tab-text);
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    text-align: center;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 0.25s ease;
+  }
+
+  .cie-{{ section.id }} .cie__tab[aria-selected='true'] {
+    color: var(--cie-tab-active-text);
+  }
+
+  .cie-{{ section.id }} .cie__panel {
+    display: none;
+    box-sizing: border-box;
+    background-color: var(--cie-card-bg);
+    border-radius: 22px;
+    padding: 22px 20px 24px;
+  }
+
+  .cie-{{ section.id }} .cie__panel.is-active {
+    display: block;
+  }
+
+  .cie-{{ section.id }} .cie__panel-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .cie-{{ section.id }} .cie__panel-title {
+    margin: 0;
+    font-size: 2.8rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--cie-text);
+  }
+
+  .cie-{{ section.id }} .cie__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 10px;
+    border-radius: 999px;
+    background-color: var(--cie-badge-bg);
+    color: var(--cie-badge-text);
+    font-size: 1.2rem;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .cie-{{ section.id }} .cie__block + .cie__block {
+    margin-top: 18px;
+  }
+
+  .cie-{{ section.id }} .cie__label {
+    margin: 0 0 6px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--cie-label);
+  }
+
+  .cie-{{ section.id }} .cie__text {
+    margin: 0;
+    font-size: 1.4rem;
+    line-height: 1.4;
+    color: var(--cie-text);
+  }
+
+  .cie-{{ section.id }} .cie__text * {
+    margin: 0;
+  }
+
+  .cie-{{ section.id }} .cie__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    margin-top: 22px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font-family: inherit;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--cie-link);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  .cie-{{ section.id }} .cie__link svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Lightbox */
+  .cie-{{ section.id }} .cie__lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: rgba(30, 27, 46, 0.72);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+  }
+
+  .cie-{{ section.id }} .cie__lightbox[hidden] {
+    display: none;
+  }
+
+  .cie-{{ section.id }} .cie__lightbox-content {
+    position: relative;
+    max-width: min(920px, 100%);
+    max-height: 90vh;
+    display: flex;
+  }
+
+  .cie-{{ section.id }} .cie__lightbox-img {
+    display: block;
+    max-width: 100%;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    border-radius: 16px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  }
+
+  .cie-{{ section.id }} .cie__lightbox-close {
+    position: absolute;
+    top: -14px;
+    right: -14px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 999px;
+    background-color: #fff;
+    color: #1e1b2e;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  }
+
+  @media screen and (min-width: 750px) {
+    .cie-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+
+    .cie-{{ section.id }} .cie__header {
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .cie-{{ section.id }} .cie__title {
+      font-size: 3.8rem;
+    }
+
+    .cie-{{ section.id }} .cie__intro {
+      font-size: 1.6rem;
+      line-height: 1.55;
+    }
+
+    .cie-{{ section.id }} .cie__tabs {
+      gap: 6px;
+      padding: 6px 16px;
+      margin-bottom: 16px;
+    }
+
+    .cie-{{ section.id }} .cie__tab {
+      flex: 0 1 auto;
+      padding: 12px 22px;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .cie-{{ section.id }} .cie__panel {
+      padding: 36px 40px;
+    }
+
+    .cie-{{ section.id }} .cie__panel-head {
+      margin-bottom: 24px;
+    }
+
+    .cie-{{ section.id }} .cie__panel-title {
+      font-size: 3rem;
+    }
+
+    .cie-{{ section.id }} .cie__badge {
+      padding: 9px 16px;
+      font-size: 1.4rem;
+    }
+
+    .cie-{{ section.id }} .cie__block + .cie__block {
+      margin-top: 22px;
+    }
+
+    .cie-{{ section.id }} .cie__label {
+      font-size: 1.3rem;
+    }
+
+    .cie-{{ section.id }} .cie__text {
+      font-size: 1.6rem;
+      line-height: 1.5;
+    }
+
+    .cie-{{ section.id }} .cie__link {
+      justify-content: flex-start;
+      width: auto;
+      margin-top: 24px;
+      font-size: 1.5rem;
+    }
+
+    .cie-{{ section.id }} .cie__link svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+{%- endstyle -%}
+
+{%- capture arrow -%}
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4 12h15m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+{%- endcapture -%}
+
+<div class="cie-{{ section.id }} cie" data-cie>
+  <div class="page-width">
+    {%- if section.settings.eyebrow != blank or section.settings.title != blank or section.settings.intro != blank -%}
+      <div class="cie__header">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="cie__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h2 class="cie__title">{{ section.settings.title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.intro != blank -%}
+          <div class="cie__intro">{{ section.settings.intro }}</div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="cie__tabs" role="tablist" aria-label="{{ section.settings.title | strip_html | default: 'Ingrediënten' | escape }}" data-cie-tabs>
+        <span class="cie__tab-highlight" aria-hidden="true" data-cie-highlight></span>
+        {%- for block in section.blocks -%}
+          <button
+            type="button"
+            class="cie__tab"
+            role="tab"
+            id="cie-tab-{{ section.id }}-{{ forloop.index0 }}"
+            aria-controls="cie-panel-{{ section.id }}-{{ forloop.index0 }}"
+            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+            data-cie-tab="{{ forloop.index0 }}"
+            {{ block.shopify_attributes }}
+          >
+            {{- block.settings.name | default: 'Ingrediënt' | escape -}}
+          </button>
+        {%- endfor -%}
+      </div>
+
+      {%- for block in section.blocks -%}
+        <div
+          class="cie__panel{% if forloop.first %} is-active{% endif %}"
+          id="cie-panel-{{ section.id }}-{{ forloop.index0 }}"
+          role="tabpanel"
+          aria-labelledby="cie-tab-{{ section.id }}-{{ forloop.index0 }}"
+          data-cie-panel="{{ forloop.index0 }}"
+          {% unless forloop.first %}hidden{% endunless %}
+          {{ block.shopify_attributes }}
+        >
+          <div class="cie__panel-head">
+            {%- if block.settings.name != blank -%}
+              <h3 class="cie__panel-title">{{ block.settings.name | escape }}</h3>
+            {%- endif -%}
+            {%- if block.settings.badge != blank -%}
+              <span class="cie__badge">{{ block.settings.badge | escape }}</span>
+            {%- endif -%}
+          </div>
+
+          {%- if block.settings.label_1 != blank or block.settings.text_1 != blank -%}
+            <div class="cie__block">
+              {%- if block.settings.label_1 != blank -%}
+                <p class="cie__label">{{ block.settings.label_1 | escape }}</p>
+              {%- endif -%}
+              {%- if block.settings.text_1 != blank -%}
+                <div class="cie__text">{{ block.settings.text_1 }}</div>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+          {%- if block.settings.label_2 != blank or block.settings.text_2 != blank -%}
+            <div class="cie__block">
+              {%- if block.settings.label_2 != blank -%}
+                <p class="cie__label">{{ block.settings.label_2 | escape }}</p>
+              {%- endif -%}
+              {%- if block.settings.text_2 != blank -%}
+                <div class="cie__text">{{ block.settings.text_2 }}</div>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+          {%- if block.settings.link_label != blank -%}
+            {%- if block.settings.nutrition_image != blank -%}
+              <button
+                type="button"
+                class="cie__link"
+                data-cie-open
+                data-cie-image="{{ block.settings.nutrition_image | image_url: width: 1400 }}"
+                data-cie-alt="{{ block.settings.name | default: block.settings.link_label | escape }}"
+              >
+                {{- block.settings.link_label | escape }}{{ arrow -}}
+              </button>
+            {%- elsif block.settings.link_url != blank -%}
+              <a href="{{ block.settings.link_url }}" class="cie__link">
+                {{- block.settings.link_label | escape }}{{ arrow -}}
+              </a>
+            {%- endif -%}
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+
+      <div class="cie__lightbox" data-cie-lightbox hidden>
+        <div class="cie__lightbox-content" role="dialog" aria-modal="true" aria-label="Voedingswaarden">
+          <button type="button" class="cie__lightbox-close" data-cie-close aria-label="Sluiten">&times;</button>
+          <img class="cie__lightbox-img" src="" alt="" data-cie-lightbox-img>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+<script>
+  (function () {
+    var root = document.querySelector('.cie-{{ section.id }}');
+    if (!root) return;
+
+    var tabsWrap = root.querySelector('[data-cie-tabs]');
+    var highlight = root.querySelector('[data-cie-highlight]');
+    var tabs = root.querySelectorAll('[data-cie-tab]');
+    var panels = root.querySelectorAll('[data-cie-panel]');
+    var activeIndex = 0;
+
+    function moveHighlight(tab) {
+      if (!highlight || !tab) return;
+      highlight.style.width = tab.offsetWidth + 'px';
+      highlight.style.height = tab.offsetHeight + 'px';
+      highlight.style.transform = 'translate(' + tab.offsetLeft + 'px,' + tab.offsetTop + 'px)';
+    }
+
+    function activate(index) {
+      activeIndex = Number(index);
+      var activeTab = null;
+      tabs.forEach(function (tab) {
+        var selected = tab.getAttribute('data-cie-tab') === String(index);
+        tab.setAttribute('aria-selected', selected ? 'true' : 'false');
+        if (selected) activeTab = tab;
+      });
+      panels.forEach(function (panel) {
+        var active = panel.getAttribute('data-cie-panel') === String(index);
+        panel.classList.toggle('is-active', active);
+        if (active) {
+          panel.removeAttribute('hidden');
+        } else {
+          panel.setAttribute('hidden', '');
+        }
+      });
+      moveHighlight(activeTab);
+    }
+
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        activate(tab.getAttribute('data-cie-tab'));
+      });
+    });
+
+    // Position highlight on load, then enable the sliding transition.
+    function initHighlight() {
+      moveHighlight(root.querySelector('[data-cie-tab="' + activeIndex + '"]'));
+      if (tabsWrap) {
+        // next frame so the initial placement doesn't animate
+        window.requestAnimationFrame(function () {
+          tabsWrap.classList.add('is-ready');
+        });
+      }
+    }
+
+    if (document.readyState === 'complete') {
+      initHighlight();
+    } else {
+      window.addEventListener('load', initHighlight);
+      // also try once now in case load already close
+      initHighlight();
+    }
+
+    var resizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () {
+        moveHighlight(root.querySelector('[data-cie-tab="' + activeIndex + '"]'));
+      }, 120);
+    });
+
+    // Lightbox for "Bekijk de volledige voedingswaarden"
+    var lightbox = root.querySelector('[data-cie-lightbox]');
+    var lightboxImg = root.querySelector('[data-cie-lightbox-img]');
+
+    function openLightbox(src, alt) {
+      if (!lightbox || !lightboxImg || !src) return;
+      lightboxImg.setAttribute('src', src);
+      lightboxImg.setAttribute('alt', alt || '');
+      lightbox.removeAttribute('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      if (!lightbox) return;
+      lightbox.setAttribute('hidden', '');
+      document.body.style.overflow = '';
+      if (lightboxImg) lightboxImg.setAttribute('src', '');
+    }
+
+    root.querySelectorAll('[data-cie-open]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        openLightbox(btn.getAttribute('data-cie-image'), btn.getAttribute('data-cie-alt'));
+      });
+    });
+
+    if (lightbox) {
+      lightbox.addEventListener('click', function (event) {
+        if (event.target === lightbox || event.target.hasAttribute('data-cie-close')) {
+          closeLightbox();
+        }
+      });
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && !lightbox.hasAttribute('hidden')) {
+          closeLightbox();
+        }
+      });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Ingredient Explorer",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "DE FORMULE"
+    },
+    {
+      "type": "richtext",
+      "id": "title",
+      "label": "Title",
+      "default": "<p>Built on ingredients that make sense.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Intro text",
+      "default": "<p>Bewezen ingrediënten, bewust gekozen om elkaar aan te vullen.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section background",
+      "default": "#F4F1EB"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Title & body text",
+      "default": "#25162F"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "Intro text",
+      "default": "#5B5768"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow text",
+      "default": "#9A95AA"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Section label text",
+      "default": "#9A95AA"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Card divider",
+      "default": "#E7E4DD"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link text",
+      "default": "#25162F"
+    },
+    {
+      "type": "header",
+      "content": "Tab colors"
+    },
+    {
+      "type": "color",
+      "id": "tab_bg",
+      "label": "Tab bar background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "tab_text",
+      "label": "Tab text",
+      "default": "#25162F"
+    },
+    {
+      "type": "color",
+      "id": "tab_border",
+      "label": "Tab bar border",
+      "default": "#E3E1DD"
+    },
+    {
+      "type": "color",
+      "id": "tab_active_bg",
+      "label": "Active pill background",
+      "default": "#221B3B"
+    },
+    {
+      "type": "color",
+      "id": "tab_active_text",
+      "label": "Active pill text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Badge colors"
+    },
+    {
+      "type": "color",
+      "id": "badge_bg",
+      "label": "Badge background",
+      "default": "#CCFA78"
+    },
+    {
+      "type": "color",
+      "id": "badge_text",
+      "label": "Badge text",
+      "default": "#25162F"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 48
+    }
+  ],
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "ingredient",
+      "name": "Ingredient",
+      "settings": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name (tab + title)",
+          "default": "Creatine"
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Badge",
+          "default": "5g per sachet"
+        },
+        {
+          "type": "text",
+          "id": "label_1",
+          "label": "Block 1 label",
+          "default": "WAT ZIT ER IN & WAAROM"
+        },
+        {
+          "type": "richtext",
+          "id": "text_1",
+          "label": "Block 1 text",
+          "default": "<p>Creatine monohydraat is een van de meest onderzochte supplementen ter wereld en ondersteunt fysieke kracht en herstel.</p>"
+        },
+        {
+          "type": "text",
+          "id": "label_2",
+          "label": "Block 2 label",
+          "default": "WAT HET BETEKENT VOOR JE DAG"
+        },
+        {
+          "type": "richtext",
+          "id": "text_2",
+          "label": "Block 2 text",
+          "default": "<p>Meer power tijdens je training en een soepeler herstel daarna — ook op dagen dat je niet sport.</p>"
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "Link label",
+          "default": "Bekijk de volledige voedingswaarden"
+        },
+        {
+          "type": "image_picker",
+          "id": "nutrition_image",
+          "label": "Voedingswaarden afbeelding",
+          "info": "Wordt geopend in een pop-up wanneer op de link wordt geklikt. Heeft voorrang op de link-URL."
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link (fallback als er geen afbeelding is)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ingredient Explorer",
+      "blocks": [
+        {
+          "type": "ingredient",
+          "settings": {
+            "name": "Creatine",
+            "badge": "5g per sachet",
+            "text_1": "<p>Creatine monohydraat is een van de meest onderzochte supplementen ter wereld en ondersteunt fysieke kracht en herstel.</p>",
+            "text_2": "<p>Meer power tijdens je training en een soepeler herstel daarna — ook op dagen dat je niet sport.</p>"
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "name": "Elektrolyten + Magnesium",
+            "badge": "Natrium · Kalium · Magnesium",
+            "text_1": "<p>Een uitgebalanceerde mix van mineralen die je lichaam dagelijks verliest via zweet en urine.</p>",
+            "text_2": "<p>Betere hydratatie en minder dipjes — zodat je je de hele dag scherper voelt.</p>"
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "name": "B-Vitaminen",
+            "badge": "B6 · B12 · Foliumzuur",
+            "text_1": "<p>Essentiële B-vitamines die een rol spelen in je energiestofwisseling.</p>",
+            "text_2": "<p>Minder vermoeidheid en meer natuurlijke energie zonder pieken of crash.</p>"
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}
