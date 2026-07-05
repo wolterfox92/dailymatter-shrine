@@ -1,0 +1,716 @@
+{%- liquid
+  assign bg_color = section.settings.bg_color
+  assign eyebrow_color = section.settings.eyebrow_color
+  assign heading_color = section.settings.heading_color
+  assign subtext_color = section.settings.subtext_color
+  assign nav_color = section.settings.nav_color
+  assign nav_border = section.settings.nav_border
+  assign counter_color = section.settings.counter_color
+  assign dot_color = section.settings.dot_color
+  assign dot_active_color = section.settings.dot_active_color
+-%}
+
+{%- style -%}
+  .step-slider-{{ section.id }} {
+    --ss-bg: {{ bg_color }};
+    --ss-eyebrow: {{ eyebrow_color }};
+    --ss-heading: {{ heading_color }};
+    --ss-subtext: {{ subtext_color }};
+    --ss-nav: {{ nav_color }};
+    --ss-nav-border: {{ nav_border }};
+    --ss-counter: {{ counter_color }};
+    --ss-dot: {{ dot_color }};
+    --ss-dot-active: {{ dot_active_color }};
+    --ss-card-w: {{ section.settings.card_width }}px;
+    background-color: var(--ss-bg);
+    padding-top: {{ section.settings.padding_top | times: 0.6 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.6 | round: 0 }}px;
+  }
+
+  .step-slider-{{ section.id }} .step-slider__header {
+    text-align: center;
+    max-width: 34ch;
+    margin: 0 auto 28px;
+  }
+
+  .step-slider-{{ section.id }} .step-slider__eyebrow {
+    margin: 0 0 14px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ss-eyebrow);
+  }
+
+  .step-slider-{{ section.id }} .step-slider__heading {
+    margin: 0;
+    font-size: 3.4rem;
+    line-height: 1.05;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--ss-heading);
+  }
+
+  .step-slider-{{ section.id }} .step-slider__heading * {
+    margin: 0;
+  }
+
+  .step-slider-{{ section.id }} .step-slider__subtext {
+    margin: 16px 0 0;
+    font-size: 1.6rem;
+    line-height: 1.4;
+    font-weight: 400;
+    color: var(--ss-subtext);
+  }
+
+  .step-slider-{{ section.id }} .step-slider__subtext * {
+    margin: 0;
+  }
+
+  .step-slider-{{ section.id }} .step-slider__stage {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    height: calc(var(--ss-card-w) * {{ section.settings.card_ratio }} + 170px);
+    margin: 0 auto;
+    overflow: hidden;
+    touch-action: pan-y;
+  }
+
+  .step-slider-{{ section.id }} .step-slider__card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--ss-card-w);
+    max-width: 82%;
+    height: calc(var(--ss-card-w) * {{ section.settings.card_ratio }});
+    max-height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    padding: 22px 20px 0;
+    border-radius: 26px;
+    background-color: var(--ss-card-bg, #EAF5D8);
+    color: var(--ss-card-text, #2E4A20);
+    overflow: hidden;
+    transform: translate(-50%, -50%);
+    transform-origin: center center;
+    transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.45s ease;
+    will-change: transform, opacity;
+  }
+
+  .step-slider-{{ section.id }} .step-slider__card--active {
+    z-index: 3;
+    opacity: 1;
+    box-shadow: 0 14px 30px rgba(20, 17, 40, 0.14);
+  }
+
+  .step-slider-{{ section.id }} .step-slider__card--prev {
+    z-index: 2;
+    opacity: 1;
+    transform: translate(-118%, -50%) rotate(-7deg) scale(0.9);
+  }
+
+  .step-slider-{{ section.id }} .step-slider__card--next {
+    z-index: 2;
+    opacity: 1;
+    transform: translate(18%, -50%) rotate(7deg) scale(0.9);
+  }
+
+  .step-slider-{{ section.id }} .step-slider__card--hidden {
+    z-index: 1;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+
+  .step-slider-{{ section.id }} .step-slider__card--hidden.step-slider__card--far-prev {
+    transform: translate(-160%, -50%) rotate(-9deg) scale(0.82);
+  }
+
+  .step-slider-{{ section.id }} .step-slider__card--hidden.step-slider__card--far-next {
+    transform: translate(60%, -50%) rotate(9deg) scale(0.82);
+  }
+
+  .step-slider-{{ section.id }} .step-slider__step {
+    margin: 0 0 6px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .step-slider-{{ section.id }} .step-slider__title {
+    margin: 0;
+    font-size: 2.8rem;
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .step-slider-{{ section.id }} .step-slider__title * {
+    margin: 0;
+  }
+
+  .step-slider-{{ section.id }} .step-slider__sub {
+    margin: 8px 0 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.25;
+    text-align: center;
+  }
+
+  .step-slider-{{ section.id }} .step-slider__sub * {
+    margin: 0;
+  }
+
+  .step-slider-{{ section.id }} .step-slider__media {
+    position: relative;
+    flex: 1 1 auto;
+    width: 100%;
+    margin-top: 14px;
+    min-height: 0;
+  }
+
+  .step-slider-{{ section.id }} .step-slider__media img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: bottom center;
+    display: block;
+  }
+
+  .step-slider-{{ section.id }} .step-slider__placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.5;
+  }
+
+  .step-slider-{{ section.id }} .step-slider__placeholder svg {
+    width: 56px;
+    height: 56px;
+  }
+
+  .step-slider-{{ section.id }} .step-slider__controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 26px;
+  }
+
+  .step-slider-{{ section.id }} .step-slider__arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex: 0 0 auto;
+    padding: 0;
+    border: 1.5px solid var(--ss-nav-border);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ss-nav);
+    cursor: pointer;
+    transition: opacity 0.15s ease, background-color 0.15s ease;
+  }
+
+  .step-slider-{{ section.id }} .step-slider__arrow:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+
+  .step-slider-{{ section.id }} .step-slider__arrow svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .step-slider-{{ section.id }} .step-slider__counter {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--ss-counter);
+    min-width: 4ch;
+    text-align: center;
+  }
+
+  .step-slider-{{ section.id }} .step-slider__dots {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  .step-slider-{{ section.id }} .step-slider__dot {
+    width: 9px;
+    height: 9px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background-color: var(--ss-dot);
+    cursor: pointer;
+    transition: width 0.25s ease, background-color 0.25s ease;
+  }
+
+  .step-slider-{{ section.id }} .step-slider__dot--active {
+    width: 22px;
+    background-color: var(--ss-dot-active);
+  }
+
+  @media screen and (min-width: 750px) {
+    .step-slider-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+
+    .step-slider-{{ section.id }} .step-slider__header {
+      max-width: 60ch;
+      margin-bottom: 40px;
+    }
+
+    .step-slider-{{ section.id }} .step-slider__heading {
+      font-size: 5rem;
+    }
+
+    .step-slider-{{ section.id }} .step-slider__subtext {
+      font-size: 1.8rem;
+    }
+
+    .step-slider-{{ section.id }} .step-slider__card {
+      padding: 28px 26px 0;
+      border-radius: 30px;
+    }
+
+    .step-slider-{{ section.id }} .step-slider__title {
+      font-size: 3.2rem;
+    }
+
+    .step-slider-{{ section.id }} .step-slider__sub {
+      font-size: 1.6rem;
+    }
+
+    .step-slider-{{ section.id }} .step-slider__controls {
+      margin-top: 32px;
+    }
+
+    .step-slider-{{ section.id }} .step-slider__arrow {
+      width: 46px;
+      height: 46px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="step-slider-{{ section.id }} step-slider" data-step-slider>
+  <div class="page-width">
+    {%- if section.settings.eyebrow != blank or section.settings.heading != blank or section.settings.subtext != blank -%}
+      <div class="step-slider__header">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="step-slider__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="step-slider__heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subtext != blank -%}
+          <div class="step-slider__subtext">{{ section.settings.subtext }}</div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="step-slider__stage" data-ss-stage>
+        {%- for block in section.blocks -%}
+          <article
+            class="step-slider__card"
+            data-ss-card="{{ forloop.index0 }}"
+            style="--ss-card-bg: {{ block.settings.card_bg }}; --ss-card-text: {{ block.settings.text_color }};"
+            {{ block.shopify_attributes }}
+          >
+            {%- if block.settings.step_label != blank -%}
+              <p class="step-slider__step">{{ block.settings.step_label | escape }}</p>
+            {%- endif -%}
+            {%- if block.settings.title != blank -%}
+              <h3 class="step-slider__title">{{ block.settings.title }}</h3>
+            {%- endif -%}
+            {%- if block.settings.subtitle != blank -%}
+              <div class="step-slider__sub">{{ block.settings.subtitle }}</div>
+            {%- endif -%}
+
+            <div class="step-slider__media">
+              {%- if block.settings.image != blank -%}
+                {%- assign ss_img_alt = block.settings.image.alt | default: block.settings.title | strip_html -%}
+                {{
+                  block.settings.image
+                  | image_url: width: 800
+                  | image_tag:
+                    loading: 'lazy',
+                    sizes: '(min-width: 750px) 340px, 80vw',
+                    widths: '300, 440, 600, 800',
+                    alt: ss_img_alt
+                }}
+              {%- else -%}
+                <div class="step-slider__placeholder">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="3" y="3" width="18" height="18" rx="2.5" />
+                    <circle cx="8.5" cy="8.5" r="1.6" />
+                    <path d="M21 15l-5-5L5 21" />
+                  </svg>
+                </div>
+              {%- endif -%}
+            </div>
+          </article>
+        {%- endfor -%}
+      </div>
+
+      <div class="step-slider__controls">
+        <button type="button" class="step-slider__arrow" data-ss-prev aria-label="Vorige">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="step-slider__counter" data-ss-counter aria-live="polite">1/{{ section.blocks.size }}</span>
+        <button type="button" class="step-slider__arrow" data-ss-next aria-label="Volgende">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="step-slider__dots" role="tablist" aria-label="Stappen">
+          {%- for block in section.blocks -%}
+            <button
+              type="button"
+              class="step-slider__dot{% if forloop.first %} step-slider__dot--active{% endif %}"
+              data-ss-dot="{{ forloop.index0 }}"
+              aria-label="Ga naar stap {{ forloop.index }}"
+            ></button>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+<script>
+  (function () {
+    var root = document.querySelector('.step-slider-{{ section.id }}');
+    if (!root) return;
+
+    var stage = root.querySelector('[data-ss-stage]');
+    var cards = Array.prototype.slice.call(root.querySelectorAll('[data-ss-card]'));
+    var dots = Array.prototype.slice.call(root.querySelectorAll('[data-ss-dot]'));
+    var counter = root.querySelector('[data-ss-counter]');
+    var prevBtn = root.querySelector('[data-ss-prev]');
+    var nextBtn = root.querySelector('[data-ss-next]');
+    var total = cards.length;
+    var current = 0;
+
+    if (!total) return;
+
+    function render() {
+      cards.forEach(function (card, i) {
+        var offset = i - current;
+        card.classList.remove(
+          'step-slider__card--active',
+          'step-slider__card--prev',
+          'step-slider__card--next',
+          'step-slider__card--hidden',
+          'step-slider__card--far-prev',
+          'step-slider__card--far-next'
+        );
+        if (offset === 0) {
+          card.classList.add('step-slider__card--active');
+        } else if (offset === -1) {
+          card.classList.add('step-slider__card--prev');
+        } else if (offset === 1) {
+          card.classList.add('step-slider__card--next');
+        } else {
+          card.classList.add('step-slider__card--hidden');
+          card.classList.add(offset < 0 ? 'step-slider__card--far-prev' : 'step-slider__card--far-next');
+        }
+        card.setAttribute('aria-hidden', offset === 0 ? 'false' : 'true');
+      });
+
+      dots.forEach(function (dot, i) {
+        dot.classList.toggle('step-slider__dot--active', i === current);
+      });
+
+      if (counter) counter.textContent = (current + 1) + '/' + total;
+    }
+
+    function goTo(index) {
+      current = (index + total) % total;
+      render();
+    }
+
+    if (prevBtn) prevBtn.addEventListener('click', function () { goTo(current - 1); });
+    if (nextBtn) nextBtn.addEventListener('click', function () { goTo(current + 1); });
+
+    dots.forEach(function (dot) {
+      dot.addEventListener('click', function () {
+        goTo(Number(dot.getAttribute('data-ss-dot')));
+      });
+    });
+
+    cards.forEach(function (card) {
+      card.addEventListener('click', function () {
+        var offset = Number(card.getAttribute('data-ss-card')) - current;
+        if (offset === -1) goTo(current - 1);
+        else if (offset === 1) goTo(current + 1);
+      });
+    });
+
+    // Touch / swipe support
+    var startX = 0;
+    var startY = 0;
+    var tracking = false;
+
+    if (stage) {
+      stage.addEventListener('touchstart', function (e) {
+        if (!e.touches || !e.touches.length) return;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        tracking = true;
+      }, { passive: true });
+
+      stage.addEventListener('touchend', function (e) {
+        if (!tracking || !e.changedTouches || !e.changedTouches.length) return;
+        tracking = false;
+        var dx = e.changedTouches[0].clientX - startX;
+        var dy = e.changedTouches[0].clientY - startY;
+        if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+          goTo(current + (dx < 0 ? 1 : -1));
+        }
+      }, { passive: true });
+    }
+
+    render();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Step slider",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": "WAAROM DAILY MATTERS"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>Feeling good should not feel like another full-time job.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "subtext",
+      "label": "Subtext",
+      "default": "<p>Simpele dagelijkse supplementen die passen in het leven dat je al hebt.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "card_width",
+      "min": 220,
+      "max": 420,
+      "step": 10,
+      "unit": "px",
+      "label": "Card width",
+      "default": 300
+    },
+    {
+      "type": "text",
+      "id": "card_ratio",
+      "label": "Card height ratio",
+      "info": "Height = width × ratio. Use 1.4 for tall cards.",
+      "default": "1.45"
+    },
+    {
+      "type": "header",
+      "content": "Section colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow label",
+      "default": "#25321B"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#25321B"
+    },
+    {
+      "type": "color",
+      "id": "subtext_color",
+      "label": "Subtext",
+      "default": "#5B6152"
+    },
+    {
+      "type": "header",
+      "content": "Navigation colors"
+    },
+    {
+      "type": "color",
+      "id": "nav_color",
+      "label": "Arrow icon",
+      "default": "#25321B"
+    },
+    {
+      "type": "color",
+      "id": "nav_border",
+      "label": "Arrow border",
+      "default": "#D6D8D0"
+    },
+    {
+      "type": "color",
+      "id": "counter_color",
+      "label": "Counter text",
+      "default": "#25321B"
+    },
+    {
+      "type": "color",
+      "id": "dot_color",
+      "label": "Dot",
+      "default": "#D6D8D0"
+    },
+    {
+      "type": "color",
+      "id": "dot_active_color",
+      "label": "Active dot",
+      "default": "#A8E05F"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 48
+    }
+  ],
+  "max_blocks": 8,
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        {
+          "type": "text",
+          "id": "step_label",
+          "label": "Step label",
+          "default": "STAP 01"
+        },
+        {
+          "type": "richtext",
+          "id": "title",
+          "label": "Title",
+          "default": "<p>Vul je fles met water.</p>"
+        },
+        {
+          "type": "richtext",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "<p>Kraanwater is top.</p>"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "color",
+          "id": "card_bg",
+          "label": "Card background",
+          "default": "#EAF5D8"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Card text",
+          "default": "#2E4A20"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Step slider",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": {
+            "step_label": "STAP 01",
+            "title": "<p>Vul je fles met water.</p>",
+            "subtitle": "<p>Kraanwater is top.</p>",
+            "card_bg": "#EAF5D8",
+            "text_color": "#2E4A20"
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "step_label": "STAP 02",
+            "title": "<p>Gebruik je pod.</p>",
+            "subtitle": "<p>Kies uit een van je 25 smaken.</p>",
+            "card_bg": "#F6E4DA",
+            "text_color": "#2E4A20"
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "step_label": "STAP 03",
+            "title": "<p>Schud en geniet.</p>",
+            "subtitle": "<p>Klaar in seconden.</p>",
+            "card_bg": "#EAF5D8",
+            "text_color": "#2E4A20"
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "step_label": "STAP 04",
+            "title": "<p>Wissel je pods.</p>",
+            "subtitle": "<p>Nieuwe smaak, nieuw water.</p>",
+            "card_bg": "#F7DDE0",
+            "text_color": "#7A2230"
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}
