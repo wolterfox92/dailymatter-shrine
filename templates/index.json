@@ -16,7 +16,7 @@
         "title": "<p>Your daily foundation for better energy.</p>",
         "text": "<p>Eenvoudige dagelijkse supplementen voor energie, focus en hydratatie. Eén sachet, gemengd met water — gemaakt om in je routine te passen.</p>",
         "primary_label": "Shop Energy Foundation",
-        "primary_link": "",
+        "primary_link": "shopify://products/daily-elektrolyte",
         "secondary_label": "Discover the formula",
         "secondary_link": "",
         "show_rating": false,
@@ -414,6 +414,75 @@
         "padding_bottom": 36
       }
     },
+    "custom_step_slider": {
+      "type": "custom-step-slider",
+      "blocks": {
+        "step_1": {
+          "type": "step",
+          "settings": {
+            "step_label": "STAP 01",
+            "title": "<p>Vul je fles met water.</p>",
+            "subtitle": "<p>Kraanwater is top.</p>",
+            "card_bg": "#eaf5d8",
+            "text_color": "#2e4a20"
+          }
+        },
+        "step_2": {
+          "type": "step",
+          "settings": {
+            "step_label": "STAP 02",
+            "title": "<p>Gebruik je pod.</p>",
+            "subtitle": "<p>Kies uit een van je 25 smaken.</p>",
+            "card_bg": "#f6e4da",
+            "text_color": "#2e4a20"
+          }
+        },
+        "step_3": {
+          "type": "step",
+          "settings": {
+            "step_label": "STAP 03",
+            "title": "<p>Schud en geniet.</p>",
+            "subtitle": "<p>Klaar in seconden.</p>",
+            "card_bg": "#eaf5d8",
+            "text_color": "#2e4a20"
+          }
+        },
+        "step_4": {
+          "type": "step",
+          "settings": {
+            "step_label": "STAP 04",
+            "title": "<p>Wissel je pods.</p>",
+            "subtitle": "<p>Nieuwe smaak, nieuw water.</p>",
+            "card_bg": "#f7dde0",
+            "text_color": "#7a2230"
+          }
+        }
+      },
+      "block_order": [
+        "step_1",
+        "step_2",
+        "step_3",
+        "step_4"
+      ],
+      "settings": {
+        "eyebrow": "WAAROM DAILY MATTERS",
+        "heading": "<p>Feeling good should not feel like another full-time job.</p>",
+        "subtext": "<p>Simpele dagelijkse supplementen die passen in het leven dat je al hebt.</p>",
+        "card_width": 300,
+        "card_ratio": "1.45",
+        "bg_color": "#ffffff",
+        "eyebrow_color": "#25321b",
+        "heading_color": "#25321b",
+        "subtext_color": "#5b6152",
+        "nav_color": "#25321b",
+        "nav_border": "#d6d8d0",
+        "counter_color": "#25321b",
+        "dot_color": "#d6d8d0",
+        "dot_active_color": "#a8e05f",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
     "6aa09428-a417-429d-9159-a4e8afd49590": {
       "type": "icon-bar",
       "blocks": {
@@ -799,58 +868,6 @@
         "padding_top": 36,
         "padding_bottom": 36
       }
-    },
-    "custom_step_slider": {
-      "type": "custom-step-slider",
-      "blocks": {
-        "step_1": {
-          "type": "step",
-          "settings": {
-            "step_label": "STAP 01",
-            "title": "<p>Vul je fles met water.</p>",
-            "subtitle": "<p>Kraanwater is top.</p>",
-            "card_bg": "#EAF5D8",
-            "text_color": "#2E4A20"
-          }
-        },
-        "step_2": {
-          "type": "step",
-          "settings": {
-            "step_label": "STAP 02",
-            "title": "<p>Gebruik je pod.</p>",
-            "subtitle": "<p>Kies uit een van je 25 smaken.</p>",
-            "card_bg": "#F6E4DA",
-            "text_color": "#2E4A20"
-          }
-        },
-        "step_3": {
-          "type": "step",
-          "settings": {
-            "step_label": "STAP 03",
-            "title": "<p>Schud en geniet.</p>",
-            "subtitle": "<p>Klaar in seconden.</p>",
-            "card_bg": "#EAF5D8",
-            "text_color": "#2E4A20"
-          }
-        },
-        "step_4": {
-          "type": "step",
-          "settings": {
-            "step_label": "STAP 04",
-            "title": "<p>Wissel je pods.</p>",
-            "subtitle": "<p>Nieuwe smaak, nieuw water.</p>",
-            "card_bg": "#F7DDE0",
-            "text_color": "#7A2230"
-          }
-        }
-      },
-      "block_order": [
-        "step_1",
-        "step_2",
-        "step_3",
-        "step_4"
-      ],
-      "settings": {}
     }
   },
   "order": [
