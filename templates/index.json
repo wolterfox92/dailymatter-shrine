@@ -47,6 +47,62 @@
         "padding_bottom": 48
       }
     },
+    "selling_points_ticker_d6UNRw": {
+      "type": "selling-points-ticker",
+      "blocks": {
+        "selling_point_xVdQpc": {
+          "type": "selling_point",
+          "settings": {
+            "text": "Shake",
+            "icon": "local_bar",
+            "filled_icon": true
+          }
+        },
+        "selling_point_wy7jrJ": {
+          "type": "selling_point",
+          "settings": {
+            "text": "Sip",
+            "icon": "bolt",
+            "filled_icon": true
+          }
+        },
+        "selling_point_VrmpF4": {
+          "type": "selling_point",
+          "settings": {
+            "text": "Get Energized",
+            "icon": "mood",
+            "filled_icon": true
+          }
+        }
+      },
+      "block_order": [
+        "selling_point_xVdQpc",
+        "selling_point_wy7jrJ",
+        "selling_point_VrmpF4"
+      ],
+      "name": "Selling points ticker",
+      "settings": {
+        "visibility": "always-display",
+        "speed": 3,
+        "direction": "normal",
+        "stop_on_hover": false,
+        "mobile_text_size": 24,
+        "desktop_text_size": 40,
+        "bold_text": true,
+        "italic_text": false,
+        "uppercase_text": false,
+        "mobile_icon_size": 22,
+        "desktop_icon_size": 32,
+        "icon_gap": 20,
+        "background_color": "#25162F",
+        "text_color": "#CAC0FF",
+        "icon_color": "#CAC0FF",
+        "mobile_padding_top": 20,
+        "mobile_padding_bottom": 20,
+        "desktop_padding_top": 16,
+        "desktop_padding_bottom": 16
+      }
+    },
     "custom_step_slider_JamrRz": {
       "type": "custom-step-slider",
       "blocks": {
@@ -117,616 +173,114 @@
         "padding_bottom": 48
       }
     },
-    "selling_points_ticker_d6UNRw": {
-      "type": "selling-points-ticker",
+    "benefit_cards_EQt33p": {
+      "type": "benefit-cards",
       "blocks": {
-        "selling_point_xVdQpc": {
-          "type": "selling_point",
+        "card_EHk7xM": {
+          "type": "card",
           "settings": {
-            "text": "Shake",
-            "icon": "local_bar",
-            "filled_icon": true
+            "badge": "Lorem ipsum",
+            "title": "Show up with lorem ipsum",
+            "link": ""
           }
         },
-        "selling_point_wy7jrJ": {
-          "type": "selling_point",
+        "card_wyYxWd": {
+          "type": "card",
           "settings": {
-            "text": "Sip",
-            "icon": "bolt",
-            "filled_icon": true
+            "badge": "Lorem ipsum",
+            "title": "Show up with lorem ipsum",
+            "link": ""
           }
         },
-        "selling_point_VrmpF4": {
-          "type": "selling_point",
+        "card_HHahKE": {
+          "type": "card",
           "settings": {
-            "text": "Get Energized",
-            "icon": "mood",
-            "filled_icon": true
+            "badge": "Lorem ipsum",
+            "title": "Show up with lorem ipsum",
+            "link": ""
           }
         }
       },
       "block_order": [
-        "selling_point_xVdQpc",
-        "selling_point_wy7jrJ",
-        "selling_point_VrmpF4"
+        "card_EHk7xM",
+        "card_wyYxWd",
+        "card_HHahKE"
       ],
-      "name": "Selling points ticker",
+      "name": "Benefit cards",
       "settings": {
-        "visibility": "always-display",
-        "speed": 3,
-        "direction": "normal",
-        "stop_on_hover": false,
-        "mobile_text_size": 24,
-        "desktop_text_size": 40,
-        "bold_text": true,
-        "italic_text": false,
-        "uppercase_text": false,
-        "mobile_icon_size": 22,
-        "desktop_icon_size": 32,
-        "icon_gap": 20,
-        "background_color": "#ffffff",
-        "text_color": "#25162f",
-        "icon_color": "#25162f",
-        "mobile_padding_top": 20,
-        "mobile_padding_bottom": 20,
-        "desktop_padding_top": 16,
-        "desktop_padding_bottom": 16
-      }
-    },
-    "cfca4268-6358-426c-98ab-d292aeef11e5": {
-      "type": "slideshow",
-      "blocks": {
-        "template--21507361505575__cfca4268-6358-426c-98ab-d292aeef11e5-slide-1": {
-          "type": "slide",
-          "settings": {
-            "image_overlay_opacity": 0,
-            "heading": "Image slide",
-            "title_highlight_color": "#6d388b",
-            "heading_size": "h1",
-            "subheading": "Tell your brand's story through images",
-            "button_label": "Button label",
-            "link": "shopify://products/daily-elektrolyte",
-            "button_style_secondary": false,
-            "atc_button_label": "",
-            "atc_product": "",
-            "atc_skip_cart": false,
-            "box_align": "middle-center",
-            "show_text_box": true,
-            "text_alignment": "center",
-            "color_scheme": "background-1",
-            "custom_colors_background": "#ffffff",
-            "custom_gradient_background": "",
-            "custom_colors_text": "#2e2a39",
-            "custom_colors_solid_button_background": "#dd1d1d",
-            "custom_colors_solid_button_text": "#ffffff",
-            "custom_colors_outline_button": "#dd1d1d",
-            "transparent_container_color": "white",
-            "text_alignment_mobile": "center"
-          }
-        },
-        "template--21507361505575__cfca4268-6358-426c-98ab-d292aeef11e5-slide-2": {
-          "type": "slide",
-          "settings": {
-            "image_overlay_opacity": 0,
-            "heading": "Image slide",
-            "title_highlight_color": "#6d388b",
-            "heading_size": "h1",
-            "subheading": "Tell your brand's story through images",
-            "button_label": "Button label",
-            "link": "",
-            "button_style_secondary": false,
-            "atc_button_label": "",
-            "atc_product": "",
-            "atc_skip_cart": false,
-            "box_align": "middle-center",
-            "show_text_box": true,
-            "text_alignment": "center",
-            "color_scheme": "background-1",
-            "custom_colors_background": "#ffffff",
-            "custom_gradient_background": "",
-            "custom_colors_text": "#2e2a39",
-            "custom_colors_solid_button_background": "#dd1d1d",
-            "custom_colors_solid_button_text": "#ffffff",
-            "custom_colors_outline_button": "#dd1d1d",
-            "transparent_container_color": "white",
-            "text_alignment_mobile": "center"
-          }
-        }
-      },
-      "block_order": [
-        "template--21507361505575__cfca4268-6358-426c-98ab-d292aeef11e5-slide-1",
-        "template--21507361505575__cfca4268-6358-426c-98ab-d292aeef11e5-slide-2"
-      ],
-      "settings": {
-        "visibility": "always-display",
-        "layout": "full_bleed",
-        "slide_height": "medium",
-        "slider_visual": "dots",
-        "desktop_pagination_position": "over",
-        "auto_rotate": false,
-        "change_slides_speed": 5,
-        "show_text_below": true,
-        "mobile_pagination_position": "under",
-        "accessibility_info": "Slideshow about our brand"
-      }
-    },
-    "d2d3417b-e92f-428c-b221-5bceffb552be": {
-      "type": "comparison-table",
-      "blocks": {
-        "row_frqit4": {
-          "type": "row",
-          "settings": {
-            "benefit": "<strong>Benefit</strong>",
-            "us": true,
-            "others": false,
-            "others_2": false,
-            "others_3": false
-          }
-        },
-        "row_a9Qa8J": {
-          "type": "row",
-          "settings": {
-            "benefit": "<strong>Benefit</strong>",
-            "us": true,
-            "others": false,
-            "others_2": false,
-            "others_3": false
-          }
-        },
-        "row_NAEbjV": {
-          "type": "row",
-          "settings": {
-            "benefit": "<strong>Benefit</strong>",
-            "us": true,
-            "others": false,
-            "others_2": false,
-            "others_3": false
-          }
-        }
-      },
-      "block_order": [
-        "row_frqit4",
-        "row_a9Qa8J",
-        "row_NAEbjV"
-      ],
-      "settings": {
-        "display_id": false,
-        "visibility": "always-display",
-        "title": "Comparison table",
-        "title_highlight_1": "solid-color",
-        "title_highlight_1_gradient": "linear-gradient(57deg, rgba(249, 119, 255, 1) 8%, rgba(54, 212, 255, 1) 47%, rgba(43, 252, 135, 1) 83%)",
-        "title_highlight_1_bg-color": "#f9efff",
-        "title_highlight_1_color": "#53af01",
-        "highlighted-1_border_radius": 8,
-        "highlighted-1_border_width": 0,
-        "highlighted-1_border": "solid",
-        "highlighted-1_border_color": "#53af01",
-        "highlighted-1_padding-block": 0.3,
-        "highlighted-1_padding-inline": 0.3,
-        "title_highlight_1_underline-thickness": 2,
-        "title_highlight_1_underline-color": "#53af01",
-        "title_highlight_1_underline-color--gradient": "linear-gradient(57deg, rgba(249, 119, 255, 1) 8%, rgba(54, 212, 255, 1) 47%, rgba(43, 252, 135, 1) 83%)",
-        "title_highlight_1_underline-color-position": 25,
-        "title_highlight_1_handwritten-color": "#53af01",
-        "title_highlight_1_handwritten-stroke-width": 3,
-        "title_highlight_1_handwritten-position": 60,
-        "title_highlight_2": "none",
-        "title_highlight_2_gradient": "linear-gradient(57deg, rgba(249, 119, 255, 1) 8%, rgba(54, 212, 255, 1) 47%, rgba(43, 252, 135, 1) 83%)",
-        "title_highlight_2_bg-color": "#f9efff",
-        "title_highlight_2_color": "#53af01",
-        "highlighted-2_border_radius": 8,
-        "highlighted-2_border_width": 0,
-        "highlighted-2_border": "solid",
-        "highlighted-2_border_color": "#53af01",
-        "highlighted-2_padding-block": 0.3,
-        "highlighted-2_padding-inline": 0.3,
-        "title_highlight_2_underline-thickness": 2,
-        "title_highlight_2_underline-color": "#53af01",
-        "title_highlight_2_underline-color--gradient": "linear-gradient(57deg, rgba(249, 119, 255, 1) 8%, rgba(54, 212, 255, 1) 47%, rgba(43, 252, 135, 1) 83%)",
-        "title_highlight_2_underline-color-position": 25,
-        "title_highlight_2_handwritten-color": "#53af01",
-        "title_highlight_2_handwritten-stroke-width": 3,
-        "title_highlight_2_handwritten-position": 60,
-        "heading_size": "h1",
-        "custom_desktop_size": 39,
-        "custom_mobile_size": 28,
-        "text": "<p>Talk about how and why is your brand better than the others.</p>",
-        "button_label": "",
-        "link": "",
-        "button_style_secondary": false,
-        "atc_button_label": "",
-        "atc_product": "",
-        "atc_skip_cart": false,
-        "desktop_alignment": "center",
-        "mobile_content_alignment": "center",
+        "heading": "Benefits for everybody",
+        "heading_alignment": "center",
+        "heading_size": 40,
+        "card_width_mobile": 267,
+        "card_width_desktop": 300,
+        "card_gap_mobile": 12,
+        "card_gap_desktop": 24,
+        "card_radius": 24,
+        "card_text_color": "#25162f",
+        "overlay_color": "#cac0ff",
+        "overlay_opacity": 100,
+        "badge_background": "#cac0ff",
+        "badge_text_color": "#25162f",
+        "progress_color": "#25162f",
         "color_scheme": "background-1",
-        "custom_colors_background": "#ffffff",
-        "custom_gradient_background": "",
-        "custom_colors_text": "#2e2a39",
-        "custom_colors_solid_button_background": "#dd1d1d",
-        "custom_colors_solid_button_text": "#ffffff",
-        "custom_colors_outline_button": "#dd1d1d",
-        "pattern_bg": "none",
-        "pattern_color": "#53af01",
-        "pattern_size": 20,
-        "pattern_thickness": 2,
-        "pattern_angle": 45,
-        "pattern_opacity_mode": "low",
-        "pattern_opacity_low": 7,
-        "pattern_opacity_normal": 80,
-        "layout": "table_second",
-        "style": "centered",
-        "corner_radius": 20,
-        "number_of_competitors": 1,
-        "us_label": "[shop_name]",
-        "us_label_size": 18,
-        "logo_width": 90,
-        "mobile_logo_width": 60,
-        "others_label": "Others",
-        "others_label_size": 18,
-        "others_logo_width": 90,
-        "others_mobile_logo_width": 60,
-        "others_2_label": "Competitor 2",
-        "others_2_label_size": 18,
-        "others_2_logo_width": 90,
-        "others_2_mobile_logo_width": 60,
-        "others_3_label": "Competitor 3",
-        "others_3_label_size": 18,
-        "others_3_logo_width": 90,
-        "others_3_mobile_logo_width": 60,
-        "checkmark_style": "regular",
-        "checkmark_color": "#ffffff",
-        "checkmark_bg_color": "#53af01",
-        "x_style": "regular",
-        "x_color": "#121212",
-        "x_bg_color": "#dbdbdb",
-        "opposite_icon_colors": "original",
-        "highlighted_color_scheme": "accent-1",
-        "custom_colors_highlighted_background": "#2e2a39",
-        "custom_colors_highlighted_text": "#ffffff",
-        "highlighted_separator_opacity": 0,
-        "highlighted_overlay_opacity": 0,
-        "other_cells_color_scheme": "background-1",
-        "custom_colors_others_background": "#ffffff",
-        "custom_colors_others_text": "#2e2a39",
-        "regular_separator_opacity": 10,
-        "regular_overlay_opacity": 0,
-        "minimalistic_border_opacity": 16,
-        "padding_top": 36,
-        "padding_bottom": 36
+        "padding_top": 40,
+        "padding_bottom": 40
       }
     },
-    "custom_step_slider": {
-      "type": "custom-step-slider",
+    "custom_bundle_builder_hKzzjQ": {
+      "type": "custom-bundle-builder",
       "blocks": {
-        "step_1": {
-          "type": "step",
+        "trust_item_Qxxw9r": {
+          "type": "trust_item",
           "settings": {
-            "step_label": "STAP 01",
-            "title": "<p>Vul je fles met water.</p>",
-            "subtitle": "<p>Kraanwater is top.</p>",
-            "card_bg": "#eaf5d8",
-            "text_color": "#2e4a20"
+            "text": "Binnen 24 uur verzonden"
           }
         },
-        "step_2": {
-          "type": "step",
+        "trust_item_7n3QMB": {
+          "type": "trust_item",
           "settings": {
-            "step_label": "STAP 02",
-            "title": "<p>Gebruik je pod.</p>",
-            "subtitle": "<p>Kies uit een van je 25 smaken.</p>",
-            "card_bg": "#f6e4da",
-            "text_color": "#2e4a20"
+            "text": "60 dagen garantie"
           }
         },
-        "step_3": {
-          "type": "step",
+        "trust_item_weex3K": {
+          "type": "trust_item",
           "settings": {
-            "step_label": "STAP 03",
-            "title": "<p>Schud en geniet.</p>",
-            "subtitle": "<p>Klaar in seconden.</p>",
-            "card_bg": "#eaf5d8",
-            "text_color": "#2e4a20"
-          }
-        },
-        "step_4": {
-          "type": "step",
-          "settings": {
-            "step_label": "STAP 04",
-            "title": "<p>Wissel je pods.</p>",
-            "subtitle": "<p>Nieuwe smaak, nieuw water.</p>",
-            "card_bg": "#f7dde0",
-            "text_color": "#7a2230"
+            "text": "Van Europese bodem"
           }
         }
       },
       "block_order": [
-        "step_1",
-        "step_2",
-        "step_3",
-        "step_4"
+        "trust_item_Qxxw9r",
+        "trust_item_7n3QMB",
+        "trust_item_weex3K"
       ],
+      "name": "Custom bundle builder",
       "settings": {
-        "eyebrow": "WAAROM DAILY MATTERS",
-        "heading": "<p>Feeling good should not feel like another full-time job.</p>",
-        "subtext": "<p>Simpele dagelijkse supplementen die passen in het leven dat je al hebt.</p>",
-        "card_width": 300,
-        "card_ratio": "1.45",
-        "bg_color": "#ffffff",
-        "eyebrow_color": "#25321b",
-        "heading_color": "#25321b",
-        "subtext_color": "#5b6152",
-        "nav_color": "#25321b",
-        "nav_border": "#d6d8d0",
-        "counter_color": "#25321b",
-        "dot_color": "#d6d8d0",
-        "dot_active_color": "#a8e05f",
-        "padding_top": 48,
-        "padding_bottom": 48
-      }
-    },
-    "6aa09428-a417-429d-9159-a4e8afd49590": {
-      "type": "icon-bar",
-      "blocks": {
-        "template--21507361505575__6aa09428-a417-429d-9159-a4e8afd49590-column-1": {
-          "type": "column",
-          "settings": {
-            "icon": "check_circle",
-            "filled_icon": false,
-            "title": "Icon",
-            "text": "<p>Pair text with an icon to focus on your chosen product, collection, or blog post<p>"
-          }
-        },
-        "template--21507361505575__6aa09428-a417-429d-9159-a4e8afd49590-column-2": {
-          "type": "column",
-          "settings": {
-            "icon": "check_circle",
-            "filled_icon": false,
-            "title": "Icon",
-            "text": "<p>Pair text with an icon to focus on your chosen product, collection, or blog post<p>"
-          }
-        },
-        "template--21507361505575__6aa09428-a417-429d-9159-a4e8afd49590-column-3": {
-          "type": "column",
-          "settings": {
-            "icon": "check_circle",
-            "filled_icon": false,
-            "title": "Icon",
-            "text": "<p>Pair text with an icon to focus on your chosen product, collection, or blog post<p>"
-          }
-        },
-        "template--21507361505575__6aa09428-a417-429d-9159-a4e8afd49590-column-4": {
-          "type": "column",
-          "settings": {
-            "icon": "check_circle",
-            "filled_icon": false,
-            "title": "Icon",
-            "text": "<p>Pair text with an icon to focus on your chosen product, collection, or blog post<p>"
-          }
-        }
-      },
-      "block_order": [
-        "template--21507361505575__6aa09428-a417-429d-9159-a4e8afd49590-column-1",
-        "template--21507361505575__6aa09428-a417-429d-9159-a4e8afd49590-column-2",
-        "template--21507361505575__6aa09428-a417-429d-9159-a4e8afd49590-column-3",
-        "template--21507361505575__6aa09428-a417-429d-9159-a4e8afd49590-column-4"
-      ],
-      "settings": {
-        "display_id": false,
-        "visibility": "always-display",
-        "title": "Icon bar",
-        "title_highlight_1": "solid-color",
-        "title_highlight_1_gradient": "linear-gradient(57deg, rgba(249, 119, 255, 1) 8%, rgba(54, 212, 255, 1) 47%, rgba(43, 252, 135, 1) 83%)",
-        "title_highlight_1_bg-color": "#f9efff",
-        "title_highlight_1_color": "#6d388b",
-        "highlighted-1_border_radius": 8,
-        "highlighted-1_border_width": 0,
-        "highlighted-1_border": "solid",
-        "highlighted-1_border_color": "#6d388b",
-        "highlighted-1_padding-block": 0.3,
-        "highlighted-1_padding-inline": 0.3,
-        "title_highlight_1_underline-thickness": 2,
-        "title_highlight_1_underline-color": "#6d388b",
-        "title_highlight_1_underline-color--gradient": "linear-gradient(57deg, rgba(249, 119, 255, 1) 8%, rgba(54, 212, 255, 1) 47%, rgba(43, 252, 135, 1) 83%)",
-        "title_highlight_1_underline-color-position": 25,
-        "title_highlight_1_handwritten-color": "#6d388b",
-        "title_highlight_1_handwritten-stroke-width": 3,
-        "title_highlight_1_handwritten-position": 60,
-        "title_highlight_2": "none",
-        "title_highlight_2_gradient": "linear-gradient(57deg, rgba(249, 119, 255, 1) 8%, rgba(54, 212, 255, 1) 47%, rgba(43, 252, 135, 1) 83%)",
-        "title_highlight_2_bg-color": "#f9efff",
-        "title_highlight_2_color": "#6d388b",
-        "highlighted-2_border_radius": 8,
-        "highlighted-2_border_width": 0,
-        "highlighted-2_border": "solid",
-        "highlighted-2_border_color": "#6d388b",
-        "highlighted-2_padding-block": 0.3,
-        "highlighted-2_padding-inline": 0.3,
-        "title_highlight_2_underline-thickness": 2,
-        "title_highlight_2_underline-color": "#6d388b",
-        "title_highlight_2_underline-color--gradient": "linear-gradient(57deg, rgba(249, 119, 255, 1) 8%, rgba(54, 212, 255, 1) 47%, rgba(43, 252, 135, 1) 83%)",
-        "title_highlight_2_underline-color-position": 25,
-        "title_highlight_2_handwritten-color": "#6d388b",
-        "title_highlight_2_handwritten-stroke-width": 3,
-        "title_highlight_2_handwritten-position": 60,
-        "heading_size": "h1",
-        "custom_desktop_size": 39,
-        "custom_mobile_size": 28,
-        "text": "",
+        "product": "daily-elektrolyte",
+        "bundle_size": 3,
+        "discount_pct": 25,
+        "skip_cart": false,
+        "heading": "Build Your Bundle",
+        "subheading": "Pick 3 boxes and get 25% off",
+        "add_label": "Add",
+        "bundle_status_label": "Your bundle",
+        "selected_label": "selected",
+        "slot_label": "Box",
+        "frequency_label": "Delivery frequency",
+        "frequency_helper": "Electrolytes recur on your schedule.",
+        "total_label": "Total",
+        "save_label": "You save",
+        "select_more_label": "Select more flavours",
+        "atc_label": "Add to cart",
         "color_scheme": "background-1",
-        "custom_colors_background": "#ffffff",
-        "custom_gradient_background": "",
-        "custom_colors_text": "#2e2a39",
-        "pattern_bg": "none",
-        "pattern_color": "#6d388b",
-        "pattern_size": 20,
-        "pattern_thickness": 2,
-        "pattern_angle": 45,
-        "pattern_opacity_mode": "low",
-        "pattern_opacity_low": 7,
-        "pattern_opacity_normal": 80,
-        "icon_layout": "vertical",
-        "icon_size": "medium",
-        "icon_color": "accent-1",
-        "cards_color_scheme": "background-1",
-        "custom_cards_colors_background": "#f3f3f3",
-        "custom_cards_gradient_background": "",
-        "custom_cards_colors_text": "#2e2a39",
-        "type": "slide",
-        "autoplay": false,
-        "autoplay_speed": 5,
-        "arrows_color_scheme": "inverse",
-        "transparent_arrows": true,
-        "dots_color_scheme": "inverse",
-        "desktop_full_page": false,
-        "columns_desktop": 4,
-        "slider_desktop": false,
-        "per_move_desktop": 1,
-        "desktop_spacing": 40,
-        "desktop_side_padding": 0,
-        "desktop_padding_calc": true,
-        "desktop_adaptive_height": false,
-        "desktop_dots_position": "under",
-        "desktop_arrows_position": "sides",
-        "columns_mobile": "1",
-        "slider_mobile": true,
-        "enable_mobile_preview": false,
-        "mobile_adaptive_height": false,
-        "mobile_dots_position": "under",
-        "mobile_arrows_position": "under",
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
-    },
-    "0f1fc9e4-bc4c-4052-9747-62d1f8472caa": {
-      "type": "results",
-      "blocks": {
-        "template--21507361505575__0f1fc9e4-bc4c-4052-9747-62d1f8472caa-row-1": {
-          "type": "row",
-          "settings": {
-            "percentage": 90,
-            "row_heading": "",
-            "row_text": "<p>Noticed that this product has significantly improved their life.</p>"
-          }
-        },
-        "template--21507361505575__0f1fc9e4-bc4c-4052-9747-62d1f8472caa-row-2": {
-          "type": "row",
-          "settings": {
-            "percentage": 90,
-            "row_heading": "",
-            "row_text": "<p>Noticed that this product has significantly improved their life.</p>"
-          }
-        },
-        "template--21507361505575__0f1fc9e4-bc4c-4052-9747-62d1f8472caa-row-3": {
-          "type": "row",
-          "settings": {
-            "percentage": 90,
-            "row_heading": "",
-            "row_text": "<p>Noticed that this product has significantly improved their life.</p>"
-          }
-        }
-      },
-      "block_order": [
-        "template--21507361505575__0f1fc9e4-bc4c-4052-9747-62d1f8472caa-row-1",
-        "template--21507361505575__0f1fc9e4-bc4c-4052-9747-62d1f8472caa-row-2",
-        "template--21507361505575__0f1fc9e4-bc4c-4052-9747-62d1f8472caa-row-3"
-      ],
-      "settings": {
-        "display_id": false,
-        "visibility": "always-display",
-        "title": "Results",
-        "title_highlight_1": "solid-color",
-        "title_highlight_1_gradient": "linear-gradient(57deg, rgba(249, 119, 255, 1) 8%, rgba(54, 212, 255, 1) 47%, rgba(43, 252, 135, 1) 83%)",
-        "title_highlight_1_bg-color": "#f9efff",
-        "title_highlight_1_color": "#6d388b",
-        "highlighted-1_border_radius": 8,
-        "highlighted-1_border_width": 0,
-        "highlighted-1_border": "solid",
-        "highlighted-1_border_color": "#6d388b",
-        "highlighted-1_padding-block": 0.3,
-        "highlighted-1_padding-inline": 0.3,
-        "title_highlight_1_underline-thickness": 2,
-        "title_highlight_1_underline-color": "#6d388b",
-        "title_highlight_1_underline-color--gradient": "linear-gradient(57deg, rgba(249, 119, 255, 1) 8%, rgba(54, 212, 255, 1) 47%, rgba(43, 252, 135, 1) 83%)",
-        "title_highlight_1_underline-color-position": 25,
-        "title_highlight_1_handwritten-color": "#6d388b",
-        "title_highlight_1_handwritten-stroke-width": 3,
-        "title_highlight_1_handwritten-position": 60,
-        "title_highlight_2": "none",
-        "title_highlight_2_gradient": "linear-gradient(57deg, rgba(249, 119, 255, 1) 8%, rgba(54, 212, 255, 1) 47%, rgba(43, 252, 135, 1) 83%)",
-        "title_highlight_2_bg-color": "#f9efff",
-        "title_highlight_2_color": "#6d388b",
-        "highlighted-2_border_radius": 8,
-        "highlighted-2_border_width": 0,
-        "highlighted-2_border": "solid",
-        "highlighted-2_border_color": "#6d388b",
-        "highlighted-2_padding-block": 0.3,
-        "highlighted-2_padding-inline": 0.3,
-        "title_highlight_2_underline-thickness": 2,
-        "title_highlight_2_underline-color": "#6d388b",
-        "title_highlight_2_underline-color--gradient": "linear-gradient(57deg, rgba(249, 119, 255, 1) 8%, rgba(54, 212, 255, 1) 47%, rgba(43, 252, 135, 1) 83%)",
-        "title_highlight_2_underline-color-position": 25,
-        "title_highlight_2_handwritten-color": "#6d388b",
-        "title_highlight_2_handwritten-stroke-width": 3,
-        "title_highlight_2_handwritten-position": 60,
-        "heading_size": "h1",
-        "custom_desktop_size": 39,
-        "custom_mobile_size": 28,
-        "text": "<p>Talk about results of your customers and how your product improved their life.</p>",
-        "video_muted_autoplay": true,
-        "color_scheme": "background-1",
-        "custom_colors_background": "#ffffff",
-        "custom_gradient_background": "",
-        "custom_colors_text": "#2e2a39",
-        "custom_colors_accent": "#dd1d1d",
-        "custom_colors_solid_button_background": "#dd1d1d",
-        "custom_colors_solid_button_text": "#ffffff",
-        "custom_colors_outline_button": "#dd1d1d",
-        "pattern_bg": "none",
-        "pattern_color": "#6d388b",
-        "pattern_size": 20,
-        "pattern_thickness": 2,
-        "pattern_angle": 45,
-        "pattern_opacity_mode": "low",
-        "pattern_opacity_low": 7,
-        "pattern_opacity_normal": 80,
-        "layout": "results_second",
-        "style": "circle",
-        "result_layout": "horizontal",
-        "result_horizontal_spacing": 20,
-        "result_vertical_spacing": 20,
-        "circle_number_size": 18,
-        "number_number_size": 45,
-        "number_color": "accent-1",
-        "number_custom_color": "#ff0000",
-        "number_gradient": "linear-gradient(136deg, rgba(10, 234, 237, 1) 11%, rgba(250, 13, 253, 1) 84%)",
-        "circle_border_width": 7,
-        "circle_diameter": 70,
-        "circle_color": "accent-1",
-        "circle_custom_color": "#ff0000",
-        "circle_gradient": "linear-gradient(136deg, rgba(10, 234, 237, 1) 11%, rgba(250, 13, 253, 1) 84%)",
-        "circle_linecap": "unset",
-        "result_heading_size": 18,
-        "result_text_size": 15,
-        "result_heading_text_spacing": 6,
-        "result_text_line_height": 1.6,
-        "enable_animations": false,
-        "animation_duration": 650,
-        "animation_init_delay": 0,
-        "results_headline": "Results heading",
-        "results_title_highlight_color": "#6d388b",
-        "results_headline_size": "h2",
-        "results_text": "",
-        "results_headline_alignment": "left",
-        "caption": "<p>Caption about the results and/or link for their proof.</p>",
-        "button_label": "",
-        "link": "",
-        "button_style_secondary": false,
-        "atc_button_label": "",
-        "atc_product": "",
-        "atc_skip_cart": false,
-        "padding_top": 36,
-        "padding_bottom": 36
+        "accent_color": "#121212",
+        "accent_text_color": "#ffffff",
+        "save_badge_color": "#C8FF3D",
+        "save_badge_text_color": "#121212",
+        "corner_radius": 12,
+        "border_width": 1,
+        "padding_top": 40,
+        "padding_bottom": 40
       }
     },
     "contact_form_WHP8G7": {
@@ -854,13 +408,10 @@
   },
   "order": [
     "custom_hero_home",
-    "custom_step_slider_JamrRz",
     "selling_points_ticker_d6UNRw",
-    "cfca4268-6358-426c-98ab-d292aeef11e5",
-    "d2d3417b-e92f-428c-b221-5bceffb552be",
-    "custom_step_slider",
-    "6aa09428-a417-429d-9159-a4e8afd49590",
-    "0f1fc9e4-bc4c-4052-9747-62d1f8472caa",
+    "custom_step_slider_JamrRz",
+    "benefit_cards_EQt33p",
+    "custom_bundle_builder_hKzzjQ",
     "contact_form_WHP8G7"
   ]
 }
