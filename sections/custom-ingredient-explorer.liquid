@@ -14,6 +14,11 @@
   assign label_color = section.settings.label_color
   assign divider_color = section.settings.divider_color
   assign link_color = section.settings.link_color
+  assign content_align = section.settings.content_alignment
+  assign align_items = 'flex-start'
+  if content_align == 'center'
+    assign align_items = 'center'
+  endif
 -%}
 
 {%- style -%}
@@ -42,9 +47,13 @@
   .cie-{{ section.id }} .cie__header {
     display: flex;
     flex-direction: column;
+    align-items: {{ align_items }};
+    text-align: {{ content_align }};
     gap: 12px;
     margin-bottom: 20px;
     max-width: 52ch;
+    margin-right: auto;
+    margin-left: {% if content_align == 'center' %}auto{% else %}0{% endif %};
   }
 
   .cie-{{ section.id }} .cie__eyebrow {
@@ -58,7 +67,6 @@
 
   .cie-{{ section.id }} .cie__title {
     margin: 0;
-    font-size: 3.2rem;
     line-height: 1.05;
     font-weight: 800;
     letter-spacing: -0.01em;
@@ -294,7 +302,7 @@
     }
 
     .cie-{{ section.id }} .cie__title {
-      font-size: 3.8rem;
+      /* size controlled by heading_size class */
     }
 
     .cie-{{ section.id }} .cie__intro {
@@ -371,7 +379,7 @@
           <p class="cie__eyebrow">{{ section.settings.eyebrow | escape }}</p>
         {%- endif -%}
         {%- if section.settings.title != blank -%}
-          <h2 class="cie__title">{{ section.settings.title }}</h2>
+          <h2 class="cie__title {{ section.settings.heading_size }}">{{ section.settings.title }}</h2>
         {%- endif -%}
         {%- if section.settings.intro != blank -%}
           <div class="cie__intro">{{ section.settings.intro }}</div>
@@ -597,6 +605,29 @@
       "id": "title",
       "label": "Title",
       "default": "<p>Built on ingredients that make sense.</p>"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading grootte",
+      "options": [
+        { "value": "h0", "label": "Extra groot" },
+        { "value": "h1", "label": "Groot" },
+        { "value": "h2", "label": "Middel" },
+        { "value": "h3", "label": "Klein" },
+        { "value": "h4", "label": "Kleiner" }
+      ],
+      "default": "h0"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Tekstuitlijning",
+      "options": [
+        { "value": "left", "label": "Links" },
+        { "value": "center", "label": "Centraal" }
+      ],
+      "default": "left"
     },
     {
       "type": "richtext",

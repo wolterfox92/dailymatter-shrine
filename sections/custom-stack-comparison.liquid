@@ -64,6 +64,7 @@
   assign alt_total_display = alt_total_cents | money_without_trailing_zeros
   assign stack_per_day_display = stack_per_day_cents | money
   assign alt_per_day_display = alt_per_day_cents | money
+  assign content_align = section.settings.content_alignment
 -%}
 
 {%- style -%}
@@ -103,7 +104,7 @@
   <div class="stkcmp__inner">
 
     {%- if section.settings.heading != blank -%}
-      <h2 class="stkcmp__heading">{{ section.settings.heading | escape }}</h2>
+      <h2 class="stkcmp__heading {{ section.settings.heading_size }}">{{ section.settings.heading | escape }}</h2>
     {%- endif -%}
     {%- if section.settings.subtext != blank -%}
       <div class="stkcmp__subtext">{{ section.settings.subtext }}</div>
@@ -261,19 +262,20 @@
   }
   .stkcmp__heading {
     margin: 0 auto;
+    margin-left: {% if content_align == 'center' %}auto{% else %}0{% endif %};
     max-width: 16ch;
-    text-align: center;
+    text-align: {{ content_align }};
     font-family: var(--font-heading-family);
     font-weight: 700;
-    font-size: clamp(3.2rem, 7vw, 4.8rem);
     line-height: 1;
     letter-spacing: -0.01em;
     color: var(--sc-ink);
   }
   .stkcmp__subtext {
     margin: 1.6rem auto 0;
+    margin-left: {% if content_align == 'center' %}auto{% else %}0{% endif %};
     max-width: 46ch;
-    text-align: center;
+    text-align: {{ content_align }};
     font-size: 1.6rem;
     line-height: 1.4;
     color: var(--sc-muted);
@@ -614,6 +616,29 @@
       "id": "heading",
       "label": "Heading",
       "default": "Eén sachet. Alles inbegrepen."
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading grootte",
+      "options": [
+        { "value": "h0", "label": "Extra groot" },
+        { "value": "h1", "label": "Groot" },
+        { "value": "h2", "label": "Middel" },
+        { "value": "h3", "label": "Klein" },
+        { "value": "h4", "label": "Kleiner" }
+      ],
+      "default": "h0"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Tekstuitlijning",
+      "options": [
+        { "value": "left", "label": "Links" },
+        { "value": "center", "label": "Centraal" }
+      ],
+      "default": "center"
     },
     {
       "type": "richtext",

@@ -12,6 +12,11 @@
   assign cta_text = section.settings.cta_text
   assign media_grad_start = section.settings.media_grad_start
   assign media_grad_end = section.settings.media_grad_end
+  assign content_align = section.settings.content_alignment
+  assign align_items = 'flex-start'
+  if content_align == 'center'
+    assign align_items = 'center'
+  endif
 -%}
 
 {%- style -%}
@@ -86,7 +91,8 @@
   .product-spotlight-{{ section.id }} .product-spotlight__body {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: {{ align_items }};
+    text-align: {{ content_align }};
     gap: 18px;
     padding: 32px 28px 34px;
   }
@@ -121,7 +127,6 @@
 
   .product-spotlight-{{ section.id }} .product-spotlight__title {
     margin: 0;
-    font-size: 3.4rem;
     line-height: 1.05;
     font-weight: 700;
     letter-spacing: -0.01em;
@@ -213,7 +218,7 @@
     }
 
     .product-spotlight-{{ section.id }} .product-spotlight__title {
-      font-size: 4.4rem;
+      /* size controlled by heading_size class */
     }
   }
 {%- endstyle -%}
@@ -258,7 +263,7 @@
       {%- endif -%}
 
       {%- if section.settings.title != blank -%}
-        <h2 class="product-spotlight__title">{{ section.settings.title }}</h2>
+        <h2 class="product-spotlight__title {{ section.settings.heading_size }}">{{ section.settings.title }}</h2>
       {%- endif -%}
 
       {%- if section.settings.text != blank -%}
@@ -342,6 +347,29 @@
       "id": "title",
       "label": "Title",
       "default": "<p>Energy Foundation</p>"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading grootte",
+      "options": [
+        { "value": "h0", "label": "Extra groot" },
+        { "value": "h1", "label": "Groot" },
+        { "value": "h2", "label": "Middel" },
+        { "value": "h3", "label": "Klein" },
+        { "value": "h4", "label": "Kleiner" }
+      ],
+      "default": "h0"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Tekstuitlijning",
+      "options": [
+        { "value": "left", "label": "Links" },
+        { "value": "center", "label": "Centraal" }
+      ],
+      "default": "left"
     },
     {
       "type": "richtext",

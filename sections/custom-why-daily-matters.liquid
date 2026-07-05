@@ -3,6 +3,11 @@
   assign text_color = section.settings.text_color
   assign muted_color = section.settings.muted_color
   assign eyebrow_color = section.settings.eyebrow_color
+  assign content_align = section.settings.content_alignment
+  assign align_items = 'flex-start'
+  if content_align == 'center'
+    assign align_items = 'center'
+  endif
 -%}
 
 {%- style -%}
@@ -20,9 +25,13 @@
   .wdm-{{ section.id }} .wdm__header {
     display: flex;
     flex-direction: column;
+    align-items: {{ align_items }};
+    text-align: {{ content_align }};
     gap: 16px;
     margin-bottom: 28px;
     max-width: 52ch;
+    margin-right: auto;
+    margin-left: {% if content_align == 'center' %}auto{% else %}0{% endif %};
   }
 
   .wdm-{{ section.id }} .wdm__eyebrow {
@@ -36,7 +45,6 @@
 
   .wdm-{{ section.id }} .wdm__title {
     margin: 0;
-    font-size: 3rem;
     line-height: 1.1;
     font-weight: 800;
     letter-spacing: -0.01em;
@@ -133,7 +141,7 @@
     }
 
     .wdm-{{ section.id }} .wdm__title {
-      font-size: 3.8rem;
+      /* size controlled by heading_size class */
     }
 
     .wdm-{{ section.id }} .wdm__grid {
@@ -154,7 +162,7 @@
           <p class="wdm__eyebrow">{{ section.settings.eyebrow | escape }}</p>
         {%- endif -%}
         {%- if section.settings.title != blank -%}
-          <h2 class="wdm__title">{{ section.settings.title }}</h2>
+          <h2 class="wdm__title {{ section.settings.heading_size }}">{{ section.settings.title }}</h2>
         {%- endif -%}
         {%- if section.settings.intro != blank -%}
           <div class="wdm__intro">{{ section.settings.intro }}</div>
@@ -232,6 +240,29 @@
       "id": "title",
       "label": "Title",
       "default": "<p>Feeling good should not feel like another full-time job.</p>"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading grootte",
+      "options": [
+        { "value": "h0", "label": "Extra groot" },
+        { "value": "h1", "label": "Groot" },
+        { "value": "h2", "label": "Middel" },
+        { "value": "h3", "label": "Klein" },
+        { "value": "h4", "label": "Kleiner" }
+      ],
+      "default": "h0"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Tekstuitlijning",
+      "options": [
+        { "value": "left", "label": "Links" },
+        { "value": "center", "label": "Centraal" }
+      ],
+      "default": "left"
     },
     {
       "type": "richtext",

@@ -13,6 +13,11 @@
   assign star_color = section.settings.star_color
   assign badge_bg = section.settings.badge_bg
   assign badge_text = section.settings.badge_text
+  assign content_align = section.settings.content_alignment
+  assign align_items = 'flex-start'
+  if content_align == 'center'
+    assign align_items = 'center'
+  endif
   assign rating_badge_bg = section.settings.rating_badge_bg
   assign rating_badge_text = section.settings.rating_badge_text
 -%}
@@ -50,7 +55,8 @@
   .custom-hero-{{ section.id }} .custom-hero__content {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: {{ align_items }};
+    text-align: {{ content_align }};
     gap: 20px;
   }
 
@@ -69,7 +75,6 @@
 
   .custom-hero-{{ section.id }} .custom-hero__title {
     margin: 0;
-    font-size: 3.4rem;
     line-height: 1.08;
     font-weight: 700;
     letter-spacing: -0.01em;
@@ -235,7 +240,7 @@
     }
 
     .custom-hero-{{ section.id }} .custom-hero__title {
-      font-size: 4.6rem;
+      /* size controlled by heading_size class */
     }
 
     .custom-hero-{{ section.id }} .custom-hero__buttons {
@@ -258,7 +263,7 @@
       {%- endif -%}
 
       {%- if section.settings.title != blank -%}
-        <h1 class="custom-hero__title">{{ section.settings.title }}</h1>
+        <h1 class="custom-hero__title {{ section.settings.heading_size }}">{{ section.settings.title }}</h1>
       {%- endif -%}
 
       {%- if section.settings.text != blank -%}
@@ -353,6 +358,29 @@
       "id": "title",
       "label": "Title",
       "default": "<p>Your daily foundation for better energy.</p>"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading grootte",
+      "options": [
+        { "value": "h0", "label": "Extra groot" },
+        { "value": "h1", "label": "Groot" },
+        { "value": "h2", "label": "Middel" },
+        { "value": "h3", "label": "Klein" },
+        { "value": "h4", "label": "Kleiner" }
+      ],
+      "default": "h0"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Tekstuitlijning",
+      "options": [
+        { "value": "left", "label": "Links" },
+        { "value": "center", "label": "Centraal" }
+      ],
+      "default": "left"
     },
     {
       "type": "richtext",

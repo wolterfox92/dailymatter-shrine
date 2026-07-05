@@ -35,7 +35,7 @@
 }
 
 .custom-bundle-builder__heading {
-  font-size: clamp(2.4rem, 3.2vw, 3.6rem);
+  /* size controlled by heading_size class (.h0-.h4) */
   font-weight: 800;
   margin: 0 0 0.8rem;
   line-height: 1.1;

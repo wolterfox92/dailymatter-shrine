@@ -4,6 +4,7 @@
     assign chosen_product = product
   endif
   assign product = chosen_product
+  assign content_align = section.settings.content_alignment
   assign tier_qty = section.settings.tier_qty | default: 1
   assign tier_pct = section.settings.tier_pct | default: 16
   assign sticks_per_pack = section.settings.sticks_per_pack | default: 30
@@ -109,7 +110,7 @@
 
     <div class="reken-head">
       {%- if section.settings.headline != blank -%}
-        <h2 class="reken-headline">
+        <h2 class="reken-headline {{ section.settings.heading_size }}">
           {{ headline_html }}
           {%- if section.settings.headline_highlight != blank -%}
             <span class="reken-headline__pop">{{ section.settings.headline_highlight | replace: '[savings]', savings_display | replace: '[pct]', savings_pct }}</span>
@@ -300,6 +301,7 @@
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--rk-ink-3);
+    text-align: {{ content_align }};
   }
   .reken-head {
     display: flex;
@@ -320,10 +322,10 @@
     margin: 0;
     font-family: var(--font-heading-family);
     font-weight: 700;
-    font-size: clamp(3.8rem, 5vw, 6.6rem);
     line-height: 0.98;
     letter-spacing: -0.01em;
     max-width: 100%;
+    text-align: {{ content_align }};
   }
   @media screen and (min-width: 860px) {
     .reken-headline { max-width: 9ch; }
@@ -341,6 +343,7 @@
     line-height: 1.5;
     color: var(--rk-ink-2);
     margin: 0 0 1.8rem;
+    text-align: {{ content_align }};
   }
   .reken-head__copy p { margin: 0 0 1rem; }
   .reken-head__copy p:last-child { margin: 0; }
@@ -686,6 +689,29 @@
       "label": "Headline",
       "info": "Placeholders: [price], [savings], [pct].",
       "default": "<p>Eén sachet.</p>"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading grootte",
+      "options": [
+        { "value": "h0", "label": "Extra groot" },
+        { "value": "h1", "label": "Groot" },
+        { "value": "h2", "label": "Middel" },
+        { "value": "h3", "label": "Klein" },
+        { "value": "h4", "label": "Kleiner" }
+      ],
+      "default": "h0"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Tekstuitlijning",
+      "options": [
+        { "value": "left", "label": "Links" },
+        { "value": "center", "label": "Centraal" }
+      ],
+      "default": "left"
     },
     {
       "type": "text",
