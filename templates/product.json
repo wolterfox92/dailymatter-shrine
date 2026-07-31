@@ -612,8 +612,8 @@
           "type": "step",
           "settings": {
             "step_label": "STAP 02",
-            "title": "<p>Gebruik je pod.</p>",
-            "subtitle": "<p>Kies uit een van je 25 smaken.</p>",
+            "title": "<p>Meng met 500ML water</p>",
+            "subtitle": "<p>Gebruik onze Daily Matters fles </p>",
             "card_bg": "#f6e4da",
             "text_color": "#2e4a20"
           }
