@@ -739,9 +739,9 @@
       ],
       "name": "Benefit cards",
       "settings": {
-        "heading": "Benefits for everybody",
+        "heading": "Energy fot things that matter most",
         "heading_alignment": "center",
-        "heading_size": "hxl",
+        "heading_size": "h0",
         "heading_custom_size": 40,
         "card_width_mobile": 267,
         "card_width_desktop": 350,
@@ -867,8 +867,8 @@
       "settings": {
         "show_summary": true,
         "summary_text": "4.7/5 ∙ 36 reviews",
-        "heading": "Praise the reviews!",
-        "heading_size": "hxl",
+        "heading": "Reviews are in",
+        "heading_size": "h0",
         "heading_custom_size": 40,
         "heading_color": "#25162f",
         "star_color": "#cbff78",
@@ -905,7 +905,7 @@
         "option_GtNYEn": {
           "type": "option",
           "settings": {
-            "label": "Weinig energie",
+            "label": "Laag in energie",
             "subheading": "Beat the afternoon slump without the crash.",
             "caption": ""
           }
@@ -921,7 +921,7 @@
         "option_APHdEb": {
           "type": "option",
           "settings": {
-            "label": "Kater, oeps",
+            "label": "Kater",
             "subheading": "Rehydrate and bounce back the morning after.",
             "caption": ""
           }
@@ -936,7 +936,7 @@
       "name": "Color switch",
       "settings": {
         "heading": "When does it matter?",
-        "heading_size": "hxl",
+        "heading_size": "h0",
         "heading_custom_desktop_size": 40,
         "heading_custom_mobile_size": 34,
         "heading_color": "#25162f",
