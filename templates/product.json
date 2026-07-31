@@ -595,6 +595,78 @@
         "padding_bottom": 0
       }
     },
+    "custom_step_slider_gPM4UF": {
+      "type": "custom-step-slider",
+      "blocks": {
+        "step_DqUkxw": {
+          "type": "step",
+          "settings": {
+            "step_label": "STAP 01",
+            "title": "<p>Scheur één sachet open</p>",
+            "subtitle": "<p>Met je favoriete smaak</p>",
+            "card_bg": "#eaf5d8",
+            "text_color": "#2e4a20"
+          }
+        },
+        "step_mBXTB8": {
+          "type": "step",
+          "settings": {
+            "step_label": "STAP 02",
+            "title": "<p>Gebruik je pod.</p>",
+            "subtitle": "<p>Kies uit een van je 25 smaken.</p>",
+            "card_bg": "#f6e4da",
+            "text_color": "#2e4a20"
+          }
+        },
+        "step_rhDQ96": {
+          "type": "step",
+          "settings": {
+            "step_label": "STAP 03",
+            "title": "<p>Schud en geniet.</p>",
+            "subtitle": "<p>Klaar in seconden.</p>",
+            "card_bg": "#eaf5d8",
+            "text_color": "#2e4a20"
+          }
+        },
+        "step_cwaq3V": {
+          "type": "step",
+          "settings": {
+            "step_label": "STAP 04",
+            "title": "<p>Wissel je pods.</p>",
+            "subtitle": "<p>Nieuwe smaak, nieuw water.</p>",
+            "card_bg": "#f7dde0",
+            "text_color": "#7a2230"
+          }
+        }
+      },
+      "block_order": [
+        "step_DqUkxw",
+        "step_mBXTB8",
+        "step_rhDQ96",
+        "step_cwaq3V"
+      ],
+      "name": "Step slider",
+      "settings": {
+        "eyebrow": "WAAROM DAILY MATTERS",
+        "heading": "<p>Feeling good should not feel like another full-time job.</p>",
+        "heading_size": "h0",
+        "content_alignment": "center",
+        "subtext": "<p>Simpele dagelijkse supplementen die passen in het leven dat je al hebt.</p>",
+        "card_width": 300,
+        "card_ratio": "1.45",
+        "bg_color": "#FFFFFF",
+        "eyebrow_color": "#25321B",
+        "heading_color": "#25321B",
+        "subtext_color": "#5B6152",
+        "nav_color": "#25321B",
+        "nav_border": "#D6D8D0",
+        "counter_color": "#25321B",
+        "dot_color": "#D6D8D0",
+        "dot_active_color": "#A8E05F",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
     "benefit_cards_kaCtrq": {
       "type": "benefit-cards",
       "blocks": {
@@ -632,7 +704,7 @@
       "settings": {
         "heading": "Benefits for everybody",
         "heading_alignment": "center",
-        "heading_size": "h1",
+        "heading_size": "hxl",
         "heading_custom_size": 40,
         "card_width_mobile": 267,
         "card_width_desktop": 350,
@@ -758,8 +830,8 @@
       "settings": {
         "show_summary": true,
         "summary_text": "4.7/5 ∙ 36 reviews",
-        "heading": "The reviews are in!",
-        "heading_size": "h1",
+        "heading": "Praise the reviews!",
+        "heading_size": "hxl",
         "heading_custom_size": 40,
         "heading_color": "#25162f",
         "star_color": "#cbff78",
@@ -827,7 +899,7 @@
       "name": "Color switch",
       "settings": {
         "heading": "When does it matter?",
-        "heading_size": "h0",
+        "heading_size": "hxl",
         "heading_custom_desktop_size": 40,
         "heading_custom_mobile_size": 34,
         "heading_color": "#25162f",
@@ -844,76 +916,6 @@
         "image_fit": "cover",
         "image_radius": 23,
         "stage_background": "#f4f0ec",
-        "color_scheme": "background-1",
-        "padding_top": 40,
-        "padding_bottom": 40
-      }
-    },
-    "color_switch_2_pEptPF": {
-      "type": "color-switch-2",
-      "blocks": {
-        "option_GbEekU": {
-          "type": "option",
-          "settings": {
-            "label": "First thing",
-            "image": "shopify://shop_images/ChatGPT_Image_May_3_2026_01_02_17_PM.png",
-            "overlay_title": "Start sharp, not on coffee",
-            "overlay_text": "Clear before your first meeting. Electrolytes and B-vitamins give you a calm start without the caffeine rush."
-          }
-        },
-        "option_7q3TLr": {
-          "type": "option",
-          "settings": {
-            "label": "Low energy",
-            "overlay_title": "Beat the afternoon slump",
-            "overlay_text": "Steady focus without the crash."
-          }
-        },
-        "option_nbdzLc": {
-          "type": "option",
-          "settings": {
-            "label": "Pre/post workout",
-            "overlay_title": "Fuel and recover",
-            "overlay_text": "Power up before training and bounce back faster after."
-          }
-        },
-        "option_96tPCY": {
-          "type": "option",
-          "settings": {
-            "label": "Hangover",
-            "overlay_title": "Bounce back faster",
-            "overlay_text": "Rehydrate and feel human again the morning after."
-          }
-        }
-      },
-      "block_order": [
-        "option_GbEekU",
-        "option_7q3TLr",
-        "option_nbdzLc",
-        "option_96tPCY"
-      ],
-      "name": "Color switch 2",
-      "settings": {
-        "heading": "When does it matter?",
-        "heading_size": "h0",
-        "heading_custom_desktop_size": 40,
-        "heading_custom_mobile_size": 34,
-        "heading_color": "#25162f",
-        "button_gap": 8,
-        "button_radius": 8,
-        "button_active_background": "#cbff78",
-        "button_active_text": "#25162f",
-        "button_inactive_text": "#25162f",
-        "button_inactive_border": "#d2cdc7",
-        "max_width": 1100,
-        "image_position": "right",
-        "column_gap": 60,
-        "image_ratio": "3 / 4",
-        "image_fit": "cover",
-        "image_radius": 23,
-        "stage_background": "#f4f0ec",
-        "overlay_text_color": "#ffffff",
-        "overlay_gradient_color": "#25162f",
         "color_scheme": "background-1",
         "padding_top": 40,
         "padding_bottom": 40
@@ -1086,11 +1088,11 @@
   "order": [
     "main",
     "divider_REjeeQ",
+    "custom_step_slider_gPM4UF",
     "benefit_cards_kaCtrq",
     "selling_points_ticker_Ga3hed",
     "review_cards_dm",
     "color_switch_6FNyPd",
-    "color_switch_2_pEptPF",
     "custom_stack_comparison_AXk6jC",
     "related-products",
     "custom_sticky_pack_cta_fzfBUB"
