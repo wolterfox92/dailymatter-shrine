@@ -21,15 +21,17 @@
     }
   }
 
-  .color-switch-{{ section.id }} .color-switch__heading {
-    font-size: {{ section.settings.heading_size | times: 0.85 | round: 0 | divided_by: 10.0 }}rem;
-  }
-
-  @media screen and (min-width: 750px) {
+  {%- if section.settings.heading_size == 'custom' -%}
     .color-switch-{{ section.id }} .color-switch__heading {
-      font-size: {{ section.settings.heading_size | divided_by: 10.0 }}rem;
+      font-size: {{ section.settings.heading_custom_mobile_size | divided_by: 10.0 }}rem;
     }
-  }
+
+    @media screen and (min-width: 750px) {
+      .color-switch-{{ section.id }} .color-switch__heading {
+        font-size: {{ section.settings.heading_custom_desktop_size | divided_by: 10.0 }}rem;
+      }
+    }
+  {%- endif -%}
 {%- endstyle -%}
 
 <style>
@@ -42,9 +44,7 @@
     text-align: center;
     margin: 0 0 0.8rem;
     font-family: var(--font-heading-family);
-    font-weight: 700;
-    line-height: 1.05;
-    letter-spacing: -0.01em;
+    font-weight: var(--font-heading-weight);
     color: {{ section.settings.heading_color }};
   }
 
@@ -210,7 +210,7 @@
     >
       <div class="color-switch__content">
         {%- if section.settings.heading != blank -%}
-          <h2 class="color-switch__heading">{{ section.settings.heading }}</h2>
+          <h2 class="color-switch__heading{% unless section.settings.heading_size == 'custom' %} {{ section.settings.heading_size }}{% endunless %}">{{ section.settings.heading }}</h2>
         {%- endif -%}
 
         {%- if section.blocks.size > 0 -%}
@@ -362,14 +362,33 @@
       "default": "When does it matter?"
     },
     {
-      "type": "range",
+      "type": "select",
       "id": "heading_size",
-      "min": 20,
-      "max": 60,
-      "step": 2,
-      "unit": "px",
       "label": "Heading size",
-      "default": 40
+      "info": "Sizes follow the theme typography settings",
+      "options": [
+        { "value": "h3", "label": "Extra small" },
+        { "value": "h2", "label": "Small" },
+        { "value": "h1", "label": "Medium" },
+        { "value": "h0", "label": "Large" },
+        { "value": "hxl", "label": "Extra large" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "h0"
+    },
+    {
+      "type": "number",
+      "id": "heading_custom_desktop_size",
+      "label": "Custom desktop size",
+      "default": 40,
+      "visible_if": "{{ section.settings.heading_size == 'custom' }}"
+    },
+    {
+      "type": "number",
+      "id": "heading_custom_mobile_size",
+      "label": "Custom mobile size",
+      "default": 34,
+      "visible_if": "{{ section.settings.heading_size == 'custom' }}"
     },
     {
       "type": "color",

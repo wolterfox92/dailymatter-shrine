@@ -23,9 +23,14 @@
 
   .benefit-cards__heading {
     text-align: {{ section.settings.heading_alignment }};
-    font-size: {{ section.settings.heading_size | divided_by: 10.0 }}rem;
     margin: 0 0 2.4rem;
   }
+
+  {%- if section.settings.heading_size == 'custom' -%}
+    .benefit-cards-{{ section.id }} .benefit-cards__heading {
+      font-size: {{ section.settings.heading_custom_size | divided_by: 10.0 }}rem;
+    }
+  {%- endif -%}
 {%- endstyle -%}
 
 <style>
@@ -107,10 +112,8 @@
     margin: 0;
     color: {{ section.settings.card_text_color }};
     font-family: var(--font-heading-family);
-    font-weight: 700;
-    font-size: 2.4rem;
+    font-weight: var(--font-heading-weight);
     line-height: 1.05;
-    letter-spacing: -0.01em;
   }
 
   /* Progress slider */
@@ -159,7 +162,7 @@
       data-benefit-cards
     >
       {%- if section.settings.heading != blank -%}
-        <h2 class="benefit-cards__heading">{{ section.settings.heading }}</h2>
+        <h2 class="benefit-cards__heading{% unless section.settings.heading_size == 'custom' %} {{ section.settings.heading_size }}{% endunless %}">{{ section.settings.heading }}</h2>
       {%- endif -%}
 
       <div class="benefit-cards__track" data-bc-track>
@@ -197,7 +200,7 @@
             {%- endif -%}
 
             {%- if block.settings.title != blank -%}
-              <h3 class="benefit-cards__title">{{ block.settings.title }}</h3>
+              <h3 class="benefit-cards__title h2">{{ block.settings.title }}</h3>
             {%- endif -%}
           </{{ tag }}>
         {%- endfor -%}
@@ -337,14 +340,26 @@
       "default": "center"
     },
     {
-      "type": "range",
+      "type": "select",
       "id": "heading_size",
-      "min": 20,
-      "max": 60,
-      "step": 2,
-      "unit": "px",
       "label": "Heading size",
-      "default": 40
+      "info": "Sizes follow the theme typography settings",
+      "options": [
+        { "value": "h3", "label": "Extra small" },
+        { "value": "h2", "label": "Small" },
+        { "value": "h1", "label": "Medium" },
+        { "value": "h0", "label": "Large" },
+        { "value": "hxl", "label": "Extra large" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "h0"
+    },
+    {
+      "type": "number",
+      "id": "heading_custom_size",
+      "label": "Custom heading size",
+      "default": 40,
+      "visible_if": "{{ section.settings.heading_size == 'custom' }}"
     },
     {
       "type": "header",

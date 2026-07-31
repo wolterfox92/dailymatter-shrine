@@ -23,9 +23,14 @@
 
   .review-cards__heading {
     text-align: center;
-    font-size: {{ section.settings.heading_size | divided_by: 10.0 }}rem;
     margin: 0.8rem 0 2.4rem;
   }
+
+  {%- if section.settings.heading_size == 'custom' -%}
+    .review-cards-{{ section.id }} .review-cards__heading {
+      font-size: {{ section.settings.heading_custom_size | divided_by: 10.0 }}rem;
+    }
+  {%- endif -%}
 {%- endstyle -%}
 
 <style>
@@ -73,9 +78,7 @@
   .review-cards__heading {
     color: {{ section.settings.heading_color }};
     font-family: var(--font-heading-family);
-    font-weight: 700;
-    line-height: 1.05;
-    letter-spacing: -0.01em;
+    font-weight: var(--font-heading-weight);
   }
 
   /* Track */
@@ -302,7 +305,7 @@
       {%- endif -%}
 
       {%- if section.settings.heading != blank -%}
-        <h2 class="review-cards__heading">{{ section.settings.heading }}</h2>
+        <h2 class="review-cards__heading{% unless section.settings.heading_size == 'custom' %} {{ section.settings.heading_size }}{% endunless %}">{{ section.settings.heading }}</h2>
       {%- endif -%}
 
       <div class="review-cards__track" data-rc-track>
@@ -521,14 +524,26 @@
       "default": "The reviews are in!"
     },
     {
-      "type": "range",
+      "type": "select",
       "id": "heading_size",
-      "min": 20,
-      "max": 60,
-      "step": 2,
-      "unit": "px",
       "label": "Heading size",
-      "default": 40
+      "info": "Sizes follow the theme typography settings",
+      "options": [
+        { "value": "h3", "label": "Extra small" },
+        { "value": "h2", "label": "Small" },
+        { "value": "h1", "label": "Medium" },
+        { "value": "h0", "label": "Large" },
+        { "value": "hxl", "label": "Extra large" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "h0"
+    },
+    {
+      "type": "number",
+      "id": "heading_custom_size",
+      "label": "Custom heading size",
+      "default": 40,
+      "visible_if": "{{ section.settings.heading_size == 'custom' }}"
     },
     {
       "type": "color",

@@ -210,7 +210,7 @@
       "settings": {
         "heading": "Benefits for everybody",
         "heading_alignment": "center",
-        "heading_size": 40,
+        "heading_size": "h0",
         "card_width_mobile": 267,
         "card_width_desktop": 300,
         "card_gap_mobile": 12,
