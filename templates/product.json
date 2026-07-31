@@ -604,6 +604,7 @@
             "step_label": "STAP 01",
             "title": "<p>Scheur één sachet open</p>",
             "subtitle": "<p>Met je favoriete smaak</p>",
+            "image": "shopify://shop_images/ChatGPT_Image_Jul_31_2026_05_20_21_PM.png",
             "card_bg": "#FFB974",
             "text_color": "#79584F"
           }
@@ -673,32 +674,41 @@
         "card_JLBdB8": {
           "type": "card",
           "settings": {
-            "badge": "Werkende ouders",
-            "title": "Op je best ook na de school-run",
-            "link": ""
-          }
-        },
-        "card_6i7DrF": {
-          "type": "card",
-          "settings": {
-            "badge": "Lorem ipsum",
-            "title": "Show up with lorem ipsum",
+            "badge": "Dagelijkse energie",
+            "title": "Voor werk, studie, sporten en plannen tot laat",
             "link": ""
           }
         },
         "card_iGiDpf": {
           "type": "card",
           "settings": {
-            "badge": "Lorem ipsum",
-            "title": "Show up with lorem ipsum",
+            "badge": "Mentale scherpte",
+            "title": "Zodat je niet achter de feiten aanloopt",
+            "link": ""
+          }
+        },
+        "card_6i7DrF": {
+          "type": "card",
+          "settings": {
+            "badge": "Beter herstel",
+            "title": "Om morgen weer opnieuw te presteren",
+            "link": ""
+          }
+        },
+        "card_78A9qg": {
+          "type": "card",
+          "settings": {
+            "badge": "Verbeter hydratatie",
+            "title": "Want het begint bij goed gehydrateerd zijn",
             "link": ""
           }
         }
       },
       "block_order": [
         "card_JLBdB8",
+        "card_iGiDpf",
         "card_6i7DrF",
-        "card_iGiDpf"
+        "card_78A9qg"
       ],
       "name": "Benefit cards",
       "settings": {
