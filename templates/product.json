@@ -267,7 +267,7 @@
               "name": "Stat bars",
               "settings": {
                 "eyebrow": "Na 30 dagen",
-                "title": "<h2>Wat onze klanten merken</h2>",
+                "title": "<h3>Waarom kiezen voor Daily Matters</h3>",
                 "body": "<p>Uit een onderzoek onder 87 gebruikers die Daily Matters 30 dagen lang dagelijks namen.</p>",
                 "track_color": "#f4f0ec",
                 "fill_color": "#cbff78",
@@ -282,21 +282,21 @@
                 "margin_bottom": 24
               },
               "blocks": {
-                "stat_bar_EdeqkM": {
+                "stat_bar_AgEBqY": {
                   "type": "stat-bar",
                   "settings": {
-                    "label": "Minder vermoeid in de ochtend",
-                    "percentage": 80,
+                    "label": "Minder energiedips",
+                    "percentage": 83,
                     "show_percentage": true,
                     "fill_color": ""
                   },
                   "blocks": {}
                 },
-                "stat_bar_AgEBqY": {
+                "stat_bar_EdeqkM": {
                   "type": "stat-bar",
                   "settings": {
-                    "label": "Stabiele energie",
-                    "percentage": 74,
+                    "label": "Minder vermoeid in de ochtend",
+                    "percentage": 77,
                     "show_percentage": true,
                     "fill_color": ""
                   },
@@ -306,7 +306,7 @@
                   "type": "stat-bar",
                   "settings": {
                     "label": "Mentale scherpte en focus",
-                    "percentage": 68,
+                    "percentage": 71,
                     "show_percentage": true,
                     "fill_color": ""
                   },
@@ -316,7 +316,7 @@
                   "type": "stat-bar",
                   "settings": {
                     "label": "Beter herstel",
-                    "percentage": 63,
+                    "percentage": 68,
                     "show_percentage": true,
                     "fill_color": ""
                   },
@@ -324,8 +324,8 @@
                 }
               },
               "block_order": [
-                "stat_bar_EdeqkM",
                 "stat_bar_AgEBqY",
+                "stat_bar_EdeqkM",
                 "stat_bar_ec6XKV",
                 "stat_bar_d8kmAh"
               ]
