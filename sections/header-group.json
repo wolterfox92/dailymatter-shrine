@@ -131,7 +131,7 @@
       "name": "DM Header",
       "settings": {
         "sticky_header": true,
-        "reserve_space": false,
+        "reserve_space": true,
         "logo_link": "/",
         "menu": "main-menu",
         "secondary_menu": "",

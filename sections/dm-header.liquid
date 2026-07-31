@@ -197,8 +197,10 @@
     justify-content: center;
   }
 
-  /* Reserve-space spacer (when overlay is disabled): keeps content below the header. */
-  .dm-header__spacer {
+  /* Reserve-space spacer (when overlay is disabled): keeps content below the header.
+     div.* selector beats the theme's div:empty { display: none } rule in base.css. */
+  div.dm-header__spacer {
+    display: block;
     height: calc(var(--dm-header-pad-top) + var(--dm-header-pill-h));
   }
 

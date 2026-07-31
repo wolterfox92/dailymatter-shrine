@@ -32,9 +32,92 @@
           "static": true,
           "settings": {},
           "blocks": {
+            "dm_title_block": {
+              "type": "product_dm-title",
+              "name": "DM Title & subtitle",
+              "settings": {
+                "visibility": "always-display",
+                "text_color": "#25162f",
+                "title_source": "product",
+                "custom_title": "",
+                "heading_tag": "h1",
+                "title_size": "h0",
+                "title_custom_desktop_size": 52,
+                "title_custom_mobile_size": 38,
+                "subtitle": "Not a spike.",
+                "subtitle_highlight": "A refill.",
+                "subtitle_size": "h3",
+                "subtitle_custom_size": 21,
+                "highlight_bg_color": "#cbff78",
+                "highlight_text_color": "#25162f",
+                "margin_top": 15,
+                "margin_bottom": 0
+              },
+              "blocks": {}
+            },
+            "dm_rating_block": {
+              "type": "product_dm-rating",
+              "name": "DM Rating",
+              "settings": {
+                "visibility": "always-display",
+                "star_color": "#25162f",
+                "text_color": "#25162f",
+                "rating_text": "(4.9/5)",
+                "users_text": "300+ dagelijkse gebruikers",
+                "star_size": 18,
+                "text_size": "default",
+                "custom_text_size": 16,
+                "margin_top": 6,
+                "margin_bottom": 6
+              },
+              "blocks": {}
+            },
+            "dm_description_block": {
+              "type": "product_dm-description",
+              "name": "DM Description",
+              "settings": {
+                "visibility": "always-display",
+                "text_color": "#25162f",
+                "description_source": "custom",
+                "description": "<p>Eén zakje per dag, op 500 ml koud water. Creatine, elektrolyten en vitamines: de basis van je energie, elke dag aangevuld.</p>",
+                "text_size": "default",
+                "custom_text_size": 18,
+                "margin_top": 9,
+                "margin_bottom": 9
+              },
+              "blocks": {}
+            },
+            "dm_benefits_block": {
+              "type": "product_dm-benefits",
+              "name": "DM Benefits",
+              "settings": {
+                "visibility": "always-display",
+                "icon_bg_color": "#cbff78",
+                "icon_check_color": "#25162f",
+                "text_color": "#25162f",
+                "bold_text": true,
+                "item_1": "5 gram creatine. De volle dosis.",
+                "item_2": "Vitamines op 100% RI. Geen megadoses.",
+                "item_3": "Cafeïnevrij, zonder toegevoegde suikers.",
+                "item_4": "30 zakjes = 30 dagen.",
+                "item_5": "",
+                "item_6": "",
+                "columns": 1,
+                "columns_mobile": "1",
+                "icon_size": 28,
+                "text_size": "default",
+                "custom_text_size": 16,
+                "column_gap": 40,
+                "row_gap": 14,
+                "margin_top": 9,
+                "margin_bottom": 15
+              },
+              "blocks": {}
+            },
             "product_info_header_YyTPaf": {
               "type": "product_info-header",
               "name": "Info header",
+              "disabled": true,
               "settings": {
                 "visibility": "always-display",
                 "text_color": "#25162f",
@@ -58,6 +141,7 @@
             "product_benefits_list_CzJxF7": {
               "type": "product_benefits-list",
               "name": "Benefits list",
+              "disabled": true,
               "settings": {
                 "visibility": "always-display",
                 "icon_color": "#25162f",
@@ -398,6 +482,10 @@
             }
           },
           "block_order": [
+            "dm_title_block",
+            "dm_rating_block",
+            "dm_description_block",
+            "dm_benefits_block",
             "product_info_header_YyTPaf",
             "product_benefits_list_CzJxF7",
             "divider_tP8U6P",

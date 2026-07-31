@@ -1,0 +1,267 @@
+{% liquid
+  assign s = block.settings
+  assign items = ''
+  for i in (1..6)
+    assign key = 'item_' | append: i
+    assign val = s[key]
+    if val != blank
+      assign items = items | append: val | append: '~~'
+    endif
+  endfor
+  assign items = items | split: '~~'
+%}
+
+{%- if items.size > 0 -%}
+  <ul
+    class="dm-product-benefits dm-product-benefits-{{ block.id }} {{ s.visibility }}"
+    {{ block.shopify_attributes }}
+  >
+    {%- for item in items -%}
+      <li class="dm-product-benefits__item">
+        <span class="dm-product-benefits__icon">
+          <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+            <path d="M1 5.2L4.2 8.4L11 1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="dm-product-benefits__label">{{ item }}</span>
+      </li>
+    {%- endfor -%}
+  </ul>
+{%- endif -%}
+
+{% style %}
+  .dm-product-benefits-{{ block.id }} {
+    display: grid;
+    grid-template-columns: repeat({{ s.columns }}, max-content);
+    column-gap: {{ s.column_gap | divided_by: 10.0 }}rem;
+    row-gap: {{ s.row_gap | divided_by: 10.0 }}rem;
+    margin-top: {{ s.margin_top | divided_by: 10.0 }}rem;
+    margin-bottom: {{ s.margin_bottom | divided_by: 10.0 }}rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .dm-product-benefits-{{ block.id }} .dm-product-benefits__item {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  .dm-product-benefits-{{ block.id }} .dm-product-benefits__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: {{ s.icon_size | divided_by: 10.0 }}rem;
+    height: {{ s.icon_size | divided_by: 10.0 }}rem;
+    border-radius: 50%;
+    background: {{ s.icon_bg_color }};
+    color: {{ s.icon_check_color }};
+  }
+
+  .dm-product-benefits-{{ block.id }} .dm-product-benefits__icon svg {
+    display: block;
+    width: 45%;
+    height: auto;
+  }
+
+  .dm-product-benefits-{{ block.id }} .dm-product-benefits__label {
+    font-family: var(--font-body-family);
+    {%- if s.text_size == 'custom' %}
+    font-size: {{ s.custom_text_size | divided_by: 10.0 }}rem;
+    {%- endif %}
+    {%- if s.bold_text %}
+    font-weight: 700;
+    {%- endif %}
+    line-height: 1.4;
+    color: {{ s.text_color }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .dm-product-benefits-{{ block.id }} {
+      grid-template-columns: repeat({{ s.columns_mobile }}, max-content);
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "DM Benefits",
+  "tag": null,
+  "settings": [
+    {
+      "type": "select",
+      "id": "visibility",
+      "options": [
+        { "value": "desktop-hidden", "label": "Mobile only" },
+        { "value": "mobile-hidden", "label": "Desktop only" },
+        { "value": "always-display", "label": "All devices" }
+      ],
+      "label": "Display on",
+      "default": "always-display"
+    },
+    {
+      "type": "color",
+      "id": "icon_bg_color",
+      "label": "Icon background",
+      "default": "#cbff78"
+    },
+    {
+      "type": "color",
+      "id": "icon_check_color",
+      "label": "Checkmark color",
+      "default": "#25162f"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#25162f"
+    },
+    {
+      "type": "checkbox",
+      "id": "bold_text",
+      "label": "Bold text",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Items"
+    },
+    {
+      "type": "text",
+      "id": "item_1",
+      "label": "Item 1",
+      "default": "5 gram creatine. De volle dosis."
+    },
+    {
+      "type": "text",
+      "id": "item_2",
+      "label": "Item 2",
+      "default": "Vitamines op 100% RI. Geen megadoses."
+    },
+    {
+      "type": "text",
+      "id": "item_3",
+      "label": "Item 3",
+      "default": "Cafeïnevrij, zonder toegevoegde suikers."
+    },
+    {
+      "type": "text",
+      "id": "item_4",
+      "label": "Item 4",
+      "default": "30 zakjes = 30 dagen."
+    },
+    {
+      "type": "text",
+      "id": "item_5",
+      "label": "Item 5"
+    },
+    {
+      "type": "text",
+      "id": "item_6",
+      "label": "Item 6"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns (desktop)",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns (mobile)",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 16,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "select",
+      "id": "text_size",
+      "label": "Text size",
+      "options": [
+        { "value": "default", "label": "Default (theme)" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "number",
+      "id": "custom_text_size",
+      "label": "Custom text size",
+      "default": 16,
+      "visible_if": "{{ block.settings.text_size == 'custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Column gap",
+      "min": 8,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "row_gap",
+      "label": "Row gap",
+      "min": 4,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Margins"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Top",
+      "min": 0,
+      "max": 45,
+      "step": 3,
+      "unit": "px",
+      "default": 9
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 45,
+      "step": 3,
+      "unit": "px",
+      "default": 15
+    }
+  ],
+  "presets": [
+    {
+      "name": "DM Benefits",
+      "category": "Product basics"
+    }
+  ]
+}
+{% endschema %}

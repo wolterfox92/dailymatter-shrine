@@ -98,13 +98,53 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+  {%- if section.settings.heading_size == 'custom' %}
+  .stkcmp-{{ section.id }} .stkcmp__heading {
+    font-size: {{ section.settings.heading_custom_mobile_size | divided_by: 10.0 }}rem;
+    line-height: 1.1;
+  }
+  {%- endif %}
+  {%- if section.settings.card_title_size == 'custom' %}
+  .stkcmp-{{ section.id }} .stkcmp__title {
+    font-size: {{ section.settings.card_title_custom_mobile_size | divided_by: 10.0 }}rem;
+  }
+  {%- endif %}
+  {%- if section.settings.subtext_size == 'custom' %}
+  .stkcmp-{{ section.id }} .stkcmp__subtext {
+    font-size: {{ section.settings.subtext_custom_size | divided_by: 10.0 }}rem;
+  }
+  {%- endif %}
+  {%- if section.settings.cardsub_size == 'custom' %}
+  .stkcmp-{{ section.id }} .stkcmp__cardsub {
+    font-size: {{ section.settings.cardsub_custom_size | divided_by: 10.0 }}rem;
+  }
+  {%- endif %}
+  {%- if section.settings.row_text_size == 'custom' %}
+  .stkcmp-{{ section.id }} .stkcmp__rowname {
+    font-size: {{ section.settings.row_text_custom_size | divided_by: 10.0 }}rem;
+  }
+  {%- endif %}
+  {%- if section.settings.heading_size == 'custom' %}
+  @media screen and (min-width: 750px) {
+    .stkcmp-{{ section.id }} .stkcmp__heading {
+      font-size: {{ section.settings.heading_custom_desktop_size | divided_by: 10.0 }}rem;
+    }
+  }
+  {%- endif %}
+  {%- if section.settings.card_title_size == 'custom' %}
+  @media screen and (min-width: 750px) {
+    .stkcmp-{{ section.id }} .stkcmp__title {
+      font-size: {{ section.settings.card_title_custom_desktop_size | divided_by: 10.0 }}rem;
+    }
+  }
+  {%- endif %}
 {%- endstyle -%}
 
 <div class="stkcmp stkcmp-{{ section.id }}">
   <div class="stkcmp__inner">
 
     {%- if section.settings.heading != blank -%}
-      <h2 class="stkcmp__heading {{ section.settings.heading_size }}">{{ section.settings.heading | escape }}</h2>
+      <h2 class="stkcmp__heading{% unless section.settings.heading_size == 'custom' %} {{ section.settings.heading_size }}{% endunless %}">{{ section.settings.heading | escape }}</h2>
     {%- endif -%}
     {%- if section.settings.subtext != blank -%}
       <div class="stkcmp__subtext">{{ section.settings.subtext }}</div>
@@ -119,7 +159,7 @@
         {%- endif -%}
 
         {%- if section.settings.stack_title != blank -%}
-          <h3 class="stkcmp__title">{{ section.settings.stack_title | escape }}</h3>
+          <h3 class="stkcmp__title{% unless section.settings.card_title_size == 'custom' %} {{ section.settings.card_title_size }}{% endunless %}">{{ section.settings.stack_title | escape }}</h3>
         {%- endif -%}
 
         <div class="stkcmp__media">
@@ -184,7 +224,7 @@
         {%- endif -%}
 
         {%- if section.settings.alt_title != blank -%}
-          <h3 class="stkcmp__title">{{ section.settings.alt_title | escape }}</h3>
+          <h3 class="stkcmp__title{% unless section.settings.card_title_size == 'custom' %} {{ section.settings.card_title_size }}{% endunless %}">{{ section.settings.alt_title | escape }}</h3>
         {%- endif -%}
 
         <div class="stkcmp__media">

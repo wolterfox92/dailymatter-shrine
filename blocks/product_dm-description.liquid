@@ -1,0 +1,135 @@
+{% liquid
+  if section.settings.product_images == 'all' or section.settings.product_images == 'one'
+    assign product = section.settings.product
+  endif
+
+  assign s = block.settings
+  if s.description_source == 'custom'
+    assign description = s.description
+  else
+    assign description = product.description
+  endif
+%}
+
+{%- if description != blank -%}
+  <div
+    class="dm-product-description dm-product-description-{{ block.id }} {{ s.visibility }}"
+    {{ block.shopify_attributes }}
+  >
+    {{ description }}
+  </div>
+{%- endif -%}
+
+{% style %}
+  .dm-product-description-{{ block.id }} {
+    font-family: var(--font-body-family);
+    {%- if s.text_size == 'custom' %}
+    font-size: {{ s.custom_text_size | divided_by: 10.0 }}rem;
+    {%- endif %}
+    line-height: 1.5;
+    color: {{ s.text_color | color_modify: 'alpha', 0.75 }};
+    margin-top: {{ s.margin_top | divided_by: 10.0 }}rem;
+    margin-bottom: {{ s.margin_bottom | divided_by: 10.0 }}rem;
+  }
+
+  .dm-product-description-{{ block.id }} > * {
+    margin: 0;
+  }
+
+  .dm-product-description-{{ block.id }} > * + * {
+    margin-top: 0.8em;
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "DM Description",
+  "tag": null,
+  "settings": [
+    {
+      "type": "select",
+      "id": "visibility",
+      "options": [
+        { "value": "desktop-hidden", "label": "Mobile only" },
+        { "value": "mobile-hidden", "label": "Desktop only" },
+        { "value": "always-display", "label": "All devices" }
+      ],
+      "label": "Display on",
+      "default": "always-display"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#25162f"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "select",
+      "id": "description_source",
+      "label": "Source",
+      "options": [
+        { "value": "product", "label": "Product description" },
+        { "value": "custom", "label": "Custom text" }
+      ],
+      "default": "product"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Custom description",
+      "info": "Only used when Source is set to Custom text"
+    },
+    {
+      "type": "select",
+      "id": "text_size",
+      "label": "Text size",
+      "options": [
+        { "value": "default", "label": "Default (theme)" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "number",
+      "id": "custom_text_size",
+      "label": "Custom text size",
+      "default": 18,
+      "visible_if": "{{ block.settings.text_size == 'custom' }}"
+    },
+    {
+      "type": "header",
+      "content": "Margins"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Top",
+      "min": 0,
+      "max": 45,
+      "step": 3,
+      "unit": "px",
+      "default": 9
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Bottom",
+      "min": 0,
+      "max": 45,
+      "step": 3,
+      "unit": "px",
+      "default": 9
+    }
+  ],
+  "presets": [
+    {
+      "name": "DM Description",
+      "category": "Product basics"
+    }
+  ]
+}
+{% endschema %}
