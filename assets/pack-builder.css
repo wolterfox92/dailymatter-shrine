@@ -3,8 +3,28 @@
   font-family: inherit;
   --pb-radius: var(--pb-border-radius, 10px);
   --pb-bw: var(--pb-border-width, 2px);
-  --pb-muted-border: rgba(0,0,0,0.12);
-  --pb-muted-bg: rgba(0,0,0,0.04);
+  --pb-inner-radius: max(0px, calc(var(--pb-radius) - var(--pb-bw)));
+  --pb-muted-border: rgba(0, 0, 0, 0.12);
+  --pb-muted-bg: rgba(0, 0, 0, 0.05);
+  --pb-surface: rgb(var(--color-background, 255, 255, 255));
+  --pb-ink: rgb(var(--color-foreground, 18, 18, 18));
+  --pb-muted-ink: rgba(0, 0, 0, 0.45);
+  /* Button + every savings badge share one colour, set apart from --pb-accent. */
+  --pb-button: var(--pb-accent, #121212);
+  --pb-button-text: var(--pb-accent-text, #fff);
+  /* One type scale for the whole component — rem, so it follows the theme's
+     body-scale setting. Headings use the theme's h2–h5 classes instead. */
+  --pb-fs-micro: 1.1rem;
+  --pb-fs-xs: 1.2rem;
+  --pb-fs-sm: 1.3rem;
+  --pb-fs-md: 1.5rem;
+  --pb-fs-lg: 1.7rem;
+}
+
+@supports (color: color-mix(in srgb, red 50%, transparent)) {
+  .pack-builder {
+    --pb-muted-ink: color-mix(in srgb, var(--pb-ink) 50%, transparent);
+  }
 }
 
 .pack-builder *,
@@ -13,103 +33,182 @@
   box-sizing: border-box;
 }
 
+/* Size, line-height and letter-spacing come from the theme heading class
+   (h2–h5) applied in Liquid — only spacing is set here. */
 .pack-builder__heading {
-  font-size: 1.6rem;
-  font-weight: 700;
-  margin: 0 0 1rem;
+  margin: 0 0 1.6rem;
 }
 
-.pack-builder__heading--purchase {
-  margin-top: 2.4rem;
+.pack-builder__heading + .pack-builder__segmented {
+  margin-top: 0;
 }
 
-/* ---------- Pack tiers ---------- */
-.pack-builder__tiers {
+/* ---------- Segmented controls (plan + pack size) ---------- */
+.pack-builder__segmented {
+  position: relative;
   display: grid;
-  grid-template-columns: repeat(var(--pb-tier-cols, 3), 1fr);
-  gap: 0.8rem;
-  margin-bottom: 1.6rem;
+  border: var(--pb-bw) solid var(--pb-muted-border);
+  border-radius: var(--pb-radius);
+  margin: 0 0 2.4rem;
 }
 
-.pack-builder__tiers,
-.pack-builder__tiers * {
-  box-sizing: border-box;
+.pack-builder__plans {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-/* Slots where the tier tiles are teleported (under the subscribe option) */
-.subscription__pack-tiers-slot:empty,
-.pack-builder__mode-tiers-slot:empty {
+.pack-builder__tiers {
+  grid-template-columns: repeat(var(--pb-tier-cols, 3), minmax(0, 1fr));
+}
+
+.pack-builder__seg {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 5.4rem;
+  padding: 1.2rem 0.8rem;
+  border: 0;
+  background: var(--pb-muted-bg);
+  color: var(--pb-ink);
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.pack-builder__seg + .pack-builder__seg {
+  border-left: 1px solid var(--pb-muted-border);
+}
+
+.pack-builder__seg:first-child {
+  border-start-start-radius: var(--pb-inner-radius);
+  border-end-start-radius: var(--pb-inner-radius);
+}
+
+.pack-builder__seg:last-child {
+  border-start-end-radius: var(--pb-inner-radius);
+  border-end-end-radius: var(--pb-inner-radius);
+}
+
+.pack-builder__seg[aria-selected="false"],
+.pack-builder__seg[aria-pressed="false"] {
+  color: rgba(0, 0, 0, 0.45);
+  color: var(--pb-muted-ink);
+}
+
+.pack-builder__seg[aria-selected="true"],
+.pack-builder__seg[aria-pressed="true"] {
+  background: var(--pb-surface);
+  font-weight: 700;
+}
+
+/* Accent bar on the selected segment */
+.pack-builder__seg[aria-selected="true"]::before,
+.pack-builder__seg[aria-pressed="true"]::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 0.5rem;
+  background: var(--pb-accent, #121212);
+  border-radius: inherit;
+}
+
+.pack-builder__seg-label {
+  font-size: var(--pb-fs-md);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.pack-builder__seg[aria-selected="true"] .pack-builder__seg-label,
+.pack-builder__seg[aria-pressed="true"] .pack-builder__seg-label {
+  font-weight: 700;
+}
+
+/* Badge floating over the top border of the plan control */
+.pack-builder__seg-badge {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--pb-button);
+  color: var(--pb-button-text);
+  font-size: var(--pb-fs-xs);
+  font-weight: 700;
+  line-height: 1;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.pack-builder__seg-badge[hidden] {
   display: none;
 }
 
-.subscription__pack-tiers-slot .pack-builder__tiers,
-.pack-builder__mode-tiers-slot .pack-builder__tiers {
-  margin: 2.4rem 0 0.4rem;
-  --pb-radius: var(--pb-border-radius, 10px);
-  --pb-bw: var(--pb-border-width, 2px);
-  --pb-muted-border: rgba(0,0,0,0.12);
-  --pb-muted-bg: rgba(0,0,0,0.04);
-}
-
+/* ---------- Pack tiers ---------- */
 .pack-builder__tier {
-  position: relative;
-  background: transparent;
-  border: var(--pb-bw) solid var(--pb-muted-border);
-  border-radius: var(--pb-radius);
-  padding: 1.6rem 0.8rem 1rem;
-  cursor: pointer;
-  font: inherit;
-  color: inherit;
-  text-align: center;
-  transition: border-color 120ms ease, background-color 120ms ease;
+  padding-top: 1.6rem;
 }
 
-.pack-builder__tier:hover {
-  border-color: rgba(0,0,0,0.25);
-}
-
-.pack-builder__tier[aria-selected="true"] {
-  border-color: var(--pb-accent, #121212);
-  background: var(--pb-muted-bg);
-}
-
-.pack-builder__tier-badge {
+.pack-builder__tier-pill {
   position: absolute;
-  top: -1.1rem;
+  top: 0;
   left: 50%;
-  transform: translateX(-50%);
-  background: var(--pb-accent, #121212);
-  color: var(--pb-accent-text, #fff);
-  font-size: 1.1rem;
-  font-weight: 700;
-  padding: 0.3rem 0.8rem;
+  transform: translate(-50%, -50%);
+  background: var(--pb-muted-bg);
+  border: 1px solid var(--pb-muted-border);
+  color: var(--pb-muted-ink);
+  font-size: var(--pb-fs-xs);
+  font-weight: 500;
+  line-height: 1;
+  padding: 0.4rem 0.8rem;
   border-radius: 999px;
   white-space: nowrap;
+  z-index: 1;
 }
 
-.pack-builder__tier-label {
-  display: block;
-  font-size: 1.4rem;
+.pack-builder__seg[aria-pressed="true"] .pack-builder__tier-pill {
+  background: var(--pb-surface);
+}
+
+.pack-builder__tier-save {
+  font-size: var(--pb-fs-xs);
+  font-weight: 600;
+  line-height: 1;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  background: var(--pb-surface);
+  border: 1px solid var(--pb-muted-border);
+  color: var(--pb-muted-ink);
+}
+
+.pack-builder__seg[aria-pressed="true"] .pack-builder__tier-save {
+  background: var(--pb-button);
+  border-color: var(--pb-button);
+  color: var(--pb-button-text);
   font-weight: 700;
+}
+
+.pack-builder__tier-save[hidden],
+.pack-builder__tier-per-day[hidden] {
+  display: none;
 }
 
 .pack-builder__tier-count {
   display: block;
-  font-size: 1.2rem;
+  font-size: var(--pb-fs-xs);
   font-weight: 500;
   opacity: 0.75;
-  margin-top: 0.2rem;
 }
 
 .pack-builder__tier-per-day {
   display: block;
-  font-size: 1.2rem;
+  font-size: var(--pb-fs-xs);
   opacity: 0.65;
-  margin-top: 0.4rem;
-}
-
-.pack-builder__tier-per-day[hidden] {
-  display: none;
 }
 
 /* ---------- Flavors ---------- */
@@ -117,7 +216,7 @@
   display: grid;
   grid-template-columns: repeat(var(--pb-flavor-cols, 3), minmax(0, 1fr));
   gap: 1rem;
-  margin-bottom: 1.6rem;
+  margin-bottom: 2.4rem;
 }
 
 .pack-builder__flavor {
@@ -128,64 +227,70 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  background: #fff;
+  background: var(--pb-surface);
 }
 
 .pack-builder__flavor-image {
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 3 / 2;
   object-fit: cover;
   display: block;
-  border-radius: 0;
   margin: 0;
 }
 
 .pack-builder__flavor-body {
-  padding: 1rem 0.8rem;
+  padding: 0.8rem;
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
+  flex: 1 1 auto;
+  justify-content: space-between;
 }
 
 .pack-builder__flavor-name {
-  text-align: center;
-  font-weight: 600;
-  font-size: 1.3rem;
-  min-height: 2.4em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-weight: 700;
+  font-size: var(--pb-fs-sm);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
 .pack-builder__stepper {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.6rem;
+  gap: 0.4rem;
 }
 
 .pack-builder__step {
-  width: 2.6rem;
-  height: 2.6rem;
-  aspect-ratio: 1 / 1;
+  position: relative;
+  width: 2.8rem;
+  height: 2.8rem;
   flex: 0 0 auto;
   border-radius: 50%;
   border: 0;
-  background: #000;
-  color: #fff;
-  font-size: 1.5rem;
+  background: var(--pb-ink);
+  color: var(--pb-surface);
+  font-size: var(--pb-fs-md);
   line-height: 1;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font: inherit;
+  font-family: inherit;
   padding: 0;
 }
 
+/* Visual circle stays compact; the touch target is 44x44 (WCAG 2.5.8). */
+.pack-builder__step::after {
+  content: "";
+  position: absolute;
+  inset: -0.8rem;
+  border-radius: 50%;
+}
+
 .pack-builder__step--down {
-  background: rgba(0,0,0,0.12);
-  color: #000;
+  background: var(--pb-muted-bg);
+  color: var(--pb-ink);
 }
 
 .pack-builder__step:disabled {
@@ -195,126 +300,129 @@
 
 .pack-builder__count {
   font-weight: 700;
-  font-size: 1.6rem;
+  font-size: var(--pb-fs-md);
   min-width: 2ch;
   text-align: center;
 }
 
-/* ---------- Purchase modes ---------- */
-.pack-builder__modes {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1.2rem;
-}
-
-.pack-builder__mode {
-  position: relative;
-  display: block;
+/* ---------- Summary card ---------- */
+.pack-builder__summary {
+  container-type: inline-size;
+  container-name: pb-summary;
   border: var(--pb-bw) solid var(--pb-muted-border);
   border-radius: var(--pb-radius);
-  padding: 1.2rem 1.2rem 1rem;
-  cursor: pointer;
-  background: #fff;
-  transition: border-color 120ms ease;
+  overflow: hidden;
+  background: var(--pb-surface);
+  margin-bottom: 1.6rem;
 }
 
-.pack-builder__mode:has(.pack-builder__mode-radio:checked) {
-  border-color: var(--pb-accent, #121212);
-}
-
-.pack-builder__mode--subscription:has(.pack-builder__mode-ribbon) {
-  padding-top: 3rem;
-}
-
-.pack-builder__mode-ribbon {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+.pack-builder__summary-ribbon {
   background: var(--pb-accent, #121212);
   color: var(--pb-accent-text, #fff);
   text-align: center;
   font-weight: 700;
-  font-size: 1.2rem;
-  padding: 0.4rem;
-  border-top-left-radius: calc(var(--pb-radius) - var(--pb-bw));
-  border-top-right-radius: calc(var(--pb-radius) - var(--pb-bw));
+  font-size: var(--pb-fs-sm);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: 0.7rem 1.2rem;
 }
 
-.pack-builder__mode-radio {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
+.pack-builder__summary-body {
+  padding: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
 }
 
-.pack-builder__mode-top {
+/* Title and prices stay on one line. The title is the only flexible part —
+   it truncates rather than pushing the prices onto a second row. */
+.pack-builder__summary-head {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: 0.6rem;
 }
 
-/* Subscription groups title + prices to the left (per design);
-   one-time pushes its price to the right edge. */
-.pack-builder__mode--one-time .pack-builder__mode-prices {
-  margin-left: auto;
-}
-
-.pack-builder__mode-radio-visual {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  border: 2px solid currentColor;
-  display: inline-block;
-  position: relative;
-  flex-shrink: 0;
-}
-
-.pack-builder__mode:has(.pack-builder__mode-radio:checked) .pack-builder__mode-radio-visual::after {
-  content: "";
-  position: absolute;
-  inset: 3px;
-  border-radius: 50%;
-  background: currentColor;
-}
-
-.pack-builder__mode-title {
+.pack-builder__summary-title {
   font-weight: 700;
-  font-size: 1.4rem;
+  font-size: var(--pb-fs-md);
   letter-spacing: -0.01em;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.pack-builder__mode-prices {
+.pack-builder__summary-prices {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  flex-wrap: wrap;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  white-space: nowrap;
 }
 
 .pack-builder__compare {
   text-decoration: line-through;
   opacity: 0.5;
-  font-size: 1.4rem;
+  font-size: var(--pb-fs-xs);
+}
+
+.pack-builder__compare[hidden] {
+  display: none;
 }
 
 .pack-builder__price {
   font-weight: 700;
-  font-size: 1.4rem;
+  font-size: var(--pb-fs-lg);
 }
 
 .pack-builder__save-badge {
-  background: var(--pb-accent, #121212);
-  color: var(--pb-accent-text, #fff);
-  font-size: 1.1rem;
+  background: var(--pb-button);
+  color: var(--pb-button-text);
+  font-size: var(--pb-fs-xs);
   font-weight: 700;
-  padding: 0.2rem 0.7rem;
+  line-height: 1;
+  padding: 0.5rem 0.8rem;
   border-radius: 999px;
   white-space: nowrap;
 }
 
+.pack-builder__save-badge[hidden] {
+  display: none;
+}
+
+/* In a narrow product column the price row steps down one notch so the title,
+   both prices and the savings badge still fit on a single line. */
+@container pb-summary (max-width: 400px) {
+  .pack-builder__summary-head,
+  .pack-builder__summary-prices {
+    gap: 0.5rem;
+  }
+
+  .pack-builder__summary-title {
+    font-size: var(--pb-fs-sm);
+  }
+
+  .pack-builder__compare {
+    font-size: var(--pb-fs-micro);
+  }
+
+  .pack-builder__price {
+    font-size: var(--pb-fs-md);
+  }
+
+  .pack-builder__save-badge {
+    font-size: var(--pb-fs-micro);
+    padding: 0.5rem 0.6rem;
+  }
+}
+
+/* ---------- Benefits ---------- */
 .pack-builder__benefits {
   list-style: none;
-  margin: 1.2rem 0 0;
+  margin: 0;
   padding: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -329,61 +437,54 @@
 
 .pack-builder__benefit-icon {
   flex: 0 0 auto;
-  width: 1.9rem;
-  height: 1.9rem;
-  margin-top: 0.1rem;
+  display: inline-flex;
+  font-size: 1.9rem;
+  line-height: 1;
 }
 
-.pack-builder__benefit-icon svg {
-  display: block;
-  width: 100%;
-  height: 100%;
+.pack-builder__benefit-icon .material-symbols-outlined {
+  font-size: 1.9rem;
+  line-height: 1;
 }
 
 .pack-builder__benefit-text {
-  font-size: 1.2rem;
-  line-height: 1.4;
+  font-size: var(--pb-fs-sm);
+  line-height: 1.35;
   letter-spacing: -0.01em;
-  color: inherit;
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 /* ---------- Frequency dropdown ---------- */
-.pack-builder__frequency {
-  margin-top: 1.2rem;
-}
-
 .pack-builder__frequency-control {
   position: relative;
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  min-height: 3.9rem;
-  padding: 0.4rem 0.6rem 0.4rem 1.4rem;
-  background: #fff;
-  border: 1px solid rgba(37, 22, 47, 0.35);
+  min-height: 4.4rem;
+  padding: 0.4rem 1rem 0.4rem 1.4rem;
+  background: var(--pb-surface);
+  border: 1px solid var(--pb-muted-border);
   border-radius: 0.8rem;
 }
 
 .pack-builder__frequency-label {
-  font-size: 1.44rem;
+  font-size: var(--pb-fs-md);
   line-height: 1.3;
   letter-spacing: -0.01em;
-  color: inherit;
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 .pack-builder__frequency-pill {
   flex: 0 0 auto;
   background: var(--pb-popular-bg, #cac0ff);
   color: #25162f;
-  font-size: 0.8rem;
+  font-size: var(--pb-fs-micro);
   font-weight: 700;
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: -0.01em;
-  padding: 0.3rem 0.5rem;
-  border-radius: 50px;
+  padding: 0.4rem 0.6rem;
+  border-radius: 999px;
   white-space: nowrap;
 }
 
@@ -394,9 +495,10 @@
 .pack-builder__frequency-arrow {
   margin-left: auto;
   flex: 0 0 auto;
-  width: 2.7rem;
-  height: 2.7rem;
+  width: 2rem;
+  height: 2rem;
   pointer-events: none;
+  opacity: 0.6;
 }
 
 .pack-builder__frequency-arrow svg {
@@ -423,33 +525,172 @@
   appearance: none;
 }
 
-/* Hide subscription block (incl. ribbon and benefits) when one-time selected */
-.pack-builder__mode--subscription:has(.pack-builder__mode-radio:not(:checked)) .pack-builder__frequency,
-.pack-builder__mode--subscription:has(.pack-builder__mode-radio:not(:checked)) .pack-builder__benefits {
+/* ---------- Free gifts ---------- */
+.pack-builder__gifts {
+  background: var(--pb-muted-bg);
+  border-radius: 0.8rem;
+  padding: 1.2rem;
+}
+
+.pack-builder__gifts-title {
+  margin: 0 0 1rem;
+  font-size: var(--pb-fs-sm);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.pack-builder__gifts-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0.4rem;
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+
+.pack-builder__gift {
+  flex: 0 0 auto;
+  width: 17rem;
+  scroll-snap-align: start;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: var(--pb-surface);
+  border: 1px solid var(--pb-muted-border);
+  border-radius: 0.8rem;
+  padding: 0.8rem;
+}
+
+.pack-builder__gift-media {
+  position: relative;
+  flex: 0 0 auto;
+  width: 5.4rem;
+}
+
+.pack-builder__gift-flag {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  background: var(--pb-accent, #121212);
+  color: var(--pb-accent-text, #fff);
+  font-size: var(--pb-fs-micro);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.4rem;
+}
+
+.pack-builder__gift-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+}
+
+.pack-builder__gift-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.pack-builder__gift-name {
+  font-size: var(--pb-fs-sm);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.pack-builder__gift-price {
+  font-size: var(--pb-fs-xs);
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+.pack-builder__gift-delivery {
+  font-size: var(--pb-fs-micro);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: #2e7d5b;
+}
+
+/* ---------- Plan-dependent visibility ---------- */
+.pack-builder[data-selected-mode="one_time"] .pack-builder__summary-ribbon,
+.pack-builder[data-selected-mode="one_time"] .pack-builder__benefits,
+.pack-builder[data-selected-mode="one_time"] .pack-builder__frequency,
+.pack-builder[data-selected-mode="one_time"] .pack-builder__gifts {
   display: none;
 }
 
-/* ---------- Status & ATC ---------- */
+/* ---------- Status, divider & ATC ---------- */
 .pack-builder__status {
-  font-size: 1.3rem;
+  font-size: var(--pb-fs-sm);
   margin-bottom: 0.8rem;
   min-height: 1.8em;
   opacity: 0.8;
 }
 
-.pack-builder__atc {
-  width: 100%;
-  padding: 1.4rem 1.6rem;
-  border-radius: var(--pb-radius);
-  background: var(--pb-accent, #121212);
-  color: var(--pb-accent-text, #fff);
+/* Flash cue when the sticky CTA points the shopper back at an unfilled pack. */
+.pack-builder__status--flash {
+  animation: pack-builder-flash 900ms ease;
+  font-weight: 700;
+  opacity: 1;
+}
+
+@keyframes pack-builder-flash {
+  0%, 100% { opacity: 1; }
+  25%, 75% { opacity: 0.25; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pack-builder__status--flash {
+    animation: none;
+  }
+}
+
+.pack-builder__divider {
   border: 0;
-  font: inherit;
-  font-size: 1.5rem;
+  border-top: 1px solid var(--pb-muted-border);
+  margin: 0 0 1.6rem;
+}
+
+.pack-builder__atc {
+  position: relative;
+  width: 100%;
+  min-height: 5.2rem;
+  padding: 1.4rem 1.6rem;
+  border-radius: var(--pb-atc-radius, 999px);
+  background: var(--pb-button);
+  color: var(--pb-button-text);
+  border: 0;
+  font-family: inherit;
+  font-size: var(--pb-fs-md);
   font-weight: 700;
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 0.02em;
+  transition: filter 120ms ease;
+}
+
+/* Any decorative ring a parent theme rule adds must follow this radius,
+   otherwise a square border floats around the pill fill. */
+.pack-builder__atc::before,
+.pack-builder__atc::after {
+  border-radius: inherit;
+}
+
+.pack-builder__atc:not(:disabled):hover {
+  filter: brightness(0.94);
+}
+
+.pack-builder__atc:focus-visible {
+  outline: 2px solid var(--pb-ink);
+  outline-offset: 2px;
 }
 
 .pack-builder__atc:disabled {
@@ -460,4 +701,16 @@
 .pack-builder__atc[data-loading="true"] {
   opacity: 0.7;
   cursor: wait;
+}
+
+/* ---------- Desktop enhancement ----------
+   One step up on the whole scale rather than per-element overrides. */
+@media screen and (min-width: 750px) {
+  .pack-builder {
+    --pb-fs-micro: 1.2rem;
+    --pb-fs-xs: 1.3rem;
+    --pb-fs-sm: 1.4rem;
+    --pb-fs-md: 1.6rem;
+    --pb-fs-lg: 1.8rem;
+  }
 }

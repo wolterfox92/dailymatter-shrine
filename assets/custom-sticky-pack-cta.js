@@ -59,7 +59,7 @@
         this.selectEl.value = pbSelect.value;
         this.updatePlanText();
       }
-      const activeTier = this.packBuilder.querySelector('.pack-builder__tier[aria-selected="true"]');
+      const activeTier = this.packBuilder.querySelector('.pack-builder__tier[aria-pressed="true"]');
       if (activeTier) {
         const pct = Number(activeTier.dataset.tierPct) || 0;
         this.updateSave(pct);
@@ -76,7 +76,8 @@
         }
       }
       const pct = detail.mode === 'subscription' ? Number(detail.tierPct) || 0 : 0;
-      this.updateSave(pct);
+      // The builder already formats the saving per its own settings — reuse it.
+      this.updateSave(pct, detail.savingFormatted);
     }
 
     updatePlanText() {
@@ -85,10 +86,13 @@
       if (opt) this.planTextEl.textContent = opt.textContent.trim();
     }
 
-    updateSave(pct) {
+    updateSave(pct, formatted) {
       if (!this.saveEl) return;
-      if (pct > 0) {
-        this.saveEl.textContent = `Save ${pct}%`;
+      if (formatted) {
+        this.saveEl.textContent = formatted;
+        this.saveEl.hidden = false;
+      } else if (pct > 0) {
+        this.saveEl.textContent = `${this.dataset.saveLabel || 'Save'} ${pct}%`;
         this.saveEl.hidden = false;
       } else {
         this.saveEl.hidden = true;

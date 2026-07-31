@@ -31,13 +31,13 @@ Non-negotiable. Reject or flag any change that violates one.
 ## Commands & environment
 
 ```bash
-shopify theme dev --store=<store>.myshopify.com   # local dev server on 127.0.0.1:9292
+shopify theme dev --store=30c5a1-2.myshopify.com  # local dev server on 127.0.0.1:9292
 shopify theme check                               # lint, run before every commit
 shopify theme pull --live                         # snapshot live into git (baseline)
 shopify theme push --unpublished                  # fresh QA theme, never live
 ```
 
-- Store: `<store>.myshopify.com` (fill in once).
+- Store: `30c5a1-2.myshopify.com`.
 - QA convention: push to a fresh unpublished theme named `QA YYYY-MM-DD <feature>`. Never reuse live or the backup theme.
 - `config/settings_data.json` is live merchant state: gitignored unless deliberately syncing, never hand-edited.
 - `.shopifyignore` keeps local-only files off the remote.

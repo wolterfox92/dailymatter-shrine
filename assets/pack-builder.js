@@ -30,6 +30,12 @@
       this.skipCart = this.dataset.skipCart === 'true';
       this.perDaySuffix = this.dataset.perDaySuffix || '/ day';
       this.sticksPerPack = Number(this.dataset.sticksPerPack) || 0;
+      this.saveDisplay = this.dataset.saveDisplay || 'amount';
+      this.saveLabel = (this.dataset.saveLabel || '').trim();
+      this.statusTemplate = this.dataset.statusTemplate || '';
+      this.loadingLabel = this.dataset.atcLoadingLabel || '…';
+      this.errorLabel = this.dataset.atcErrorLabel || '';
+      this.atcShowPrice = this.dataset.atcShowPrice !== 'false';
 
       try {
         this.tiers = JSON.parse(this.dataset.tiers || '[]');
@@ -50,40 +56,28 @@
       this.cacheEls();
       this.bind();
       this.render();
-      this.relocateTiers();
-    }
-
-    relocateTiers() {
-      const tiersEl = this.querySelector('.pack-builder__tiers');
-      if (!tiersEl) return;
-      // Prefer the slot inside this pack-builder's own subscribe mode card.
-      // Fall back to a standalone subscription-widget slot elsewhere on the page.
-      const slot = this.querySelector('.pack-builder__mode--subscription [data-pack-builder-tiers-slot]')
-        || document.querySelector('[data-pack-builder-tiers-slot]');
-      if (!slot) return;
-      const cs = getComputedStyle(this);
-      ['--pb-accent', '--pb-accent-text', '--pb-border-radius', '--pb-border-width', '--pb-tier-cols'].forEach((v) => {
-        const value = cs.getPropertyValue(v);
-        if (value) tiersEl.style.setProperty(v, value.trim());
-      });
-      slot.appendChild(tiersEl);
-      tiersEl.classList.add('pack-builder__tiers--in-subscription');
     }
 
     cacheEls() {
+      this.planButtons = Array.from(this.querySelectorAll('.pack-builder__seg[data-plan]'));
       this.tierButtons = Array.from(this.querySelectorAll('.pack-builder__tier'));
       this.flavorEls = Array.from(this.querySelectorAll('.pack-builder__flavor'));
       this.statusEl = this.querySelector('[data-status]');
       this.atcEl = this.querySelector('[data-atc]');
       this.atcLabelEl = this.querySelector('[data-atc-label]');
-      this.atcOriginalLabel = this.atcLabelEl ? this.atcLabelEl.textContent : 'Add to cart';
-      this.modeRadios = Array.from(this.querySelectorAll('.pack-builder__mode-radio'));
+      this.atcOriginalLabel = this.atcLabelEl ? this.atcLabelEl.textContent.trim() : 'Add to cart';
+      this.planSaveEl = this.querySelector('[data-plan-save]');
+      this.summaryEl = this.querySelector('.pack-builder__summary');
+      this.summaryTitleEl = this.querySelector('[data-summary-title]');
+      this.summaryPriceEl = this.querySelector('[data-summary-price]');
+      this.summaryCompareEl = this.querySelector('[data-summary-compare]');
+      this.summarySaveEl = this.querySelector('[data-summary-save]');
       this.freqSelect = this.querySelector('.pack-builder__frequency-select');
       this.freqLabelEl = this.querySelector('[data-freq-label]');
       this.freqPillEl = this.querySelector('[data-freq-pill]');
 
       // Seed counts
-      this.flavorEls.forEach(el => {
+      this.flavorEls.forEach((el) => {
         const id = el.dataset.variantId;
         this.state.counts[id] = 0;
       });
@@ -92,6 +86,12 @@
         this.state.sellingPlanId = this.freqSelect.value;
         this.updateFreqDisplay();
       }
+    }
+
+    planLabel(mode) {
+      const btn = this.planButtons.find((b) => b.dataset.plan === mode);
+      const labelEl = btn && btn.querySelector('.pack-builder__seg-label');
+      return labelEl ? labelEl.textContent.trim() : '';
     }
 
     updateFreqDisplay() {
@@ -109,9 +109,12 @@
     }
 
     bind() {
-      this.tierButtons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
+      this.planButtons.forEach((btn) => {
+        btn.addEventListener('click', () => this.setMode(btn.dataset.plan));
+      });
+
+      this.tierButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
           const qty = Number(btn.dataset.tierQty);
           const pct = Number(btn.dataset.tierPct);
           this.state.tierQty = qty;
@@ -132,10 +135,10 @@
         });
       });
 
-      this.flavorEls.forEach(el => {
+      this.flavorEls.forEach((el) => {
         const id = el.dataset.variantId;
         const countEl = el.querySelector('[data-count]');
-        el.querySelectorAll('[data-step]').forEach(btn => {
+        el.querySelectorAll('[data-step]').forEach((btn) => {
           btn.addEventListener('click', () => {
             const step = Number(btn.dataset.step);
             const next = this.state.counts[id] + step;
@@ -145,15 +148,6 @@
             this.syncTierToTotal();
             this.render();
           });
-        });
-      });
-
-      this.modeRadios.forEach(radio => {
-        radio.addEventListener('change', () => {
-          if (radio.checked) {
-            this.state.mode = radio.value;
-            this.render();
-          }
         });
       });
 
@@ -171,6 +165,7 @@
     }
 
     notify() {
+      const pricing = this.pricing();
       this.dispatchEvent(new CustomEvent('pack-builder:state', {
         bubbles: true,
         detail: {
@@ -181,6 +176,10 @@
           totalCount: this.totalCount(),
           isComplete: this.state.tierQty > 0 && this.totalCount() >= this.state.tierQty,
           hasSubscription: this.hasSubscription,
+          total: pricing.total,
+          totalFormatted: formatMoney(pricing.total, this.moneyFormat),
+          saving: pricing.saving,
+          savingFormatted: pricing.saving > 0 ? this.formatSaving(pricing.saving, this.state.tierPct) : '',
         },
       }));
     }
@@ -196,10 +195,9 @@
     }
 
     setMode(mode) {
+      if (mode !== 'subscription' && mode !== 'one_time') return;
       if (mode === 'subscription' && !this.hasSubscription) return;
-      const radio = this.modeRadios.find((r) => r.value === mode);
-      if (!radio || radio.checked) return;
-      radio.checked = true;
+      if (this.state.mode === mode) return;
       this.state.mode = mode;
       this.render();
     }
@@ -223,16 +221,12 @@
       return Object.values(this.state.counts).reduce((a, b) => a + b, 0);
     }
 
-    maxTierQty() {
-      return this.tiers.reduce((max, t) => Math.max(max, Number(t.qty) || 0), 0);
-    }
-
     syncTierToTotal() {
       const total = this.totalCount();
       if (total <= 0) return;
       // Pick the smallest tier whose qty >= total; if none fits, stick with the largest
       const sorted = [...this.tiers].sort((a, b) => Number(a.qty) - Number(b.qty));
-      const match = sorted.find(t => Number(t.qty) >= total) || sorted[sorted.length - 1];
+      const match = sorted.find((t) => Number(t.qty) >= total) || sorted[sorted.length - 1];
       if (!match) return;
       this.state.tierQty = Number(match.qty);
       this.state.tierPct = Number(match.pct) || 0;
@@ -240,7 +234,7 @@
 
     basePriceForCounts() {
       let total = 0;
-      this.flavorEls.forEach(el => {
+      this.flavorEls.forEach((el) => {
         const id = el.dataset.variantId;
         const price = Number(el.dataset.variantPrice);
         total += price * (this.state.counts[id] || 0);
@@ -251,25 +245,93 @@
     averageUnitPrice() {
       // Use first variant's price as base if no selections yet
       if (this.flavorEls.length === 0) return 0;
-      const firstPrice = Number(this.flavorEls[0].dataset.variantPrice) || 0;
-      return firstPrice;
+      return Number(this.flavorEls[0].dataset.variantPrice) || 0;
     }
 
-    render() {
-      // Tier active state + grid cols
+    /** Base (undiscounted) total for a given pack quantity. */
+    baseTotalFor(tierQty) {
+      const selected = this.totalCount();
+      if (selected > 0 && tierQty === this.state.tierQty) return this.basePriceForCounts();
+      return this.averageUnitPrice() * tierQty;
+    }
+
+    /** Prices for the currently selected tier + plan. */
+    pricing() {
+      const base = this.baseTotalFor(this.state.tierQty);
+      const pct = Number(this.state.tierPct) || 0;
+      const discounted = Math.round(base * (1 - pct / 100));
+      const isSub = this.state.mode === 'subscription';
+      return {
+        base,
+        pct,
+        total: isSub ? discounted : base,
+        saving: isSub ? base - discounted : 0,
+        subscriptionSaving: base - discounted,
+      };
+    }
+
+    formatSaving(cents, pct) {
+      const value = this.saveDisplay === 'percent'
+        ? `${Math.round(pct)}%`
+        : formatMoney(cents, this.moneyFormat);
+      return this.saveLabel ? `${this.saveLabel} ${value}` : value;
+    }
+
+    renderPlans() {
+      if (this.planButtons.length === 0) return;
+      this.planButtons.forEach((btn) => {
+        const isActive = btn.dataset.plan === this.state.mode;
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+      this.dataset.selectedMode = this.state.mode;
+
+      const activeBtn = this.planButtons.find((b) => b.dataset.plan === this.state.mode);
+      if (this.summaryEl && activeBtn && activeBtn.id) {
+        this.summaryEl.setAttribute('aria-labelledby', activeBtn.id);
+      }
+      if (this.summaryTitleEl) {
+        this.summaryTitleEl.textContent = this.planLabel(this.state.mode);
+      }
+
+      // The badge on the subscription tab always advertises what subscribing saves.
+      if (this.planSaveEl) {
+        const { subscriptionSaving, pct } = this.pricing();
+        if (subscriptionSaving > 0) {
+          this.planSaveEl.textContent = this.formatSaving(subscriptionSaving, pct);
+          this.planSaveEl.hidden = false;
+        } else {
+          this.planSaveEl.hidden = true;
+        }
+      }
+    }
+
+    renderTiers() {
       this.style.setProperty('--pb-tier-cols', this.tierButtons.length || 1);
-      const unitPriceForTiers = this.averageUnitPrice();
-      this.tierButtons.forEach(btn => {
+      const isSub = this.state.mode === 'subscription' || !this.hasSubscription;
+
+      this.tierButtons.forEach((btn) => {
         const tQty = Number(btn.dataset.tierQty);
         const tPct = Number(btn.dataset.tierPct) || 0;
-        const isActive = tQty === this.state.tierQty;
-        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        btn.setAttribute('aria-pressed', tQty === this.state.tierQty ? 'true' : 'false');
+
+        const tierBase = this.baseTotalFor(tQty);
+        const tierSaving = Math.round(tierBase * (tPct / 100));
+
+        const saveEl = btn.querySelector('[data-tier-save]');
+        if (saveEl) {
+          if (isSub && tierSaving > 0) {
+            saveEl.textContent = this.formatSaving(tierSaving, tPct);
+            saveEl.hidden = false;
+          } else {
+            saveEl.hidden = true;
+          }
+        }
 
         const perDayEl = btn.querySelector('[data-tier-per-day]');
         if (perDayEl) {
           const totalSticks = tQty * this.sticksPerPack;
-          if (totalSticks > 0 && unitPriceForTiers > 0) {
-            const tierTotal = unitPriceForTiers * tQty * (1 - tPct / 100);
+          const tierTotal = isSub ? tierBase - tierSaving : tierBase;
+          if (totalSticks > 0 && tierTotal > 0) {
             const perDayCents = Math.round(tierTotal / totalSticks);
             perDayEl.textContent = `${formatMoney(perDayCents, this.moneyFormat)} ${this.perDaySuffix}`;
             perDayEl.hidden = false;
@@ -279,9 +341,10 @@
           }
         }
       });
+    }
 
-      // Flavor counts
-      this.flavorEls.forEach(el => {
+    renderFlavors() {
+      this.flavorEls.forEach((el) => {
         const id = el.dataset.variantId;
         const count = this.state.counts[id] || 0;
         const countEl = el.querySelector('[data-count]');
@@ -291,52 +354,65 @@
         if (downBtn) downBtn.disabled = count <= 0;
         if (upBtn) upBtn.disabled = el.dataset.variantAvailable === 'false';
       });
+    }
 
-      // Price calculation
-      const unitsRequired = this.state.tierQty;
-      const currentTotalUnits = this.totalCount();
-      const unitsToPrice = currentTotalUnits > 0 ? currentTotalUnits : unitsRequired;
-      const unitPrice = this.averageUnitPrice();
+    renderSummary() {
+      const { base, total, saving, pct } = this.pricing();
 
-      const baseTotal = currentTotalUnits > 0 ? this.basePriceForCounts() : unitPrice * unitsRequired;
-      const pct = Number(this.state.tierPct) || 0;
-      const discountedTotal = Math.round(baseTotal * (1 - pct / 100));
-
-      // Update subscription prices
-      const subPriceEl = this.querySelector('[data-sub-price]');
-      const subCompareEl = this.querySelector('[data-sub-compare]');
-      if (subPriceEl) subPriceEl.textContent = formatMoney(discountedTotal, this.moneyFormat);
-      if (subCompareEl) {
-        if (pct > 0) {
-          subCompareEl.textContent = formatMoney(baseTotal, this.moneyFormat);
-          subCompareEl.hidden = false;
+      if (this.summaryPriceEl) this.summaryPriceEl.textContent = formatMoney(total, this.moneyFormat);
+      if (this.summaryCompareEl) {
+        if (saving > 0) {
+          this.summaryCompareEl.textContent = formatMoney(base, this.moneyFormat);
+          this.summaryCompareEl.hidden = false;
         } else {
-          subCompareEl.hidden = true;
+          this.summaryCompareEl.hidden = true;
         }
       }
-
-      // One-time prices — no tier discount, always full price
-      const otPriceEl = this.querySelector('[data-ot-price]');
-      const otCompareEl = this.querySelector('[data-ot-compare]');
-      if (otPriceEl) otPriceEl.textContent = formatMoney(baseTotal, this.moneyFormat);
-      if (otCompareEl) otCompareEl.hidden = true;
-
-      // Status text + ATC enabled
-      const remaining = this.state.tierQty - currentTotalUnits;
-      if (remaining > 0) {
-        if (this.statusEl) this.statusEl.textContent = `Select ${remaining} more to fill your pack (${currentTotalUnits}/${this.state.tierQty})`;
-        if (this.atcEl) {
-          this.atcEl.disabled = true;
-          if (this.atcLabelEl) this.atcLabelEl.textContent = this.atcOriginalLabel;
+      if (this.summarySaveEl) {
+        if (saving > 0) {
+          this.summarySaveEl.textContent = this.formatSaving(saving, pct);
+          this.summarySaveEl.hidden = false;
+        } else {
+          this.summarySaveEl.hidden = true;
         }
+      }
+    }
+
+    atcLabel() {
+      if (!this.atcShowPrice) return this.atcOriginalLabel;
+      const { total } = this.pricing();
+      if (total <= 0) return this.atcOriginalLabel;
+      return `${this.atcOriginalLabel} · ${formatMoney(total, this.moneyFormat)}`;
+    }
+
+    renderStatus() {
+      const selected = this.totalCount();
+      const remaining = this.state.tierQty - selected;
+
+      if (remaining > 0) {
+        if (this.statusEl) {
+          this.statusEl.textContent = this.statusTemplate
+            .replace('[remaining]', remaining)
+            .replace('[selected]', selected)
+            .replace('[total]', this.state.tierQty);
+        }
+        if (this.atcEl) this.atcEl.disabled = true;
       } else {
         if (this.statusEl) this.statusEl.textContent = '';
-        if (this.atcEl) {
-          this.atcEl.disabled = this.state.loading;
-          if (this.atcLabelEl) this.atcLabelEl.textContent = this.atcOriginalLabel;
-        }
+        if (this.atcEl) this.atcEl.disabled = this.state.loading;
       }
 
+      if (this.atcLabelEl && !this.state.loading) {
+        this.atcLabelEl.textContent = this.atcLabel();
+      }
+    }
+
+    render() {
+      this.renderPlans();
+      this.renderTiers();
+      this.renderFlavors();
+      this.renderSummary();
+      this.renderStatus();
       this.notify();
     }
 
@@ -346,7 +422,7 @@
       if (total === 0 || total < this.state.tierQty) return;
 
       const items = [];
-      this.flavorEls.forEach(el => {
+      this.flavorEls.forEach((el) => {
         const id = el.dataset.variantId;
         const qty = this.state.counts[id] || 0;
         if (qty > 0) {
@@ -360,10 +436,14 @@
 
       if (items.length === 0) return;
 
+      // The button is optional (see the "show add to cart" setting) — the sticky
+      // bar can drive this method without one being rendered.
       this.state.loading = true;
-      this.atcEl.disabled = true;
-      this.atcEl.dataset.loading = 'true';
-      if (this.atcLabelEl) this.atcLabelEl.textContent = 'Adding…';
+      if (this.atcEl) {
+        this.atcEl.disabled = true;
+        this.atcEl.dataset.loading = 'true';
+      }
+      if (this.atcLabelEl) this.atcLabelEl.textContent = this.loadingLabel;
 
       try {
         const sectionsToRefresh = ['cart-drawer', 'cart-icon-bubble', 'cart-notification'];
@@ -378,7 +458,7 @@
         });
         if (!res.ok) {
           const err = await res.json().catch(() => ({}));
-          throw new Error(err.description || err.message || 'Add to cart failed');
+          throw new Error(err.description || err.message || this.errorLabel);
         }
         const data = await res.json().catch(() => ({}));
 
@@ -388,7 +468,7 @@
         }
 
         // Reset counts
-        this.flavorEls.forEach(el => {
+        this.flavorEls.forEach((el) => {
           const id = el.dataset.variantId;
           this.state.counts[id] = 0;
         });
@@ -434,11 +514,11 @@
           if (notif && typeof notif.open === 'function') notif.open();
         }
       } catch (err) {
-        if (this.statusEl) this.statusEl.textContent = err.message || 'Something went wrong.';
+        if (this.statusEl) this.statusEl.textContent = err.message || this.errorLabel;
         console.error(err);
       } finally {
         this.state.loading = false;
-        this.atcEl.dataset.loading = 'false';
+        if (this.atcEl) this.atcEl.dataset.loading = 'false';
         this.render();
       }
     }

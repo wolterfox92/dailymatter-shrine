@@ -20,6 +20,8 @@
   if has_subscription == false and preselected_mode == 'subscription'
     assign preselected_mode = 'one_time'
   endif
+
+  assign gifts_count = block.settings.gifts_count | plus: 0
 %}
 
 {%- unless product -%}
@@ -53,72 +55,140 @@
   data-money-format="{{ money_format }}"
   data-tiers='{{ tier_data | strip_newlines | strip }}'
   data-preselected-mode="{{ preselected_mode }}"
+  data-selected-mode="{{ preselected_mode }}"
   data-has-subscription="{{ has_subscription }}"
   data-skip-cart="{{ block.settings.skip_cart }}"
   data-per-day-suffix="{{ block.settings.per_day_suffix | default: '/ day' | escape }}"
   data-sticks-per-pack="{{ block.settings.sticks_per_pack | default: 30 }}"
   data-most-popular-match="{{ block.settings.most_popular_match | escape }}"
+  data-save-display="{{ block.settings.save_display }}"
+  data-save-label="{{ block.settings.save_label | escape }}"
+  data-status-template="{{ block.settings.status_template | escape }}"
+  data-atc-loading-label="{{ block.settings.atc_loading_label | escape }}"
+  data-atc-error-label="{{ block.settings.atc_error_label | escape }}"
+  data-atc-show-price="{{ block.settings.atc_show_price }}"
   {{ block.shopify_attributes }}
   style="
     --pb-accent: {{ block.settings.accent_color }};
     --pb-accent-text: {{ block.settings.accent_text_color }};
+    --pb-button: {{ block.settings.button_color }};
+    --pb-button-text: {{ block.settings.button_text_color }};
     --pb-popular-bg: {{ block.settings.most_popular_color }};
     --pb-border-radius: {{ block.settings.corner_radius }}px;
     --pb-border-width: {{ block.settings.border_width }}px;
     --pb-flavor-cols: {{ product.variants.size }};
+    --pb-tier-cols: {{ tier_count }};
     margin-top: {{ block.settings.margin_top | divided_by: 10.0 }}rem;
     margin-bottom: {{ block.settings.margin_bottom | divided_by: 10.0 }}rem;
   "
 >
-  {%- if block.settings.flavors_heading != blank -%}
-    <h3 class="pack-builder__heading">{{ block.settings.flavors_heading }}</h3>
+  {%- comment -%} Step 1 — plan (subscription vs one-time) {%- endcomment -%}
+  {%- if has_subscription -%}
+    {%- if block.settings.purchase_heading != blank -%}
+      <h3 class="pack-builder__heading {{ block.settings.heading_size }}" id="PackPlanHeading-{{ block_id }}">{{ block.settings.purchase_heading }}</h3>
+    {%- endif -%}
+
+    <div
+      class="pack-builder__segmented pack-builder__plans"
+      role="tablist"
+      {% if block.settings.purchase_heading != blank %}aria-labelledby="PackPlanHeading-{{ block_id }}"{% else %}aria-label="{{ block.settings.subscription_label | escape }}"{% endif %}
+    >
+      <button
+        type="button"
+        class="pack-builder__seg pack-builder__seg--subscription"
+        role="tab"
+        id="PackPlanTab-sub-{{ block_id }}"
+        aria-controls="PackSummary-{{ block_id }}"
+        aria-selected="{% if preselected_mode == 'subscription' %}true{% else %}false{% endif %}"
+        data-plan="subscription"
+      >
+        <span class="pack-builder__seg-badge" data-plan-save hidden></span>
+        <span class="pack-builder__seg-label">{{ block.settings.subscription_label }}</span>
+      </button>
+      <button
+        type="button"
+        class="pack-builder__seg pack-builder__seg--one-time"
+        role="tab"
+        id="PackPlanTab-ot-{{ block_id }}"
+        aria-controls="PackSummary-{{ block_id }}"
+        aria-selected="{% if preselected_mode == 'one_time' %}true{% else %}false{% endif %}"
+        data-plan="one_time"
+      >
+        <span class="pack-builder__seg-label">{{ block.settings.one_time_label }}</span>
+      </button>
+    </div>
   {%- endif -%}
 
-  <div class="pack-builder__tiers" role="tablist" aria-label="Pack size">
+  {%- comment -%} Step 2 — pack size + flavours {%- endcomment -%}
+  {%- if block.settings.flavors_heading != blank -%}
+    <h3 class="pack-builder__heading {{ block.settings.heading_size }}" id="PackFlavourHeading-{{ block_id }}">{{ block.settings.flavors_heading }}</h3>
+  {%- endif -%}
+
+  <div
+    class="pack-builder__segmented pack-builder__tiers"
+    role="group"
+    {% if block.settings.flavors_heading != blank %}aria-labelledby="PackFlavourHeading-{{ block_id }}"{% else %}aria-label="{{ block.settings.tier_1_label | escape }}"{% endif %}
+  >
     {%- for i in (1..3) -%}
       {%- if i > tier_count -%}{%- continue -%}{%- endif -%}
       {%- assign qty_key = 'tier_' | append: i | append: '_qty' -%}
       {%- assign pct_key = 'tier_' | append: i | append: '_pct' -%}
       {%- assign label_key = 'tier_' | append: i | append: '_label' -%}
+      {%- assign pill_key = 'tier_' | append: i | append: '_pill' -%}
       {%- assign qty = block.settings[qty_key] -%}
       {%- assign pct = block.settings[pct_key] -%}
       {%- assign label = block.settings[label_key] -%}
+      {%- assign pill = block.settings[pill_key] -%}
       {%- assign sticks_per_pack = block.settings.sticks_per_pack | default: 30 -%}
       {%- assign total_sticks = qty | times: sticks_per_pack -%}
       <button
         type="button"
-        class="pack-builder__tier"
-        role="tab"
+        class="pack-builder__seg pack-builder__tier"
         data-tier-qty="{{ qty }}"
         data-tier-pct="{{ pct }}"
-        aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+        aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
       >
-        {%- if pct > 0 -%}
-          <span class="pack-builder__tier-badge">Save {{ pct }}%</span>
+        {%- if pill != blank -%}
+          <span class="pack-builder__tier-pill">{{ pill }}</span>
         {%- endif -%}
-        <span class="pack-builder__tier-label">{{ label }}</span>
-        <span class="pack-builder__tier-count">{{ total_sticks }} {% if total_sticks == 1 %}{{ block.settings.unit_label_singular }}{% else %}{{ block.settings.unit_label_plural }}{% endif %}</span>
-        <span class="pack-builder__tier-per-day" data-tier-per-day></span>
+        <span class="pack-builder__seg-label">{{ label }}</span>
+        <span class="pack-builder__tier-save" data-tier-save hidden></span>
+        {%- if block.settings.tier_show_details -%}
+          <span class="pack-builder__tier-count">{{ total_sticks }} {% if total_sticks == 1 %}{{ block.settings.unit_label_singular }}{% else %}{{ block.settings.unit_label_plural }}{% endif %}</span>
+          <span class="pack-builder__tier-per-day" data-tier-per-day></span>
+        {%- endif -%}
       </button>
     {%- endfor -%}
   </div>
 
   <div class="pack-builder__flavors">
     {%- for variant in product.variants -%}
+      {%- liquid
+        assign flavor_image = variant.featured_image | default: product.featured_image
+        assign flavor_alt = flavor_image.alt | default: variant.title | strip_html | escape
+      -%}
       <div class="pack-builder__flavor" data-variant-id="{{ variant.id }}" data-variant-price="{{ variant.price }}" data-variant-available="{{ variant.available }}">
-        {%- if variant.featured_image != blank -%}
-          {{ variant.featured_image | image_url: width: 400 | image_tag: loading: 'lazy', widths: '200,400', class: 'pack-builder__flavor-image' }}
-        {%- elsif product.featured_image != blank -%}
-          {{ product.featured_image | image_url: width: 400 | image_tag: loading: 'lazy', widths: '200,400', class: 'pack-builder__flavor-image' }}
+        {%- if flavor_image != blank -%}
+          {{
+            flavor_image
+            | image_url: width: 400
+            | image_tag:
+              loading: 'lazy',
+              decoding: 'async',
+              widths: '200,300,400',
+              sizes: '(min-width: 750px) 20vw, 33vw',
+              alt: flavor_alt,
+              class: 'pack-builder__flavor-image'
+          }}
         {%- endif -%}
         <div class="pack-builder__flavor-body">
           <div class="pack-builder__flavor-name">{{ variant.title }}</div>
           <div class="pack-builder__stepper">
-            <button type="button" class="pack-builder__step pack-builder__step--down" aria-label="Decrease" data-step="-1">
+            <button type="button" class="pack-builder__step pack-builder__step--down" aria-label="{{ block.settings.decrease_label | default: 'Decrease' | escape }} — {{ variant.title | escape }}" data-step="-1">
               <span aria-hidden="true">−</span>
             </button>
             <span class="pack-builder__count" data-count>0</span>
-            <button type="button" class="pack-builder__step pack-builder__step--up" aria-label="Increase" data-step="1">
+            <button type="button" class="pack-builder__step pack-builder__step--up" aria-label="{{ block.settings.increase_label | default: 'Increase' | escape }} — {{ variant.title | escape }}" data-step="1">
               <span aria-hidden="true">+</span>
             </button>
           </div>
@@ -127,96 +197,153 @@
     {%- endfor -%}
   </div>
 
-  {%- if block.settings.purchase_heading != blank -%}
-    <h3 class="pack-builder__heading pack-builder__heading--purchase">{{ block.settings.purchase_heading }}</h3>
-  {%- endif -%}
+  {%- comment -%} Summary card — reflects the selected plan {%- endcomment -%}
+  <div
+    class="pack-builder__summary"
+    id="PackSummary-{{ block_id }}"
+    {% if has_subscription %}role="tabpanel" aria-labelledby="PackPlanTab-{% if preselected_mode == 'subscription' %}sub{% else %}ot{% endif %}-{{ block_id }}"{% endif %}
+  >
+    {%- if block.settings.subscription_badge != blank -%}
+      <div class="pack-builder__summary-ribbon" data-summary-ribbon>{{ block.settings.subscription_badge }}</div>
+    {%- endif -%}
 
-  <div class="pack-builder__modes">
-    {%- if has_subscription -%}
-      <label class="pack-builder__mode pack-builder__mode--subscription" data-mode="subscription">
-        {%- if block.settings.subscription_badge != blank -%}
-          <span class="pack-builder__mode-ribbon">{{ block.settings.subscription_badge }}</span>
-        {%- endif -%}
-        <input type="radio" name="pb-mode-{{ block_id }}" value="subscription" class="pack-builder__mode-radio" {% if preselected_mode == 'subscription' %}checked{% endif %}>
-        <div class="pack-builder__mode-top">
-          <span class="pack-builder__mode-radio-visual" aria-hidden="true"></span>
-          <span class="pack-builder__mode-title">{{ block.settings.subscription_label }}</span>
-          <span class="pack-builder__mode-prices">
-            <span class="pack-builder__compare" data-sub-compare hidden></span>
-            <span class="pack-builder__price" data-sub-price></span>
-          </span>
+    <div class="pack-builder__summary-body">
+      <div class="pack-builder__summary-head">
+        <span class="pack-builder__summary-title" data-summary-title>{% if preselected_mode == 'subscription' %}{{ block.settings.subscription_label }}{% else %}{{ block.settings.one_time_label }}{% endif %}</span>
+        <span class="pack-builder__summary-prices">
+          <span class="pack-builder__compare" data-summary-compare hidden></span>
+          <span class="pack-builder__price" data-summary-price></span>
+          <span class="pack-builder__save-badge" data-summary-save hidden></span>
+        </span>
+      </div>
+
+      {%- liquid
+        assign benefits = ''
+        for n in (1..4)
+          assign bkey = 'benefit_' | append: n
+          assign bval = block.settings[bkey]
+          if bval != blank
+            assign benefits = benefits | append: n | append: '~~'
+          endif
+        endfor
+        assign benefits = benefits | split: '~~'
+      -%}
+      {%- if benefits.size > 0 -%}
+        <ul class="pack-builder__benefits">
+          {%- for n in benefits -%}
+            {%- liquid
+              assign text_key = 'benefit_' | append: n
+              assign icon_key = 'benefit_' | append: n | append: '_icon'
+              assign color_key = 'benefit_' | append: n | append: '_icon_color'
+              assign benefit_text = block.settings[text_key]
+              assign benefit_icon = block.settings[icon_key] | default: 'check_circle'
+              assign benefit_color = block.settings[color_key]
+            -%}
+            <li class="pack-builder__benefit">
+              <span class="pack-builder__benefit-icon" aria-hidden="true" {% if benefit_color != blank %}style="color: {{ benefit_color }};"{% endif %}>
+                {%- render 'material-icon', icon: benefit_icon, filled: true -%}
+              </span>
+              <span class="pack-builder__benefit-text">{{ benefit_text }}</span>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if allocations_count > 0 -%}
+        <div class="pack-builder__frequency">
+          <div class="pack-builder__frequency-control">
+            <span class="pack-builder__frequency-label" data-freq-label></span>
+            {%- if block.settings.most_popular_label != blank -%}
+              <span class="pack-builder__frequency-pill" data-freq-pill hidden>{{ block.settings.most_popular_label }}</span>
+            {%- endif -%}
+            <span class="pack-builder__frequency-arrow" aria-hidden="true">
+              <svg viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 11L13.5 16.5L19 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </span>
+            <select class="pack-builder__frequency-select" aria-label="{{ block.settings.frequency_label | default: 'Delivery frequency' | escape }}">
+              {%- for allocation in allocations -%}
+                <option value="{{ allocation.selling_plan.id }}" {% if forloop.first %}selected{% endif %}>
+                  {{ allocation.selling_plan.name }}
+                </option>
+              {%- endfor -%}
+            </select>
+          </div>
         </div>
-        <div class="pack-builder__mode-tiers-slot" data-pack-builder-tiers-slot></div>
-        {%- liquid
-          assign benefits = ''
-          for n in (1..4)
-            assign bkey = 'benefit_' | append: n
-            assign bval = block.settings[bkey]
-            if bval != blank
-              assign benefits = benefits | append: bval | append: '~~'
-            endif
-          endfor
-          assign benefits = benefits | split: '~~'
-        -%}
-        {%- if benefits.size > 0 -%}
-          <ul class="pack-builder__benefits">
-            {%- for benefit in benefits -%}
-              <li class="pack-builder__benefit">
-                <span class="pack-builder__benefit-icon" aria-hidden="true">
-                  <svg viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="9.5" cy="9.5" r="7.125" fill="var(--pb-accent)"></circle>
-                    <path d="M8.3125 6.53125L11.2812 9.5L8.3125 12.4688" stroke="var(--pb-accent-text)" stroke-width="1.1875" stroke-linecap="round" stroke-linejoin="round"></path>
-                  </svg>
-                </span>
-                <span class="pack-builder__benefit-text">{{ benefit }}</span>
+      {%- endif -%}
+
+      {%- if gifts_count > 0 -%}
+        <div class="pack-builder__gifts">
+          {%- if block.settings.gifts_heading != blank -%}
+            <h4 class="pack-builder__gifts-title">{{ block.settings.gifts_heading }}</h4>
+          {%- endif -%}
+          <ul class="pack-builder__gifts-list">
+            {%- for g in (1..5) -%}
+              {%- if g > gifts_count -%}{%- continue -%}{%- endif -%}
+              {%- liquid
+                assign gift_image_key = 'gift_' | append: g | append: '_image'
+                assign gift_title_key = 'gift_' | append: g | append: '_title'
+                assign gift_price_key = 'gift_' | append: g | append: '_price'
+                assign gift_delivery_key = 'gift_' | append: g | append: '_delivery'
+                assign gift_image = block.settings[gift_image_key]
+                assign gift_title = block.settings[gift_title_key]
+                assign gift_price = block.settings[gift_price_key]
+                assign gift_delivery = block.settings[gift_delivery_key]
+                assign gift_alt = gift_image.alt | default: gift_title | strip_html | escape
+              -%}
+              {%- if gift_title == blank and gift_image == blank -%}{%- continue -%}{%- endif -%}
+              <li class="pack-builder__gift">
+                <div class="pack-builder__gift-media">
+                  {%- if block.settings.gift_free_label != blank -%}
+                    <span class="pack-builder__gift-flag">{{ block.settings.gift_free_label }}</span>
+                  {%- endif -%}
+                  {%- if gift_image != blank -%}
+                    {{
+                      gift_image
+                      | image_url: width: 300
+                      | image_tag:
+                        loading: 'lazy',
+                        decoding: 'async',
+                        widths: '150,300',
+                        sizes: '100px',
+                        alt: gift_alt,
+                        class: 'pack-builder__gift-image'
+                    }}
+                  {%- endif -%}
+                </div>
+                <div class="pack-builder__gift-info">
+                  {%- if gift_title != blank -%}
+                    <span class="pack-builder__gift-name">{{ gift_title }}</span>
+                  {%- endif -%}
+                  {%- if gift_price != blank -%}
+                    <span class="pack-builder__gift-price">{{ gift_price }}</span>
+                  {%- endif -%}
+                  {%- if gift_delivery != blank -%}
+                    <span class="pack-builder__gift-delivery">{{ gift_delivery }}</span>
+                  {%- endif -%}
+                </div>
               </li>
             {%- endfor -%}
           </ul>
-        {%- endif -%}
-        {%- if allocations_count > 0 -%}
-          <div class="pack-builder__frequency">
-            <div class="pack-builder__frequency-control">
-              <span class="pack-builder__frequency-label" data-freq-label></span>
-              {%- if block.settings.most_popular_label != blank -%}
-                <span class="pack-builder__frequency-pill" data-freq-pill hidden>{{ block.settings.most_popular_label }}</span>
-              {%- endif -%}
-              <span class="pack-builder__frequency-arrow" aria-hidden="true">
-                <svg viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="13.5" cy="13.5" r="13.5" fill="var(--pb-accent)"></circle>
-                  <path d="M9 11.5L13.5 16L18 11.5" stroke="var(--pb-accent-text)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
-              </span>
-              <select class="pack-builder__frequency-select" aria-label="Delivery frequency">
-                {%- for allocation in allocations -%}
-                  <option value="{{ allocation.selling_plan.id }}" {% if forloop.first %}selected{% endif %}>
-                    {{ allocation.selling_plan.name }}
-                  </option>
-                {%- endfor -%}
-              </select>
-            </div>
-          </div>
-        {%- endif -%}
-      </label>
-    {%- endif -%}
-
-    <label class="pack-builder__mode pack-builder__mode--one-time" data-mode="one_time">
-      <input type="radio" name="pb-mode-{{ block_id }}" value="one_time" class="pack-builder__mode-radio" {% if preselected_mode == 'one_time' or has_subscription == false %}checked{% endif %}>
-      <div class="pack-builder__mode-top">
-        <span class="pack-builder__mode-radio-visual" aria-hidden="true"></span>
-        <span class="pack-builder__mode-title">{{ block.settings.one_time_label }}</span>
-        <span class="pack-builder__mode-prices">
-          <span class="pack-builder__compare" data-ot-compare hidden></span>
-          <span class="pack-builder__price" data-ot-price></span>
-        </span>
-      </div>
-    </label>
+        </div>
+      {%- endif -%}
+    </div>
   </div>
 
   <div class="pack-builder__status" data-status aria-live="polite"></div>
 
-  <button type="button" class="pack-builder__atc button" data-atc disabled>
-    <span data-atc-label>{{ block.settings.atc_label | default: 'Add to cart' }}</span>
-  </button>
+  {%- if block.settings.show_atc -%}
+    <hr class="pack-builder__divider">
+
+    {%- comment -%}
+      Deliberately not Shrine's `.button` class: it draws its border as a separate
+      ::after layer with the theme's own radius and button colour, which fights
+      this button's pill radius and its dedicated colour settings.
+    {%- endcomment -%}
+    <button type="button" class="pack-builder__atc" data-atc disabled>
+      <span data-atc-label>{{ block.settings.atc_label | default: 'Add to cart' }}</span>
+    </button>
+  {%- endif -%}
 </pack-builder>
 
 {%- endunless -%}
@@ -232,23 +359,27 @@
     },
     {
       "type": "paragraph",
-      "content": "Lets shoppers pick a pack size (1/2/3 packs), choose how many of each variant fills the pack, and toggle one-time vs subscription. Discounts apply at checkout via Shopify automatic discounts — see setup notes."
+      "content": "Step 1 picks the plan (subscription vs one-time), step 2 picks the pack size and fills it with variants. The summary card below reflects the selected plan. Discounts apply at checkout via Shopify automatic discounts — see setup notes."
     },
     {
       "type": "header",
-      "content": "Headings & labels"
-    },
-    {
-      "type": "text",
-      "id": "flavors_heading",
-      "label": "Flavors heading",
-      "default": "1. Choose your flavours"
+      "content": "Step headings"
     },
     {
       "type": "text",
       "id": "purchase_heading",
-      "label": "Purchase mode heading",
-      "default": "2. Subscribe or one-time purchase"
+      "label": "Step 1 heading (plan)",
+      "default": "1. Choose your plan"
+    },
+    {
+      "type": "text",
+      "id": "flavors_heading",
+      "label": "Step 2 heading (flavours)",
+      "default": "2. Choose your flavours"
+    },
+    {
+      "type": "header",
+      "content": "Plan labels"
     },
     {
       "type": "text",
@@ -258,10 +389,36 @@
     },
     {
       "type": "text",
+      "id": "one_time_label",
+      "label": "One-time label",
+      "default": "Buy once"
+    },
+    {
+      "type": "text",
       "id": "subscription_badge",
-      "label": "Subscription ribbon (top banner)",
+      "label": "Summary ribbon",
       "default": "BEST SELLER",
-      "info": "Leave empty to hide."
+      "info": "Full-width bar on top of the summary card. Leave empty to hide."
+    },
+    {
+      "type": "header",
+      "content": "Savings"
+    },
+    {
+      "type": "select",
+      "id": "save_display",
+      "label": "Show savings as",
+      "options": [
+        { "value": "amount", "label": "Amount (Save €8.99)" },
+        { "value": "percent", "label": "Percentage (Save 20%)" }
+      ],
+      "default": "amount"
+    },
+    {
+      "type": "text",
+      "id": "save_label",
+      "label": "Savings prefix",
+      "default": "Save"
     },
     {
       "type": "header",
@@ -271,7 +428,20 @@
       "type": "text",
       "id": "benefit_1",
       "label": "Benefit 1",
-      "default": "Easily pause or cancel at any time"
+      "default": "Easily pause, cancel or adjust at any time"
+    },
+    {
+      "type": "text",
+      "id": "benefit_1_icon",
+      "label": "Benefit 1 icon",
+      "default": "pause_circle",
+      "info": "[Material Symbols name](https:\/\/fonts.google.com\/icons?icon.set=Material+Symbols&icon.platform=web)."
+    },
+    {
+      "type": "color",
+      "id": "benefit_1_icon_color",
+      "label": "Benefit 1 icon color",
+      "default": "#f2b705"
     },
     {
       "type": "text",
@@ -281,19 +451,61 @@
     },
     {
       "type": "text",
+      "id": "benefit_2_icon",
+      "label": "Benefit 2 icon",
+      "default": "redeem"
+    },
+    {
+      "type": "color",
+      "id": "benefit_2_icon_color",
+      "label": "Benefit 2 icon color",
+      "default": "#e0648f"
+    },
+    {
+      "type": "text",
       "id": "benefit_3",
       "label": "Benefit 3",
       "default": "30 day money back guarantee"
     },
     {
       "type": "text",
+      "id": "benefit_3_icon",
+      "label": "Benefit 3 icon",
+      "default": "verified_user"
+    },
+    {
+      "type": "color",
+      "id": "benefit_3_icon_color",
+      "label": "Benefit 3 icon color",
+      "default": "#41b883"
+    },
+    {
+      "type": "text",
       "id": "benefit_4",
       "label": "Benefit 4",
-      "default": "Free delivery every order (€5)"
+      "default": "Free delivery every order"
+    },
+    {
+      "type": "text",
+      "id": "benefit_4_icon",
+      "label": "Benefit 4 icon",
+      "default": "local_shipping"
+    },
+    {
+      "type": "color",
+      "id": "benefit_4_icon_color",
+      "label": "Benefit 4 icon color",
+      "default": "#41b883"
     },
     {
       "type": "header",
-      "content": "Most popular pill"
+      "content": "Delivery frequency"
+    },
+    {
+      "type": "text",
+      "id": "frequency_label",
+      "label": "Accessible label",
+      "default": "Delivery frequency"
     },
     {
       "type": "text",
@@ -315,44 +527,208 @@
       "default": "#cac0ff"
     },
     {
+      "type": "header",
+      "content": "Free gifts"
+    },
+    {
+      "type": "range",
+      "id": "gifts_count",
+      "label": "Number of gifts",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "default": 0,
+      "info": "Set to 0 to hide the gifts panel. Shown on the subscription plan only."
+    },
+    {
       "type": "text",
-      "id": "one_time_label",
-      "label": "One-time label",
-      "default": "One-time purchase"
+      "id": "gifts_heading",
+      "label": "Gifts heading",
+      "default": "5 Free Gifts",
+      "visible_if": "{{ block.settings.gifts_count > 0 }}"
+    },
+    {
+      "type": "text",
+      "id": "gift_free_label",
+      "label": "Free badge text",
+      "default": "FREE",
+      "visible_if": "{{ block.settings.gifts_count > 0 }}"
+    },
+    {
+      "type": "image_picker",
+      "id": "gift_1_image",
+      "label": "Gift 1 image",
+      "visible_if": "{{ block.settings.gifts_count >= 1 }}"
+    },
+    {
+      "type": "text",
+      "id": "gift_1_title",
+      "label": "Gift 1 title",
+      "visible_if": "{{ block.settings.gifts_count >= 1 }}"
+    },
+    {
+      "type": "text",
+      "id": "gift_1_price",
+      "label": "Gift 1 value",
+      "info": "Shown struck through, e.g. €15.",
+      "visible_if": "{{ block.settings.gifts_count >= 1 }}"
+    },
+    {
+      "type": "text",
+      "id": "gift_1_delivery",
+      "label": "Gift 1 delivery note",
+      "visible_if": "{{ block.settings.gifts_count >= 1 }}"
+    },
+    {
+      "type": "image_picker",
+      "id": "gift_2_image",
+      "label": "Gift 2 image",
+      "visible_if": "{{ block.settings.gifts_count >= 2 }}"
+    },
+    {
+      "type": "text",
+      "id": "gift_2_title",
+      "label": "Gift 2 title",
+      "visible_if": "{{ block.settings.gifts_count >= 2 }}"
+    },
+    {
+      "type": "text",
+      "id": "gift_2_price",
+      "label": "Gift 2 value",
+      "visible_if": "{{ block.settings.gifts_count >= 2 }}"
+    },
+    {
+      "type": "text",
+      "id": "gift_2_delivery",
+      "label": "Gift 2 delivery note",
+      "visible_if": "{{ block.settings.gifts_count >= 2 }}"
+    },
+    {
+      "type": "image_picker",
+      "id": "gift_3_image",
+      "label": "Gift 3 image",
+      "visible_if": "{{ block.settings.gifts_count >= 3 }}"
+    },
+    {
+      "type": "text",
+      "id": "gift_3_title",
+      "label": "Gift 3 title",
+      "visible_if": "{{ block.settings.gifts_count >= 3 }}"
+    },
+    {
+      "type": "text",
+      "id": "gift_3_price",
+      "label": "Gift 3 value",
+      "visible_if": "{{ block.settings.gifts_count >= 3 }}"
+    },
+    {
+      "type": "text",
+      "id": "gift_3_delivery",
+      "label": "Gift 3 delivery note",
+      "visible_if": "{{ block.settings.gifts_count >= 3 }}"
+    },
+    {
+      "type": "image_picker",
+      "id": "gift_4_image",
+      "label": "Gift 4 image",
+      "visible_if": "{{ block.settings.gifts_count >= 4 }}"
+    },
+    {
+      "type": "text",
+      "id": "gift_4_title",
+      "label": "Gift 4 title",
+      "visible_if": "{{ block.settings.gifts_count >= 4 }}"
+    },
+    {
+      "type": "text",
+      "id": "gift_4_price",
+      "label": "Gift 4 value",
+      "visible_if": "{{ block.settings.gifts_count >= 4 }}"
+    },
+    {
+      "type": "text",
+      "id": "gift_4_delivery",
+      "label": "Gift 4 delivery note",
+      "visible_if": "{{ block.settings.gifts_count >= 4 }}"
+    },
+    {
+      "type": "image_picker",
+      "id": "gift_5_image",
+      "label": "Gift 5 image",
+      "visible_if": "{{ block.settings.gifts_count >= 5 }}"
+    },
+    {
+      "type": "text",
+      "id": "gift_5_title",
+      "label": "Gift 5 title",
+      "visible_if": "{{ block.settings.gifts_count >= 5 }}"
+    },
+    {
+      "type": "text",
+      "id": "gift_5_price",
+      "label": "Gift 5 value",
+      "visible_if": "{{ block.settings.gifts_count >= 5 }}"
+    },
+    {
+      "type": "text",
+      "id": "gift_5_delivery",
+      "label": "Gift 5 delivery note",
+      "visible_if": "{{ block.settings.gifts_count >= 5 }}"
+    },
+    {
+      "type": "header",
+      "content": "Add to cart"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_atc",
+      "label": "Show the add to cart button",
+      "default": true,
+      "info": "Turn off only if another block or the sticky bar handles adding to cart."
     },
     {
       "type": "text",
       "id": "atc_label",
-      "label": "Add to cart button label",
-      "default": "Add to cart"
+      "label": "Button label",
+      "default": "Add to cart",
+      "visible_if": "{{ block.settings.show_atc }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "atc_show_price",
+      "label": "Show total price on the button",
+      "default": true
     },
     {
       "type": "text",
-      "id": "unit_label_singular",
-      "label": "Unit label (singular)",
-      "default": "Count",
-      "info": "Used in the tier tile, e.g. \"1 Count\"."
+      "id": "atc_loading_label",
+      "label": "Button label while adding",
+      "default": "Adding…"
     },
     {
       "type": "text",
-      "id": "unit_label_plural",
-      "label": "Unit label (plural)",
-      "default": "Count",
-      "info": "Used in the tier tile, e.g. \"30 Count\"."
+      "id": "atc_error_label",
+      "label": "Generic error message",
+      "default": "Something went wrong."
     },
     {
       "type": "text",
-      "id": "per_day_suffix",
-      "label": "Per-day suffix",
-      "default": "/ day",
-      "info": "Appears after the per-day price on each tier."
+      "id": "status_template",
+      "label": "Incomplete pack message",
+      "default": "Select [remaining] more to fill your pack ([selected]/[total])",
+      "info": "Placeholders: [remaining], [selected], [total]."
     },
     {
-      "type": "number",
-      "id": "sticks_per_pack",
-      "label": "Sticks per pack",
-      "default": 30,
-      "info": "Used to compute the total stick count per tier and the per-day price (total price ÷ total sticks)."
+      "type": "text",
+      "id": "increase_label",
+      "label": "Stepper increase label",
+      "default": "Increase"
+    },
+    {
+      "type": "text",
+      "id": "decrease_label",
+      "label": "Stepper decrease label",
+      "default": "Decrease"
     },
     {
       "type": "header",
@@ -366,6 +742,40 @@
       "max": 3,
       "step": 1,
       "default": 3
+    },
+    {
+      "type": "checkbox",
+      "id": "tier_show_details",
+      "label": "Show unit count and per-day price",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "unit_label_singular",
+      "label": "Unit label (singular)",
+      "default": "Count",
+      "visible_if": "{{ block.settings.tier_show_details }}"
+    },
+    {
+      "type": "text",
+      "id": "unit_label_plural",
+      "label": "Unit label (plural)",
+      "default": "Count",
+      "visible_if": "{{ block.settings.tier_show_details }}"
+    },
+    {
+      "type": "text",
+      "id": "per_day_suffix",
+      "label": "Per-day suffix",
+      "default": "/ day",
+      "visible_if": "{{ block.settings.tier_show_details }}"
+    },
+    {
+      "type": "number",
+      "id": "sticks_per_pack",
+      "label": "Sticks per pack",
+      "default": 30,
+      "info": "Used to compute the total stick count per tier and the per-day price (total price ÷ total sticks)."
     },
     {
       "type": "header",
@@ -389,6 +799,12 @@
       "label": "Save % (visual badge)",
       "default": 16,
       "info": "Visual only. Actual discount applies via your Shopify automatic discount rule."
+    },
+    {
+      "type": "text",
+      "id": "tier_1_pill",
+      "label": "Pill above the tile",
+      "info": "E.g. \"Best value\". Leave empty to hide."
     },
     {
       "type": "header",
@@ -417,6 +833,12 @@
       "visible_if": "{{ block.settings.tier_count >= 2 }}"
     },
     {
+      "type": "text",
+      "id": "tier_2_pill",
+      "label": "Pill above the tile",
+      "visible_if": "{{ block.settings.tier_count >= 2 }}"
+    },
+    {
       "type": "header",
       "content": "Tier 3",
       "visible_if": "{{ block.settings.tier_count >= 3 }}"
@@ -440,6 +862,13 @@
       "id": "tier_3_pct",
       "label": "Save % (visual badge)",
       "default": 25,
+      "visible_if": "{{ block.settings.tier_count >= 3 }}"
+    },
+    {
+      "type": "text",
+      "id": "tier_3_pill",
+      "label": "Pill above the tile",
+      "default": "Best value",
       "visible_if": "{{ block.settings.tier_count >= 3 }}"
     },
     {
@@ -480,9 +909,21 @@
       "default": "background-1"
     },
     {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Step heading size",
+      "options": [
+        { "value": "h2", "label": "Large" },
+        { "value": "h3", "label": "Medium" },
+        { "value": "h4", "label": "Small" },
+        { "value": "h5", "label": "Extra small" }
+      ],
+      "default": "h3"
+    },
+    {
       "type": "color",
       "id": "accent_color",
-      "label": "Accent color (badges, selected state)",
+      "label": "Accent color (ribbon, selected state)",
       "default": "#C8FF3D"
     },
     {
@@ -490,6 +931,30 @@
       "id": "accent_text_color",
       "label": "Accent text color",
       "default": "#121212"
+    },
+    {
+      "type": "header",
+      "content": "Button & savings color"
+    },
+    {
+      "type": "paragraph",
+      "content": "Drives the add to cart button and every savings badge, independently of the accent color above."
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Background",
+      "default": "#C8FF3D"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text",
+      "default": "#121212"
+    },
+    {
+      "type": "header",
+      "content": "Shape"
     },
     {
       "type": "range",
