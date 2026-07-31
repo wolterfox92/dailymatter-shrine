@@ -285,7 +285,7 @@
                 "stat_bar_EdeqkM": {
                   "type": "stat-bar",
                   "settings": {
-                    "label": "Lorem ipsum dolor",
+                    "label": "Minder vermoeid in de ochtend",
                     "percentage": 80,
                     "show_percentage": true,
                     "fill_color": ""
@@ -295,7 +295,7 @@
                 "stat_bar_AgEBqY": {
                   "type": "stat-bar",
                   "settings": {
-                    "label": "Lorem ipsum dolor",
+                    "label": "Stabiele energie",
                     "percentage": 74,
                     "show_percentage": true,
                     "fill_color": ""
@@ -305,7 +305,7 @@
                 "stat_bar_ec6XKV": {
                   "type": "stat-bar",
                   "settings": {
-                    "label": "Lorem ipsum dolor",
+                    "label": "Mentale scherpte en focus",
                     "percentage": 68,
                     "show_percentage": true,
                     "fill_color": ""
@@ -315,7 +315,7 @@
                 "stat_bar_d8kmAh": {
                   "type": "stat-bar",
                   "settings": {
-                    "label": "Lorem ipsum dolor",
+                    "label": "Beter herstel",
                     "percentage": 63,
                     "show_percentage": true,
                     "fill_color": ""
