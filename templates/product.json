@@ -604,8 +604,8 @@
             "step_label": "STAP 01",
             "title": "<p>Scheur één sachet open</p>",
             "subtitle": "<p>Met je favoriete smaak</p>",
-            "card_bg": "#eaf5d8",
-            "text_color": "#2e4a20"
+            "card_bg": "#FFB974",
+            "text_color": "#FFFFFF"
           }
         },
         "step_mBXTB8": {
@@ -656,7 +656,7 @@
         "card_ratio": "1.45",
         "bg_color": "#FFFFFF",
         "eyebrow_color": "#25321B",
-        "heading_color": "#25321B",
+        "heading_color": "#2F1616",
         "subtext_color": "#5B6152",
         "nav_color": "#25321B",
         "nav_border": "#D6D8D0",
