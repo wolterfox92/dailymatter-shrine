@@ -605,7 +605,7 @@
             "title": "<p>Scheur één sachet open</p>",
             "subtitle": "<p>Met je favoriete smaak</p>",
             "card_bg": "#FFB974",
-            "text_color": "#FFFFFF"
+            "text_color": "#79584F"
           }
         },
         "step_mBXTB8": {
@@ -614,8 +614,8 @@
             "step_label": "STAP 02",
             "title": "<p>Meng met 500ML water</p>",
             "subtitle": "<p>Gebruik jouw Daily Matters fles, die is precies 500ml</p>",
-            "card_bg": "#f6e4da",
-            "text_color": "#2e4a20"
+            "card_bg": "#F5EFE7",
+            "text_color": "#79584F"
           }
         },
         "step_rhDQ96": {
@@ -624,8 +624,8 @@
             "step_label": "STAP 03",
             "title": "<p>Schud en geniet.</p>",
             "subtitle": "<p>Klaar in seconden.</p>",
-            "card_bg": "#eaf5d8",
-            "text_color": "#2e4a20"
+            "card_bg": "#FFB974",
+            "text_color": "#79584F"
           }
         },
         "step_cwaq3V": {
@@ -634,8 +634,8 @@
             "step_label": "STAP 04",
             "title": "<p>Wissel je pods.</p>",
             "subtitle": "<p>Nieuwe smaak, nieuw water.</p>",
-            "card_bg": "#f7dde0",
-            "text_color": "#7a2230"
+            "card_bg": "#F5EFE7",
+            "text_color": "#79584F"
           }
         }
       },
