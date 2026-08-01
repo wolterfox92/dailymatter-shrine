@@ -1,0 +1,475 @@
+{%- liquid
+  assign s = section.settings
+
+  assign align_items = 'flex-start'
+  if s.content_alignment == 'center'
+    assign align_items = 'center'
+  endif
+
+  assign step_count = 0
+  for block in section.blocks
+    if block.type == 'step'
+      assign step_count = step_count | plus: 1
+    endif
+  endfor
+
+  assign columns = s.columns_desktop | at_most: step_count
+  if columns < 1
+    assign columns = 1
+  endif
+-%}
+
+{{ 'custom-daily-steps.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .custom-steps-{{ section.id }} {
+    --steps-bg: {{ s.bg_color }};
+    --steps-text: {{ s.text_color }};
+    --steps-muted: {{ s.muted_color }};
+    --steps-eyebrow: {{ s.eyebrow_color }};
+    --steps-card-bg: {{ s.card_bg_color }};
+    --steps-media-bg: {{ s.media_bg_color }};
+    --steps-badge-bg: {{ s.badge_bg_color }};
+    --steps-badge-ink: {{ s.badge_text_color }};
+    --steps-eyebrow-size: {{ s.eyebrow_size | divided_by: 10.0 }}rem;
+    --steps-title-size: {{ s.title_size | divided_by: 10.0 }}rem;
+    --steps-body-size: {{ s.body_size | divided_by: 10.0 }}rem;
+    --steps-badge-size: {{ s.badge_size }}px;
+    --steps-badge-font: {{ s.badge_size | times: 0.5 | round: 0 | divided_by: 10.0 }}rem;
+    --steps-card-radius: {{ s.card_radius }}px;
+    --steps-media-radius: {{ s.media_radius }}px;
+    --steps-card-pad: {{ s.card_padding }}px;
+    --steps-card-gap: {{ s.card_padding | times: 0.75 | round: 0 }}px;
+    --steps-body-inset: {{ s.body_inset }}px;
+    --steps-gap: {{ s.grid_gap }}px;
+    --steps-columns: {{ columns }};
+    --steps-ratio: {{ s.media_ratio }};
+    --steps-align: {{ s.content_alignment }};
+    --steps-align-items: {{ align_items }};
+    --steps-pad-top-mobile: {{ s.padding_top | times: 0.6 | round: 0 }}px;
+    --steps-pad-bottom-mobile: {{ s.padding_bottom | times: 0.6 | round: 0 }}px;
+    --steps-pad-top: {{ s.padding_top }}px;
+    --steps-pad-bottom: {{ s.padding_bottom }}px;
+  }
+
+  {%- if s.heading_size == 'custom' %}
+    .custom-steps-{{ section.id }} .custom-steps__heading {
+      font-size: {{ s.heading_custom_mobile_size | divided_by: 10.0 }}rem;
+    }
+
+    @media screen and (min-width: 750px) {
+      .custom-steps-{{ section.id }} .custom-steps__heading {
+        font-size: {{ s.heading_custom_desktop_size | divided_by: 10.0 }}rem;
+      }
+    }
+  {%- endif %}
+{%- endstyle -%}
+
+<div class="custom-steps custom-steps-{{ section.id }}">
+  <div class="page-width">
+    {%- if s.eyebrow != blank or s.heading != blank -%}
+      <div class="custom-steps__header">
+        {%- if s.eyebrow != blank -%}
+          <p class="custom-steps__eyebrow">{{ s.eyebrow | escape }}</p>
+        {%- endif -%}
+        {%- if s.heading != blank -%}
+          <h2 class="custom-steps__heading{% unless s.heading_size == 'custom' %} {{ s.heading_size }}{% endunless %}">
+            {{- s.heading | escape -}}
+          </h2>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if step_count > 0 -%}
+      <ol class="custom-steps__list" role="list">
+        {%- assign step_index = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type != 'step' -%}
+            {%- continue -%}
+          {%- endif -%}
+          {%- liquid
+            assign step_index = step_index | plus: 1
+            assign image = block.settings.image
+            assign image_alt = image.alt | default: block.settings.title | strip_html
+          -%}
+          <li class="custom-steps__card" {{ block.shopify_attributes }}>
+            <div class="custom-steps__media">
+              {%- if image != blank -%}
+                {{-
+                  image
+                  | image_url: width: 1200
+                  | image_tag:
+                    width: image.width,
+                    height: image.height,
+                    alt: image_alt,
+                    sizes: '(min-width: 990px) 33vw, (min-width: 750px) 45vw, calc(100vw - 4rem)',
+                    widths: '375, 550, 750, 990, 1200',
+                    loading: 'lazy',
+                    decoding: 'async'
+                -}}
+              {%- else -%}
+                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+              {%- endif -%}
+            </div>
+
+            <div class="custom-steps__body">
+              <div class="custom-steps__titlerow">
+                {%- if s.show_numbers -%}
+                  <span class="custom-steps__badge" aria-hidden="true">{{ step_index }}</span>
+                {%- endif -%}
+                {%- if block.settings.title != blank -%}
+                  <h3 class="custom-steps__title">{{ block.settings.title | escape }}</h3>
+                {%- endif -%}
+              </div>
+              {%- if block.settings.text != blank -%}
+                <div class="custom-steps__text">{{ block.settings.text }}</div>
+              {%- endif -%}
+            </div>
+          </li>
+        {%- endfor -%}
+      </ol>
+    {%- endif -%}
+
+    {%- if step_count < section.blocks.size -%}
+      <div class="custom-steps__apps">
+        {%- for block in section.blocks -%}
+          {%- unless block.type == 'step' -%}
+            {% render block %}
+          {%- endunless -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Stappen (kaarten)",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Three simple steps"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size",
+      "min": 9,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Eyebrow grootte",
+      "default": 12
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Made to do daily."
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading grootte",
+      "options": [
+        { "value": "hxl", "label": "Extra extra groot" },
+        { "value": "h0", "label": "Extra groot" },
+        { "value": "h1", "label": "Groot" },
+        { "value": "h2", "label": "Middel" },
+        { "value": "h3", "label": "Klein" },
+        { "value": "custom", "label": "Aangepast (px)" }
+      ],
+      "default": "h0"
+    },
+    {
+      "type": "range",
+      "id": "heading_custom_mobile_size",
+      "min": 18,
+      "max": 72,
+      "step": 1,
+      "unit": "px",
+      "label": "Aangepaste heading grootte (mobiel)",
+      "default": 34,
+      "visible_if": "{{ section.settings.heading_size == 'custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "heading_custom_desktop_size",
+      "min": 18,
+      "max": 96,
+      "step": 1,
+      "unit": "px",
+      "label": "Aangepaste heading grootte (desktop)",
+      "default": 52,
+      "visible_if": "{{ section.settings.heading_size == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Uitlijning header",
+      "options": [
+        { "value": "left", "label": "Links" },
+        { "value": "center", "label": "Gecentreerd" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Kaarten"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_numbers",
+      "label": "Toon stapnummers",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "media_ratio",
+      "label": "Beeldverhouding",
+      "options": [
+        { "value": "16 / 9", "label": "16:9 (breed)" },
+        { "value": "3 / 2", "label": "3:2" },
+        { "value": "4 / 3", "label": "4:3" },
+        { "value": "1 / 1", "label": "1:1 (vierkant)" },
+        { "value": "4 / 5", "label": "4:5 (staand)" }
+      ],
+      "default": "16 / 9"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "label": "Kolommen op desktop",
+      "info": "Mobiel is altijd één kolom.",
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Ruimte tussen kaarten",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Ronding kaart",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "media_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Ronding afbeelding",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding kaart",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "body_inset",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Extra inspringing tekst",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "badge_size",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Grootte stapnummer",
+      "default": 26,
+      "visible_if": "{{ section.settings.show_numbers }}"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 14,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Grootte kaart-titel",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Grootte lopende tekst",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Kleuren"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Achtergrond sectie",
+      "default": "#C9B8FD"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Achtergrond kaart",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "media_bg_color",
+      "label": "Achtergrond afbeelding",
+      "default": "#F4F4F5"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Titels",
+      "default": "#191634"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "Lopende tekst",
+      "default": "#5B5768"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow",
+      "default": "#191634"
+    },
+    {
+      "type": "color",
+      "id": "badge_bg_color",
+      "label": "Achtergrond stapnummer",
+      "default": "#C9F25C"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Kleur stapnummer",
+      "default": "#191634"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding boven",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding onder",
+      "default": 48
+    }
+  ],
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Stap",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Afbeelding"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titel",
+          "default": "Prepare"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Tekst",
+          "default": "<p>Scheur één sachet open.</p>"
+        }
+      ]
+    },
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Stappen (kaarten)",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": {
+            "title": "Prepare",
+            "text": "<p>Scheur één sachet open.</p>"
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Mix",
+            "text": "<p>Meng met 500 ml koud water.</p>"
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Go",
+            "text": "<p>Drink en ga verder met je dag.</p>"
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

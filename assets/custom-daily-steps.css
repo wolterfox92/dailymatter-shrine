@@ -1,0 +1,149 @@
+/* Component styles for sections/custom-daily-steps.liquid.
+   Static rules only — every merchant-configurable value arrives as a CSS custom
+   property set on the section root (see the {% style %} block in the section).
+   Mobile-first: base rules are the 390px layout, min-width queries enhance up. */
+
+.custom-steps {
+  background-color: var(--steps-bg);
+  color: var(--steps-text);
+  padding-top: var(--steps-pad-top-mobile);
+  padding-bottom: var(--steps-pad-bottom-mobile);
+}
+
+/* Header ------------------------------------------------------------------ */
+
+.custom-steps__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  text-align: var(--steps-align);
+  align-items: var(--steps-align-items);
+  margin-bottom: 2rem;
+}
+
+.custom-steps__eyebrow {
+  margin: 0;
+  font-size: var(--steps-eyebrow-size);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--steps-eyebrow);
+}
+
+.custom-steps__heading {
+  margin: 0;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--steps-text);
+}
+
+/* Cards ------------------------------------------------------------------- */
+
+.custom-steps__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--steps-gap);
+}
+
+.custom-steps__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--steps-card-gap);
+  padding: var(--steps-card-pad);
+  border-radius: var(--steps-card-radius);
+  background-color: var(--steps-card-bg);
+}
+
+.custom-steps__media {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--steps-media-radius);
+  background-color: var(--steps-media-bg);
+  aspect-ratio: var(--steps-ratio);
+}
+
+.custom-steps__media img,
+.custom-steps__media svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.custom-steps__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-inline: var(--steps-body-inset);
+  padding-bottom: var(--steps-body-inset);
+}
+
+.custom-steps__titlerow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.custom-steps__badge {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--steps-badge-size);
+  height: var(--steps-badge-size);
+  padding-inline: 0.4rem;
+  border-radius: 999px;
+  background-color: var(--steps-badge-bg);
+  color: var(--steps-badge-ink);
+  font-size: var(--steps-badge-font);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.custom-steps__title {
+  margin: 0;
+  font-size: var(--steps-title-size);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--steps-text);
+}
+
+.custom-steps__text {
+  font-size: var(--steps-body-size);
+  line-height: 1.5;
+  color: var(--steps-muted);
+}
+
+.custom-steps__text > * {
+  margin: 0;
+}
+
+.custom-steps__text > * + * {
+  margin-top: 0.6rem;
+}
+
+.custom-steps__apps:not(:empty) {
+  margin-top: var(--steps-gap);
+}
+
+/* Desktop enhancement ----------------------------------------------------- */
+
+@media screen and (min-width: 750px) {
+  .custom-steps {
+    padding-top: var(--steps-pad-top);
+    padding-bottom: var(--steps-pad-bottom);
+  }
+
+  .custom-steps__header {
+    gap: 1rem;
+    margin-bottom: 3.2rem;
+  }
+
+  .custom-steps__list {
+    grid-template-columns: repeat(var(--steps-columns), minmax(0, 1fr));
+  }
+}

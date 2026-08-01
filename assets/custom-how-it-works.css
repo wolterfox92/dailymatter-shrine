@@ -1,0 +1,195 @@
+/* Component styles for sections/custom-how-it-works.liquid.
+   Static rules only — every merchant-configurable value comes in as a CSS custom
+   property set on the section root (see the {% style %} block in the section).
+   Mobile-first: base rules are the 390px layout, min-width queries enhance up. */
+
+.custom-hiw {
+  background-color: var(--hiw-bg);
+  color: var(--hiw-text);
+  padding-top: var(--hiw-pad-top-mobile);
+  padding-bottom: var(--hiw-pad-bottom-mobile);
+}
+
+.custom-hiw__inner {
+  max-width: var(--hiw-max-width);
+  margin-inline-start: var(--hiw-inner-start);
+  margin-inline-end: auto;
+}
+
+/* Header ------------------------------------------------------------------ */
+
+.custom-hiw__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  text-align: var(--hiw-align);
+  margin-bottom: 2.4rem;
+}
+
+.custom-hiw__eyebrow {
+  margin: 0;
+  font-size: var(--hiw-eyebrow-size);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--hiw-eyebrow);
+}
+
+.custom-hiw__heading {
+  margin: 0;
+  line-height: 1.1;
+  color: var(--hiw-text);
+}
+
+.custom-hiw__intro {
+  margin: 0;
+  font-size: var(--hiw-body-size);
+  line-height: 1.55;
+  color: var(--hiw-muted);
+}
+
+.custom-hiw__intro > * {
+  margin: 0;
+}
+
+.custom-hiw__intro > * + * {
+  margin-top: 0.8rem;
+}
+
+/* Timeline ---------------------------------------------------------------- */
+
+.custom-hiw__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.custom-hiw__item {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--hiw-marker-size) 1fr;
+  column-gap: 1.6rem;
+  padding-bottom: var(--hiw-item-gap);
+}
+
+.custom-hiw__item:last-child {
+  padding-bottom: 0;
+}
+
+/* The connector runs from just under one marker to the top of the next one. */
+.custom-hiw__item::before {
+  content: "";
+  position: absolute;
+  top: calc(var(--hiw-marker-size) + 0.6rem);
+  bottom: -0.6rem;
+  left: calc(var(--hiw-marker-size) / 2);
+  transform: translateX(-50%);
+  border-left: var(--hiw-rail-width) var(--hiw-rail-style) var(--hiw-rail-color);
+}
+
+.custom-hiw__item:last-child::before {
+  content: none;
+}
+
+.custom-hiw__marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--hiw-marker-size);
+  height: var(--hiw-marker-size);
+  border-radius: 999px;
+  background-color: var(--hiw-marker-bg);
+  color: var(--hiw-marker-ink);
+  overflow: hidden;
+}
+
+.custom-hiw__marker svg {
+  width: 50%;
+  height: 50%;
+  display: block;
+}
+
+.custom-hiw__marker img {
+  width: 55%;
+  height: 55%;
+  object-fit: contain;
+  display: block;
+}
+
+.custom-hiw__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-top: 0.4rem;
+  min-width: 0;
+}
+
+.custom-hiw__kicker {
+  margin: 0;
+  font-size: var(--hiw-kicker-size);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hiw-kicker);
+}
+
+.custom-hiw__title {
+  margin: 0;
+  font-size: var(--hiw-title-size);
+  line-height: 1.25;
+  color: var(--hiw-text);
+}
+
+.custom-hiw__text {
+  margin-top: 0.4rem;
+  font-size: var(--hiw-body-size);
+  line-height: 1.55;
+  color: var(--hiw-muted);
+}
+
+.custom-hiw__text > * {
+  margin: 0;
+}
+
+.custom-hiw__text > * + * {
+  margin-top: 0.8rem;
+}
+
+/* Footnote ---------------------------------------------------------------- */
+
+.custom-hiw__footnote {
+  margin: 2rem 0 0;
+  font-size: var(--hiw-footnote-size);
+  line-height: 1.5;
+  color: var(--hiw-muted);
+}
+
+.custom-hiw__footnote > * {
+  margin: 0;
+}
+
+.custom-hiw__apps:not(:empty) {
+  margin-top: 2.4rem;
+}
+
+/* Desktop enhancement ----------------------------------------------------- */
+
+@media screen and (min-width: 750px) {
+  .custom-hiw {
+    padding-top: var(--hiw-pad-top);
+    padding-bottom: var(--hiw-pad-bottom);
+  }
+
+  .custom-hiw__header {
+    gap: 1.2rem;
+    margin-bottom: 3.2rem;
+  }
+
+  .custom-hiw__item {
+    column-gap: 2.4rem;
+  }
+
+  .custom-hiw__content {
+    padding-top: 0.6rem;
+  }
+}

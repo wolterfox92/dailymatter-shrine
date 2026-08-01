@@ -12,7 +12,10 @@
   /* Button + every savings badge share one colour, set apart from --pb-accent. */
   --pb-button: var(--pb-accent, #121212);
   --pb-button-text: var(--pb-accent-text, #fff);
-  /* One type scale for the whole component — rem, so it follows the theme's
+  /* Running copy matches the theme's paragraph size (body { font-size: 1.5rem }).
+     Deliberately NOT bumped on desktop — paragraphs elsewhere don't grow either. */
+  --pb-fs-body: 1.5rem;
+  /* One type scale for the rest of the component — rem, so it follows the theme's
      body-scale setting. Headings use the theme's h2–h5 classes instead. */
   --pb-fs-micro: 1.1rem;
   --pb-fs-xs: 1.2rem;
@@ -447,6 +450,9 @@
   line-height: 1;
 }
 
+/* Deliberate exception to the 1.5rem paragraph size: these sit in a two-column
+   grid inside a narrow product column, where 1.5rem wraps every item to three
+   lines. Kept at 1.3rem so the card stays readable. */
 .pack-builder__benefit-text {
   font-size: var(--pb-fs-sm);
   line-height: 1.35;
@@ -629,7 +635,7 @@
 
 /* ---------- Status, divider & ATC ---------- */
 .pack-builder__status {
-  font-size: var(--pb-fs-sm);
+  font-size: var(--pb-fs-body);
   margin-bottom: 0.8rem;
   min-height: 1.8em;
   opacity: 0.8;

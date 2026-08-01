@@ -1,0 +1,12 @@
+/* Normalises running copy (sentences and paragraphs) to the theme's paragraph
+   size — `body { font-size: 1.5rem }` in layout/theme.liquid, which resolves to
+   15px at the default 100% body scale.
+   Scoped overrides only: Shrine core files stay untouched, so a theme update
+   cannot lose this. Labels, badges and eyebrows are UI chrome and keep their
+   own sizes deliberately.
+   Loaded from the CUSTOM-START block in layout/theme.liquid — see docs/changes.md. */
+
+/* Shrine ships .delivery-time__text at 1.4rem (assets/base.css). */
+.delivery-time__text {
+  font-size: 1.5rem;
+}

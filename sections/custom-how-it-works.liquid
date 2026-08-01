@@ -1,0 +1,515 @@
+{%- liquid
+  assign s = section.settings
+  assign inner_start = '0'
+  if s.content_alignment == 'center'
+    assign inner_start = 'auto'
+  endif
+
+  assign layer_count = 0
+  for block in section.blocks
+    if block.type == 'layer'
+      assign layer_count = layer_count | plus: 1
+    endif
+  endfor
+-%}
+
+{{ 'custom-how-it-works.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .custom-hiw-{{ section.id }} {
+    --hiw-bg: {{ s.bg_color }};
+    --hiw-text: {{ s.text_color }};
+    --hiw-muted: {{ s.muted_color }};
+    --hiw-eyebrow: {{ s.eyebrow_color }};
+    --hiw-kicker: {{ s.kicker_color }};
+    --hiw-rail-color: {{ s.rail_color }};
+    --hiw-rail-width: {{ s.rail_width }}px;
+    --hiw-rail-style: {{ s.rail_style }};
+    --hiw-marker-size: {{ s.marker_size }}px;
+    --hiw-item-gap: {{ s.item_gap }}px;
+    --hiw-eyebrow-size: {{ s.eyebrow_size | divided_by: 10.0 }}rem;
+    --hiw-kicker-size: {{ s.kicker_size | divided_by: 10.0 }}rem;
+    --hiw-title-size: {{ s.item_title_size | divided_by: 10.0 }}rem;
+    --hiw-body-size: {{ s.body_size | divided_by: 10.0 }}rem;
+    --hiw-footnote-size: {{ s.footnote_size | divided_by: 10.0 }}rem;
+    --hiw-max-width: {{ s.content_max_width }}px;
+    --hiw-inner-start: {{ inner_start }};
+    --hiw-align: {{ s.content_alignment }};
+    --hiw-pad-top-mobile: {{ s.padding_top | times: 0.6 | round: 0 }}px;
+    --hiw-pad-bottom-mobile: {{ s.padding_bottom | times: 0.6 | round: 0 }}px;
+    --hiw-pad-top: {{ s.padding_top }}px;
+    --hiw-pad-bottom: {{ s.padding_bottom }}px;
+  }
+
+  {%- if s.heading_size == 'custom' %}
+    .custom-hiw-{{ section.id }} .custom-hiw__heading {
+      font-size: {{ s.heading_custom_mobile_size | divided_by: 10.0 }}rem;
+    }
+
+    @media screen and (min-width: 750px) {
+      .custom-hiw-{{ section.id }} .custom-hiw__heading {
+        font-size: {{ s.heading_custom_desktop_size | divided_by: 10.0 }}rem;
+      }
+    }
+  {%- endif %}
+{%- endstyle -%}
+
+<div class="custom-hiw custom-hiw-{{ section.id }}">
+  <div class="page-width">
+    <div class="custom-hiw__inner">
+      {%- if s.eyebrow != blank or s.heading != blank or s.intro != blank -%}
+        <div class="custom-hiw__header">
+          {%- if s.eyebrow != blank -%}
+            <p class="custom-hiw__eyebrow">{{ s.eyebrow | escape }}</p>
+          {%- endif -%}
+          {%- if s.heading != blank -%}
+            <h2 class="custom-hiw__heading{% unless s.heading_size == 'custom' %} {{ s.heading_size }}{% endunless %}">
+              {{- s.heading | escape -}}
+            </h2>
+          {%- endif -%}
+          {%- if s.intro != blank -%}
+            <div class="custom-hiw__intro">{{ s.intro }}</div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if layer_count > 0 -%}
+        <ol class="custom-hiw__list" role="list">
+          {%- for block in section.blocks -%}
+            {%- if block.type != 'layer' -%}
+              {%- continue -%}
+            {%- endif -%}
+            <li
+              class="custom-hiw__item"
+              style="--hiw-marker-bg: {{ block.settings.icon_bg }}; --hiw-marker-ink: {{ block.settings.icon_color }};"
+              {{ block.shopify_attributes }}
+            >
+              <span class="custom-hiw__marker" aria-hidden="true">
+                {%- if block.settings.icon_image != blank -%}
+                  {{-
+                    block.settings.icon_image
+                    | image_url: width: 96
+                    | image_tag: widths: '48, 72, 96', sizes: '48px', loading: 'lazy', alt: ''
+                  -}}
+                {%- elsif block.settings.icon != 'none' -%}
+                  {%- render 'custom-hiw-icon', icon: block.settings.icon -%}
+                {%- endif -%}
+              </span>
+
+              <div class="custom-hiw__content">
+                {%- if block.settings.kicker != blank -%}
+                  <p class="custom-hiw__kicker">{{ block.settings.kicker | escape }}</p>
+                {%- endif -%}
+                {%- if block.settings.title != blank -%}
+                  <h3 class="custom-hiw__title">{{ block.settings.title | escape }}</h3>
+                {%- endif -%}
+                {%- if block.settings.text != blank -%}
+                  <div class="custom-hiw__text">{{ block.settings.text }}</div>
+                {%- endif -%}
+              </div>
+            </li>
+          {%- endfor -%}
+        </ol>
+      {%- endif -%}
+
+      {%- if s.footnote != blank -%}
+        <div class="custom-hiw__footnote">{{ s.footnote }}</div>
+      {%- endif -%}
+
+      {%- if layer_count < section.blocks.size -%}
+        <div class="custom-hiw__apps">
+          {%- for block in section.blocks -%}
+            {%- unless block.type == 'layer' -%}
+              {% render block %}
+            {%- endunless -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Zo werkt het (tijdlijn)",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Zo werkt Energy Foundation"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size",
+      "min": 9,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Eyebrow grootte",
+      "default": 12
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Aanvullen, niet oppeppen."
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading grootte",
+      "options": [
+        { "value": "hxl", "label": "Extra extra groot" },
+        { "value": "h0", "label": "Extra groot" },
+        { "value": "h1", "label": "Groot" },
+        { "value": "h2", "label": "Middel" },
+        { "value": "h3", "label": "Klein" },
+        { "value": "custom", "label": "Aangepast (px)" }
+      ],
+      "default": "h0"
+    },
+    {
+      "type": "range",
+      "id": "heading_custom_mobile_size",
+      "min": 18,
+      "max": 72,
+      "step": 1,
+      "unit": "px",
+      "label": "Aangepaste heading grootte (mobiel)",
+      "default": 32,
+      "visible_if": "{{ section.settings.heading_size == 'custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "heading_custom_desktop_size",
+      "min": 18,
+      "max": 96,
+      "step": 1,
+      "unit": "px",
+      "label": "Aangepaste heading grootte (desktop)",
+      "default": 44,
+      "visible_if": "{{ section.settings.heading_size == 'custom' }}"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Intro",
+      "default": "<p>In vier lagen, elk met een eigen tempo.</p>"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Uitlijning header",
+      "info": "De tijdlijn zelf blijft altijd links uitgelijnd.",
+      "options": [
+        { "value": "left", "label": "Links" },
+        { "value": "center", "label": "Gecentreerd" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "min": 420,
+      "max": 1200,
+      "step": 20,
+      "unit": "px",
+      "label": "Maximale breedte content",
+      "default": 640
+    },
+    {
+      "type": "header",
+      "content": "Tijdlijn"
+    },
+    {
+      "type": "range",
+      "id": "marker_size",
+      "min": 32,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "label": "Grootte icooncirkel",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "item_gap",
+      "min": 12,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "label": "Ruimte tussen stappen",
+      "default": 32
+    },
+    {
+      "type": "select",
+      "id": "rail_style",
+      "label": "Verbindingslijn",
+      "options": [
+        { "value": "dashed", "label": "Streepjes" },
+        { "value": "dotted", "label": "Stippen" },
+        { "value": "solid", "label": "Doorlopend" },
+        { "value": "none", "label": "Geen" }
+      ],
+      "default": "dashed"
+    },
+    {
+      "type": "range",
+      "id": "rail_width",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "label": "Dikte verbindingslijn",
+      "default": 2,
+      "visible_if": "{{ section.settings.rail_style != 'none' }}"
+    },
+    {
+      "type": "range",
+      "id": "kicker_size",
+      "min": 9,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Grootte label (bijv. \"Werkt nu\")",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "item_title_size",
+      "min": 14,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Grootte stap-titel",
+      "default": 19
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Grootte lopende tekst",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Voetnoot"
+    },
+    {
+      "type": "richtext",
+      "id": "footnote",
+      "label": "Voetnoot",
+      "default": "<p>* Zie het claimoverzicht bij de receptuur.</p>"
+    },
+    {
+      "type": "range",
+      "id": "footnote_size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Grootte voetnoot",
+      "default": 13
+    },
+    {
+      "type": "header",
+      "content": "Kleuren"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Achtergrond",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Titels",
+      "default": "#191634"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "Lopende tekst",
+      "default": "#5B5768"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow",
+      "default": "#191634"
+    },
+    {
+      "type": "color",
+      "id": "kicker_color",
+      "label": "Label boven stap-titel",
+      "default": "#6E6A7D"
+    },
+    {
+      "type": "color",
+      "id": "rail_color",
+      "label": "Verbindingslijn",
+      "default": "#C9C6D2"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding boven",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding onder",
+      "default": 48
+    }
+  ],
+  "max_blocks": 8,
+  "blocks": [
+    {
+      "type": "layer",
+      "name": "Stap",
+      "settings": [
+        {
+          "type": "text",
+          "id": "kicker",
+          "label": "Label",
+          "default": "Werkt nu"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titel",
+          "default": "Het water"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Tekst",
+          "default": "<p>Eén zakje op 500 ml koud water: meteen een halve liter binnen.</p>"
+        },
+        {
+          "type": "header",
+          "content": "Icoon"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Eigen icoon",
+          "info": "Optioneel. Kleine SVG/PNG (~48x48px). Overschrijft het placeholder-icoon."
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Placeholder-icoon",
+          "options": [
+            { "value": "drop", "label": "Druppel" },
+            { "value": "salts", "label": "Zouten (korrels)" },
+            { "value": "bolt", "label": "Bliksem" },
+            { "value": "capsule", "label": "Capsule" },
+            { "value": "check", "label": "Vinkje" },
+            { "value": "leaf", "label": "Blad" },
+            { "value": "clock", "label": "Klok" },
+            { "value": "sparkle", "label": "Sprankel" },
+            { "value": "heart", "label": "Hart" },
+            { "value": "moon", "label": "Maan" },
+            { "value": "none", "label": "Geen (lege cirkel)" }
+          ],
+          "default": "drop"
+        },
+        {
+          "type": "color",
+          "id": "icon_bg",
+          "label": "Achtergrond cirkel",
+          "default": "#E4F5BC"
+        },
+        {
+          "type": "color",
+          "id": "icon_color",
+          "label": "Kleur icoon",
+          "default": "#191634"
+        }
+      ]
+    },
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Zo werkt het (tijdlijn)",
+      "blocks": [
+        {
+          "type": "layer",
+          "settings": {
+            "kicker": "Werkt nu",
+            "title": "Het water",
+            "text": "<p>Eén zakje op 500 ml koud water: meteen een halve liter binnen. Het makkelijkste goede besluit van je dag.</p>",
+            "icon": "drop",
+            "icon_bg": "#E4F5BC",
+            "icon_color": "#191634"
+          }
+        },
+        {
+          "type": "layer",
+          "settings": {
+            "kicker": "Werkt vandaag",
+            "title": "De zouten",
+            "text": "<p>Natrium, kalium en magnesium: wat je door de dag verliest, vul je terug aan.*</p>",
+            "icon": "salts",
+            "icon_bg": "#D5F08E",
+            "icon_color": "#191634"
+          }
+        },
+        {
+          "type": "layer",
+          "settings": {
+            "kicker": "Werkt elke dag",
+            "title": "De vitamines",
+            "text": "<p>B5, B6, B12, C en magnesium. Niet de brandstof — de bougies.*</p>",
+            "icon": "bolt",
+            "icon_bg": "#C3EA3E",
+            "icon_color": "#191634"
+          }
+        },
+        {
+          "type": "layer",
+          "settings": {
+            "kicker": "Werkt na 30 dagen",
+            "title": "De creatine",
+            "text": "<p>5 gram per dag, de volle dosis. Werkt via verzadiging: elke dag telt op.</p>",
+            "icon": "capsule",
+            "icon_bg": "#191634",
+            "icon_color": "#C3EA3E"
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}
