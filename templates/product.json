@@ -412,7 +412,7 @@
                 "visibility": "always-display",
                 "open": false,
                 "heading": "Gebruik",
-                "heading_size": "medium",
+                "heading_size": "large",
                 "icon": "",
                 "filled_icon": false,
                 "collapse_icon": "carret",
@@ -755,7 +755,7 @@
       ],
       "name": "Benefit cards",
       "settings": {
-        "heading": "Energy fot things that matter most",
+        "heading": "Energy for the things that matter most",
         "heading_alignment": "center",
         "heading_size": "h0",
         "heading_custom_size": 40,
