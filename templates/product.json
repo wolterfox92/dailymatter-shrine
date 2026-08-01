@@ -142,7 +142,6 @@
             "product_benefits_list_CzJxF7": {
               "type": "product_benefits-list",
               "name": "Benefits list",
-              "disabled": true,
               "settings": {
                 "visibility": "always-display",
                 "icon_color": "#25162f",
@@ -204,7 +203,7 @@
                 "frequency_label": "Bezorgfrequentie",
                 "most_popular_label": "",
                 "most_popular_match": "",
-                "most_popular_color": "#cac0ff",
+                "most_popular_color": "#CBFF78",
                 "gifts_count": 0,
                 "gifts_heading": "Gratis cadeaus",
                 "gift_free_label": "GRATIS",
@@ -253,9 +252,9 @@
                 "skip_cart": false,
                 "color_scheme": "background-1",
                 "heading_size": "h3",
-                "accent_color": "#cac0ff",
+                "accent_color": "#CBFF78",
                 "accent_text_color": "#25162f",
-                "button_color": "#cac0ff",
+                "button_color": "#CBFF78",
                 "button_text_color": "#25162f",
                 "corner_radius": 10,
                 "atc_corner_radius": 40,
