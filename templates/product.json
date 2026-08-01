@@ -50,7 +50,7 @@
                 "subtitle_custom_size": 21,
                 "highlight_bg_color": "#cbff78",
                 "highlight_text_color": "#25162f",
-                "margin_top": 15,
+                "margin_top": 24,
                 "margin_bottom": 0
               },
               "blocks": {}
@@ -67,7 +67,7 @@
                 "star_size": 18,
                 "text_size": "default",
                 "custom_text_size": 16,
-                "margin_top": 6,
+                "margin_top": 9,
                 "margin_bottom": 6
               },
               "blocks": {}
