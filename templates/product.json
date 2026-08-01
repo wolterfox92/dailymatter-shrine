@@ -60,9 +60,9 @@
               "name": "DM Rating",
               "settings": {
                 "visibility": "always-display",
-                "star_color": "#25162f",
+                "star_color": "#CBFF78",
                 "text_color": "#25162f",
-                "rating_text": "(4.9/5)",
+                "rating_text": "(4.7/5)",
                 "users_text": "300+ dagelijkse gebruikers",
                 "star_size": 18,
                 "text_size": "default",
