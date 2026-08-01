@@ -718,7 +718,7 @@
           "type": "card",
           "settings": {
             "badge": "Dagelijkse energie",
-            "title": "Om de dingen te kunnen doen die voor jou belangrijk zijn",
+            "title": "Voor sport, werk, studie en alles daartussen",
             "link": ""
           }
         },
@@ -755,7 +755,7 @@
       ],
       "name": "Benefit cards",
       "settings": {
-        "heading": "Energy for the things that matter most",
+        "heading": "Energy for things that matter most",
         "heading_alignment": "center",
         "heading_size": "h0",
         "heading_custom_size": 40,
