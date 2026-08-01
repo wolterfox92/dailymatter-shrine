@@ -906,6 +906,68 @@
         "padding_bottom": 40
       }
     },
+    "custom_daily_steps_mdtFtT": {
+      "type": "custom-daily-steps",
+      "blocks": {
+        "step_VDxen9": {
+          "type": "step",
+          "settings": {
+            "title": "Prepare",
+            "text": "<p>Scheur één sachet open.</p>"
+          }
+        },
+        "step_DdXhgr": {
+          "type": "step",
+          "settings": {
+            "title": "Mix",
+            "text": "<p>Meng met 500 ml koud water.</p>"
+          }
+        },
+        "step_aEQpmd": {
+          "type": "step",
+          "settings": {
+            "title": "Go",
+            "text": "<p>Drink en ga verder met je dag.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "step_VDxen9",
+        "step_DdXhgr",
+        "step_aEQpmd"
+      ],
+      "name": "Stappen (kaarten)",
+      "settings": {
+        "eyebrow": "Three simple steps",
+        "eyebrow_size": 12,
+        "heading": "Made to do daily.",
+        "heading_size": "h0",
+        "heading_custom_mobile_size": 34,
+        "heading_custom_desktop_size": 52,
+        "content_alignment": "left",
+        "show_numbers": true,
+        "media_ratio": "16 / 9",
+        "columns_desktop": 3,
+        "grid_gap": 20,
+        "card_radius": 24,
+        "media_radius": 16,
+        "card_padding": 8,
+        "body_inset": 8,
+        "badge_size": 26,
+        "title_size": 20,
+        "body_size": 15,
+        "bg_color": "#C9B8FD",
+        "card_bg_color": "#FFFFFF",
+        "media_bg_color": "#F4F4F5",
+        "text_color": "#191634",
+        "muted_color": "#5B5768",
+        "eyebrow_color": "#191634",
+        "badge_bg_color": "#C9F25C",
+        "badge_text_color": "#191634",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
     "color_switch_6FNyPd": {
       "type": "color-switch",
       "blocks": {
@@ -972,6 +1034,164 @@
         "color_scheme": "background-1",
         "padding_top": 40,
         "padding_bottom": 40
+      }
+    },
+    "custom_ingredient_explorer_wCwePV": {
+      "type": "custom-ingredient-explorer",
+      "blocks": {
+        "ingredient_CqXVDT": {
+          "type": "ingredient",
+          "settings": {
+            "name": "Creatine",
+            "badge": "5g per sachet",
+            "label_1": "WAT ZIT ER IN & WAAROM",
+            "text_1": "<p>Creatine monohydraat is een van de meest onderzochte supplementen ter wereld en ondersteunt fysieke kracht en herstel.</p>",
+            "label_2": "WAT HET BETEKENT VOOR JE DAG",
+            "text_2": "<p>Meer power tijdens je training en een soepeler herstel daarna — ook op dagen dat je niet sport.</p>",
+            "link_label": "Bekijk de volledige voedingswaarden",
+            "link_url": ""
+          }
+        },
+        "ingredient_iiWLBN": {
+          "type": "ingredient",
+          "settings": {
+            "name": "Elektrolyten + Magnesium",
+            "badge": "Natrium · Kalium · Magnesium",
+            "label_1": "WAT ZIT ER IN & WAAROM",
+            "text_1": "<p>Een uitgebalanceerde mix van mineralen die je lichaam dagelijks verliest via zweet en urine.</p>",
+            "label_2": "WAT HET BETEKENT VOOR JE DAG",
+            "text_2": "<p>Betere hydratatie en minder dipjes — zodat je je de hele dag scherper voelt.</p>",
+            "link_label": "Bekijk de volledige voedingswaarden",
+            "link_url": ""
+          }
+        },
+        "ingredient_WmnXPx": {
+          "type": "ingredient",
+          "settings": {
+            "name": "B-Vitaminen",
+            "badge": "B6 · B12 · Foliumzuur",
+            "label_1": "WAT ZIT ER IN & WAAROM",
+            "text_1": "<p>Essentiële B-vitamines die een rol spelen in je energiestofwisseling.</p>",
+            "label_2": "WAT HET BETEKENT VOOR JE DAG",
+            "text_2": "<p>Minder vermoeidheid en meer natuurlijke energie zonder pieken of crash.</p>",
+            "link_label": "Bekijk de volledige voedingswaarden",
+            "link_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "ingredient_CqXVDT",
+        "ingredient_iiWLBN",
+        "ingredient_WmnXPx"
+      ],
+      "name": "Ingredient Explorer",
+      "settings": {
+        "eyebrow": "DE FORMULE",
+        "title": "<p>Built on ingredients that make sense.</p>",
+        "heading_size": "h0",
+        "content_alignment": "left",
+        "intro": "<p>Bewezen ingrediënten, bewust gekozen om elkaar aan te vullen.</p>",
+        "bg_color": "#F4F1EB",
+        "text_color": "#25162F",
+        "muted_color": "#5B5768",
+        "eyebrow_color": "#9A95AA",
+        "card_bg": "#FFFFFF",
+        "label_color": "#9A95AA",
+        "divider_color": "#E7E4DD",
+        "link_color": "#25162F",
+        "tab_bg": "#FFFFFF",
+        "tab_text": "#25162F",
+        "tab_border": "#E3E1DD",
+        "tab_active_bg": "#221B3B",
+        "tab_active_text": "#FFFFFF",
+        "badge_bg": "#CCFA78",
+        "badge_text": "#25162F",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
+    "custom_how_it_works_Ufct9c": {
+      "type": "custom-how-it-works",
+      "blocks": {
+        "layer_pq8iVx": {
+          "type": "layer",
+          "settings": {
+            "kicker": "Werkt nu",
+            "title": "Het water",
+            "text": "<p>Eén zakje op 500 ml koud water: meteen een halve liter binnen. Het makkelijkste goede besluit van je dag.</p>",
+            "icon": "drop",
+            "icon_bg": "#e4f5bc",
+            "icon_color": "#191634"
+          }
+        },
+        "layer_PVhNEy": {
+          "type": "layer",
+          "settings": {
+            "kicker": "Werkt vandaag",
+            "title": "De zouten",
+            "text": "<p>Natrium, kalium en magnesium: wat je door de dag verliest, vul je terug aan.*</p>",
+            "icon": "salts",
+            "icon_bg": "#d5f08e",
+            "icon_color": "#191634"
+          }
+        },
+        "layer_QedPn8": {
+          "type": "layer",
+          "settings": {
+            "kicker": "Werkt elke dag",
+            "title": "De vitamines",
+            "text": "<p>B5, B6, B12, C en magnesium. Niet de brandstof — de bougies.*</p>",
+            "icon": "bolt",
+            "icon_bg": "#c3ea3e",
+            "icon_color": "#191634"
+          }
+        },
+        "layer_LVbmwp": {
+          "type": "layer",
+          "settings": {
+            "kicker": "Werkt na 30 dagen",
+            "title": "De creatine",
+            "text": "<p>5 gram per dag, de volle dosis. Werkt via verzadiging: elke dag telt op.</p>",
+            "icon": "capsule",
+            "icon_bg": "#191634",
+            "icon_color": "#c3ea3e"
+          }
+        }
+      },
+      "block_order": [
+        "layer_pq8iVx",
+        "layer_PVhNEy",
+        "layer_QedPn8",
+        "layer_LVbmwp"
+      ],
+      "name": "Zo werkt het (tijdlijn)",
+      "settings": {
+        "eyebrow": "Zo werkt Energy Foundation",
+        "eyebrow_size": 12,
+        "heading": "Aanvullen, niet oppeppen.",
+        "heading_size": "h0",
+        "heading_custom_mobile_size": 32,
+        "heading_custom_desktop_size": 44,
+        "intro": "<p>In vier lagen, elk met een eigen tempo.</p>",
+        "content_alignment": "left",
+        "content_max_width": 640,
+        "marker_size": 48,
+        "item_gap": 32,
+        "rail_style": "dashed",
+        "rail_width": 2,
+        "kicker_size": 11,
+        "item_title_size": 19,
+        "body_size": 15,
+        "footnote": "<p>* Zie het claimoverzicht bij de receptuur.</p>",
+        "footnote_size": 13,
+        "bg_color": "#FFFFFF",
+        "text_color": "#191634",
+        "muted_color": "#5B5768",
+        "eyebrow_color": "#191634",
+        "kicker_color": "#6E6A7D",
+        "rail_color": "#C9C6D2",
+        "padding_top": 48,
+        "padding_bottom": 48
       }
     },
     "custom_stack_comparison_AXk6jC": {
@@ -1060,8 +1280,8 @@
         "cta_bg": "#cbff78",
         "cta_text": "#25162f",
         "corner_radius": 20,
-        "padding_top": 64,
-        "padding_bottom": 64
+        "padding_top": 28,
+        "padding_bottom": 32
       }
     },
     "related-products": {
@@ -1145,7 +1365,10 @@
     "benefit_cards_kaCtrq",
     "selling_points_ticker_Ga3hed",
     "review_cards_dm",
+    "custom_daily_steps_mdtFtT",
     "color_switch_6FNyPd",
+    "custom_ingredient_explorer_wCwePV",
+    "custom_how_it_works_Ufct9c",
     "custom_stack_comparison_AXk6jC",
     "related-products",
     "custom_sticky_pack_cta_fzfBUB"
