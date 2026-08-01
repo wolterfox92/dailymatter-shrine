@@ -88,7 +88,12 @@
     margin: 0;
   }
 
-  /* Segmented control tabs */
+  /* Segmented control tabs.
+     Fits everything? Then the tabs spread out like before. Too many ingredients
+     for the width? Then the row scrolls horizontally instead of clipping —
+     .is-scrollable is set from JS (scrollWidth vs clientWidth) because CSS can't
+     measure that itself. flex-start is required there: a centred flex row makes
+     the overflow on the start side unreachable in Chrome and Safari. */
   .cie-{{ section.id }} .cie__tabs {
     position: relative;
     display: flex;
@@ -100,8 +105,60 @@
     border: 1px solid var(--cie-tab-border);
     border-radius: 999px;
     padding: 5px 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .cie-{{ section.id }} .cie__tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cie-{{ section.id }} .cie__tabs.is-scrollable {
+    justify-content: flex-start;
+  }
+
+  /* Scroll hint: the pill colour fades over the edge the row can still scroll
+     towards, so a cut-off tab reads as "there is more" instead of "broken".
+     Lives on a wrapper, not on the row itself — a mask on the scroller would
+     fade out the pill's own border and rounded corners too. */
+  .cie-{{ section.id }} .cie__tabs-wrap {
+    position: relative;
+    /* Spacing below the pill lives here so the fades can anchor to the pill
+       itself (bottom: 1px = just inside its border). */
     margin-bottom: 12px;
-    overflow: hidden;
+  }
+
+  .cie-{{ section.id }} .cie__tabs-wrap::before,
+  .cie-{{ section.id }} .cie__tabs-wrap::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    bottom: 1px;
+    width: 40px;
+    /* Above .cie__tab (z-index: 1), otherwise the tabs paint over the fade. */
+    z-index: 2;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .cie-{{ section.id }} .cie__tabs-wrap::before {
+    left: 1px;
+    border-radius: 999px 0 0 999px;
+    background: linear-gradient(to right, var(--cie-tab-bg), transparent);
+  }
+
+  .cie-{{ section.id }} .cie__tabs-wrap::after {
+    right: 1px;
+    border-radius: 0 999px 999px 0;
+    background: linear-gradient(to left, var(--cie-tab-bg), transparent);
+  }
+
+  .cie-{{ section.id }} .cie__tabs-wrap.can-scroll-start::before,
+  .cie-{{ section.id }} .cie__tabs-wrap.can-scroll-end::after {
+    opacity: 1;
   }
 
   .cie-{{ section.id }} .cie__tab-highlight {
@@ -124,7 +181,8 @@
   .cie-{{ section.id }} .cie__tab {
     position: relative;
     z-index: 1;
-    flex: 0 1 auto;
+    /* Never shrink: a squeezed tab is what used to clip the row. */
+    flex: 0 0 auto;
     box-sizing: border-box;
     border: 0;
     background: transparent;
@@ -313,11 +371,13 @@
     .cie-{{ section.id }} .cie__tabs {
       gap: 6px;
       padding: 6px 16px;
+    }
+
+    .cie-{{ section.id }} .cie__tabs-wrap {
       margin-bottom: 16px;
     }
 
     .cie-{{ section.id }} .cie__tab {
-      flex: 0 1 auto;
       padding: 12px 22px;
       font-size: 1.5rem;
       font-weight: 700;
@@ -388,22 +448,24 @@
     {%- endif -%}
 
     {%- if section.blocks.size > 0 -%}
-      <div class="cie__tabs" role="tablist" aria-label="{{ section.settings.title | strip_html | default: 'Ingrediënten' | escape }}" data-cie-tabs>
-        <span class="cie__tab-highlight" aria-hidden="true" data-cie-highlight></span>
-        {%- for block in section.blocks -%}
-          <button
-            type="button"
-            class="cie__tab"
-            role="tab"
-            id="cie-tab-{{ section.id }}-{{ forloop.index0 }}"
-            aria-controls="cie-panel-{{ section.id }}-{{ forloop.index0 }}"
-            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
-            data-cie-tab="{{ forloop.index0 }}"
-            {{ block.shopify_attributes }}
-          >
-            {{- block.settings.name | default: 'Ingrediënt' | escape -}}
-          </button>
-        {%- endfor -%}
+      <div class="cie__tabs-wrap" data-cie-tabs-wrap>
+        <div class="cie__tabs" role="tablist" aria-label="{{ section.settings.title | strip_html | default: 'Ingrediënten' | escape }}" data-cie-tabs>
+          <span class="cie__tab-highlight" aria-hidden="true" data-cie-highlight></span>
+          {%- for block in section.blocks -%}
+            <button
+              type="button"
+              class="cie__tab"
+              role="tab"
+              id="cie-tab-{{ section.id }}-{{ forloop.index0 }}"
+              aria-controls="cie-panel-{{ section.id }}-{{ forloop.index0 }}"
+              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+              data-cie-tab="{{ forloop.index0 }}"
+              {{ block.shopify_attributes }}
+            >
+              {{- block.settings.name | default: 'Ingrediënt' | escape -}}
+            </button>
+          {%- endfor -%}
+        </div>
       </div>
 
       {%- for block in section.blocks -%}
@@ -483,6 +545,7 @@
     if (!root) return;
 
     var tabsWrap = root.querySelector('[data-cie-tabs]');
+    var tabsShell = root.querySelector('[data-cie-tabs-wrap]');
     var highlight = root.querySelector('[data-cie-highlight]');
     var tabs = root.querySelectorAll('[data-cie-tab]');
     var panels = root.querySelectorAll('[data-cie-panel]');
@@ -495,7 +558,33 @@
       highlight.style.transform = 'translate(' + tab.offsetLeft + 'px,' + tab.offsetTop + 'px)';
     }
 
-    function activate(index) {
+    // The row only scrolls when the tabs no longer fit, and the edge fades only
+    // show on the side there is still something to scroll to. CSS can't measure
+    // either of those.
+    function updateScrollable() {
+      if (!tabsWrap) return;
+      var max = tabsWrap.scrollWidth - tabsWrap.clientWidth;
+      var scrollable = max > 1;
+      tabsWrap.classList.toggle('is-scrollable', scrollable);
+      if (!tabsShell) return;
+      tabsShell.classList.toggle('can-scroll-start', scrollable && tabsWrap.scrollLeft > 2);
+      tabsShell.classList.toggle('can-scroll-end', scrollable && tabsWrap.scrollLeft < max - 2);
+    }
+
+    // Keep the selected tab in view, and show a bit of its neighbours so it
+    // stays obvious that the row scrolls.
+    function revealTab(tab) {
+      if (!tabsWrap || !tab) return;
+      if (tabsWrap.scrollWidth <= tabsWrap.clientWidth + 1) return;
+      var target = tab.offsetLeft - (tabsWrap.clientWidth - tab.offsetWidth) / 2;
+      var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      tabsWrap.scrollTo({ left: target, behavior: reduced ? 'auto' : 'smooth' });
+    }
+
+    function activate(index, options) {
+      // Any real interaction outranks the scroll hint.
+      hinted = true;
+      hintCancelled = true;
       activeIndex = Number(index);
       var activeTab = null;
       tabs.forEach(function (tab) {
@@ -513,6 +602,8 @@
         }
       });
       moveHighlight(activeTab);
+      revealTab(activeTab);
+      if (options && options.focus && activeTab) activeTab.focus();
     }
 
     tabs.forEach(function (tab) {
@@ -521,8 +612,73 @@
       });
     });
 
+    // One-off hint: when the row first comes into view, nudge it a little so the
+    // movement itself shows that there is more to the side. Only when it really
+    // scrolls, only once, and never when the visitor asked for less motion.
+    var hinted = false;
+    var hintCancelled = false;
+
+    function hintScroll() {
+      if (hinted || hintCancelled || !tabsWrap) return;
+      if (tabsWrap.scrollWidth <= tabsWrap.clientWidth + 1) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      hinted = true;
+      tabsWrap.scrollTo({ left: 40, behavior: 'smooth' });
+      window.setTimeout(function () {
+        if (hintCancelled) return;
+        tabsWrap.scrollTo({ left: 0, behavior: 'smooth' });
+      }, 550);
+    }
+
+    if (tabsShell && 'IntersectionObserver' in window) {
+      var hintObserver = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            hintObserver.disconnect();
+            hintScroll();
+          });
+        },
+        { threshold: 0.9 }
+      );
+      hintObserver.observe(tabsShell);
+    }
+
+    if (tabsWrap) {
+      var scrollTicking = false;
+      tabsWrap.addEventListener(
+        'scroll',
+        function () {
+          if (scrollTicking) return;
+          scrollTicking = true;
+          window.requestAnimationFrame(function () {
+            updateScrollable();
+            scrollTicking = false;
+          });
+        },
+        { passive: true }
+      );
+    }
+
+    // Arrow keys walk through the ingredients — with a scrolling row you can no
+    // longer see every tab at once, so keyboard order matters more.
+    if (tabsWrap) {
+      tabsWrap.addEventListener('keydown', function (event) {
+        var last = tabs.length - 1;
+        var next = null;
+        if (event.key === 'ArrowRight') next = activeIndex >= last ? 0 : activeIndex + 1;
+        else if (event.key === 'ArrowLeft') next = activeIndex <= 0 ? last : activeIndex - 1;
+        else if (event.key === 'Home') next = 0;
+        else if (event.key === 'End') next = last;
+        if (next === null) return;
+        event.preventDefault();
+        activate(next, { focus: true });
+      });
+    }
+
     // Position highlight on load, then enable the sliding transition.
     function initHighlight() {
+      updateScrollable();
       moveHighlight(root.querySelector('[data-cie-tab="' + activeIndex + '"]'));
       if (tabsWrap) {
         // next frame so the initial placement doesn't animate
@@ -544,6 +700,7 @@
     window.addEventListener('resize', function () {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function () {
+        updateScrollable();
         moveHighlight(root.querySelector('[data-cie-tab="' + activeIndex + '"]'));
       }, 120);
     });
@@ -762,7 +919,7 @@
       "default": 48
     }
   ],
-  "max_blocks": 6,
+  "max_blocks": 10,
   "blocks": [
     {
       "type": "ingredient",

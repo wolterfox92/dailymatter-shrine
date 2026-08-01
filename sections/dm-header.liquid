@@ -84,6 +84,30 @@
     padding: 0.37rem;
   }
 
+  /* ---- Drawer stacking ----
+     backdrop-filter makes each pill both a stacking context AND the containing
+     block for position: fixed descendants. The theme drawer lives inside the
+     left pill, so it was (a) painted below the right pill — a later sibling on
+     the same level — leaving account + cart on top of the open menu, and
+     (b) anchored to the pill instead of the viewport.
+     Fix: lift the left pill above its sibling, and drop its blur while the
+     drawer is open — the pill sits behind the drawer then, so the glass effect
+     is invisible anyway, and without it the drawer anchors to the header. */
+  .dm-header__pill--left {
+    position: relative;
+    z-index: 1;
+  }
+  .dm-header__pill--left:has(details[open]) {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  /* The header stays the containing block (will-change: transform), so the
+     theme's height: 100vh overshoots by however far the header is docked below
+     the announcement bar. --dm-header-top is set by the section's JS. */
+  .dm-header .menu-drawer {
+    height: calc(100dvh - var(--dm-header-top, 0px));
+  }
+
   /* ---- Logo ---- */
   .dm-header__logo {
     display: inline-flex;
@@ -356,7 +380,11 @@
       const dock = this.dockOffset || 0;
 
       // Dock the header right below whatever is above it (announcement bar etc.).
-      this.style.top = Math.round(this.liveTop()) + 'px';
+      const top = Math.round(this.liveTop());
+      this.style.top = top + 'px';
+      // The drawer is anchored to this element, so it needs the same offset to
+      // work out its height (see .dm-header .menu-drawer).
+      this.style.setProperty('--dm-header-top', top + 'px');
 
       // No hide/reveal while still within the announcement-bar region,
       // or when sticky behaviour is disabled.
