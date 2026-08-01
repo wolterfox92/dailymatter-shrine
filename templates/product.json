@@ -187,7 +187,7 @@
                 "subscription_label": "Abonnement",
                 "one_time_label": "Eenmalig",
                 "subscription_badge": "MEEST GEKOZEN",
-                "save_display": "amount",
+                "save_display": "percent",
                 "save_label": "Bespaar",
                 "benefit_1": "Pauzeer of stop wanneer je wilt",
                 "benefit_1_icon": "pause_circle",
@@ -208,6 +208,21 @@
                 "gifts_count": 0,
                 "gifts_heading": "Gratis cadeaus",
                 "gift_free_label": "GRATIS",
+                "gift_1_title": "",
+                "gift_1_price": "",
+                "gift_1_delivery": "",
+                "gift_2_title": "",
+                "gift_2_price": "",
+                "gift_2_delivery": "",
+                "gift_3_title": "",
+                "gift_3_price": "",
+                "gift_3_delivery": "",
+                "gift_4_title": "",
+                "gift_4_price": "",
+                "gift_4_delivery": "",
+                "gift_5_title": "",
+                "gift_5_price": "",
+                "gift_5_delivery": "",
                 "show_atc": true,
                 "atc_label": "Toevoegen",
                 "atc_show_price": true,
@@ -216,12 +231,12 @@
                 "status_template": "Kies er nog [remaining] om je pack te vullen ([selected]/[total])",
                 "increase_label": "Meer",
                 "decrease_label": "Minder",
+                "tier_count": 3,
                 "tier_show_details": false,
                 "unit_label_singular": "Stuk",
                 "unit_label_plural": "Sachets",
                 "per_day_suffix": "/ dag",
                 "sticks_per_pack": 30,
-                "tier_count": 3,
                 "tier_1_label": "1 pack",
                 "tier_1_qty": 1,
                 "tier_1_pct": 12,
@@ -238,10 +253,10 @@
                 "skip_cart": false,
                 "color_scheme": "background-1",
                 "heading_size": "h3",
-                "accent_color": "#CAC0FF",
-                "accent_text_color": "#25162F",
-                "button_color": "#CAC0FF",
-                "button_text_color": "#25162F",
+                "accent_color": "#cac0ff",
+                "accent_text_color": "#25162f",
+                "button_color": "#cac0ff",
+                "button_text_color": "#25162f",
                 "corner_radius": 10,
                 "atc_corner_radius": 40,
                 "border_width": 2,
@@ -632,8 +647,8 @@
             "title": "<p>Scheur één sachet open</p>",
             "subtitle": "<p>Met je favoriete smaak</p>",
             "image": "shopify://shop_images/ChatGPT_Image_Jul_31_2026_05_20_21_PM.png",
-            "card_bg": "#FFB974",
-            "text_color": "#79584F"
+            "card_bg": "#ffb974",
+            "text_color": "#79584f"
           }
         },
         "step_mBXTB8": {
@@ -642,8 +657,8 @@
             "step_label": "STAP 02",
             "title": "<p>Meng met 500ML water</p>",
             "subtitle": "<p>Gebruik jouw Daily Matters fles, die is precies 500ml</p>",
-            "card_bg": "#F5EFE7",
-            "text_color": "#79584F"
+            "card_bg": "#f5efe7",
+            "text_color": "#79584f"
           }
         },
         "step_rhDQ96": {
@@ -652,8 +667,8 @@
             "step_label": "STAP 03",
             "title": "<p>Schud en geniet.</p>",
             "subtitle": "<p>Klaar in seconden.</p>",
-            "card_bg": "#FFB974",
-            "text_color": "#79584F"
+            "card_bg": "#ffb974",
+            "text_color": "#79584f"
           }
         },
         "step_cwaq3V": {
@@ -662,8 +677,8 @@
             "step_label": "STAP 04",
             "title": "<p>Wissel je pods.</p>",
             "subtitle": "<p>Nieuwe smaak, nieuw water.</p>",
-            "card_bg": "#F5EFE7",
-            "text_color": "#79584F"
+            "card_bg": "#f5efe7",
+            "text_color": "#79584f"
           }
         }
       },
@@ -683,15 +698,15 @@
         "subtext": "<p>Simpele dagelijkse supplementen die passen in het leven dat je al hebt.</p>",
         "card_width": 300,
         "card_ratio": "1.45",
-        "bg_color": "#FFFFFF",
-        "eyebrow_color": "#25321B",
-        "heading_color": "#2F1616",
-        "subtext_color": "#5B6152",
-        "nav_color": "#25321B",
-        "nav_border": "#D6D8D0",
-        "counter_color": "#25321B",
-        "dot_color": "#D6D8D0",
-        "dot_active_color": "#A8E05F",
+        "bg_color": "#ffffff",
+        "eyebrow_color": "#25321b",
+        "heading_color": "#2f1616",
+        "subtext_color": "#5b6152",
+        "nav_color": "#25321b",
+        "nav_border": "#d6d8d0",
+        "counter_color": "#25321b",
+        "dot_color": "#d6d8d0",
+        "dot_active_color": "#a8e05f",
         "padding_top": 48,
         "padding_bottom": 48
       }
