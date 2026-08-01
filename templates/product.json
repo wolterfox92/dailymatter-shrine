@@ -257,7 +257,7 @@
                 "button_color": "#CBFF78",
                 "button_text_color": "#25162f",
                 "corner_radius": 10,
-                "atc_corner_radius": 40,
+                "atc_corner_radius": 10,
                 "border_width": 2,
                 "margin_top": 15,
                 "margin_bottom": 15
