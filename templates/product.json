@@ -1472,7 +1472,7 @@
         "image_ratio": "adapt",
         "desktop_layout": "image_second",
         "rows_spacing": 4,
-        "row_heading_size": "medium",
+        "row_heading_size": "large",
         "collapse_icon": "carret",
         "collapse_icon_style": "standard",
         "collapse_icon_radius": 15,
