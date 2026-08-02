@@ -1,10 +1,14 @@
 {%- comment -%}
   Black Cherry waitlist — section 11 "What you'll get".
 
-  Price and delivery are plain text settings, not money/date filters: at waitlist
-  stage these are estimates in brackets ("[€ 49]", "[najaar 2026]"), not a real
-  product price. Once there is a Shopify product, swap them for the product's own
-  price rendered with the money filter.
+  Pricing has two modes:
+  - A product is picked -> the real price comes from Shopify and the early-adopter
+    price is derived from it with the discount percentage. Both are rendered with
+    the money filter, so currency and formatting follow the store and the market.
+  - No product yet -> falls back to the plain text estimate ("[€ 49]"), which is
+    what a waitlist page needs before the product exists.
+
+  Delivery stays a text setting either way: "[najaar 2026]" is a guess, not a date.
 {%- endcomment -%}
 
 {%- liquid
@@ -18,6 +22,44 @@
       assign item_count = item_count | plus: 1
     endif
   endfor
+
+  assign product = s.product
+  assign show_live_price = false
+  assign show_discount = false
+
+  if product != blank and product.price != blank
+    assign show_live_price = true
+    assign regular_price = product.price
+
+    comment
+      Prices are integer cents. Divide by 100.0 to force float maths, then round,
+      so a 25% cut on € 49,90 lands on € 37,43 rather than truncating to € 37,42.
+    endcomment
+    assign multiplier = 100 | minus: s.discount_percent
+    assign sale_price = regular_price | times: multiplier | divided_by: 100.0 | round
+    assign saving = regular_price | minus: sale_price
+
+    if s.discount_percent > 0 and saving > 0
+      assign show_discount = true
+    endif
+
+    comment
+      This shop's money_format is "{{amount_with_comma_separator}}" — no currency
+      symbol — so | money renders a bare "47,00". Two bare numbers side by side on
+      an ad landing page are ambiguous, hence the notation switch. Both branches
+      stay inside Liquid's money filters: never hand-build a currency string, or
+      it breaks the moment a second market is added.
+    endcomment
+    if s.money_format == 'compact'
+      assign sale_display = sale_price | money
+      assign regular_display = regular_price | money
+      assign saving_display = saving | money
+    else
+      assign sale_display = sale_price | money_with_currency
+      assign regular_display = regular_price | money_with_currency
+      assign saving_display = saving | money_with_currency
+    endif
+  endif
 -%}
 
 {%- style -%}
@@ -35,6 +77,13 @@
   #shopify-section-{{ section.id }} .bc-package__flag {
     background: {{ s.flag_bg_color }};
     color: {{ s.flag_text_color }};
+  }
+
+  #shopify-section-{{ section.id }} .bc-package__price {
+    --bc-price-now: {{ s.price_now_color }};
+    --bc-price-was: {{ s.price_was_color }};
+    --bc-price-badge-bg: {{ s.badge_bg_color }};
+    --bc-price-badge-ink: {{ s.badge_text_color }};
   }
 {%- endstyle -%}
 
@@ -92,9 +141,45 @@
           </ul>
         {%- endif -%}
 
-        {%- if s.price_label != blank or s.delivery_label != blank -%}
+        {%- if show_live_price -%}
+          <div class="bc-package__price{% if show_discount %} bc-package__price--discounted{% endif %}">
+            <p class="bc-package__price-label">
+              {{- s.price_title | escape -}}
+            </p>
+
+            <p class="bc-package__price-row">
+              {%- comment -%}
+                Screen readers get an explicit label per amount: two bare prices
+                next to each other say nothing about which one you actually pay.
+              {%- endcomment -%}
+              <span class="bc-vh">{{ s.now_label }}:</span>
+              <span class="bc-package__price-now">{{ sale_display }}</span>
+
+              {%- if show_discount -%}
+                <span class="bc-vh">{{ s.compare_label }}:</span>
+                <s class="bc-package__price-was">{{ regular_display }}</s>
+                <span class="bc-package__price-badge">-{{ s.discount_percent }}%</span>
+              {%- endif -%}
+            </p>
+
+            {%- if show_discount and s.saving_prefix != blank -%}
+              <p class="bc-package__price-note">
+                {{ s.saving_prefix | escape }} {{ saving_display }}
+              </p>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+
+        {%- liquid
+          assign show_manual_price = false
+          if show_live_price == false and s.price_label != blank
+            assign show_manual_price = true
+          endif
+        -%}
+
+        {%- if show_manual_price or s.delivery_label != blank -%}
           <dl class="bc-package__facts">
-            {%- if s.price_label != blank -%}
+            {%- if show_manual_price -%}
               <div class="bc-package__fact">
                 <dt>{{ s.price_title | escape }}</dt>
                 <dd>{{ s.price_label | escape }}</dd>
@@ -172,15 +257,69 @@
       "default": "Energy Foundation — Black Cherry"
     },
     {
+      "type": "header",
+      "content": "Prijs"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product",
+      "info": "Prijs komt live uit Shopify. Laat leeg zolang het product nog niet bestaat; dan wordt de handmatige prijs hieronder gebruikt."
+    },
+    {
+      "type": "range",
+      "id": "discount_percent",
+      "min": 0,
+      "max": 60,
+      "step": 1,
+      "unit": "%",
+      "label": "Korting voor de wachtlijst",
+      "info": "0% laat alleen de normale prijs zien, zonder doorhaling.",
+      "default": 25
+    },
+    {
+      "type": "select",
+      "id": "money_format",
+      "label": "Prijsnotatie",
+      "info": "Je winkel toont bedragen nu zonder valutasymbool (\"47,00\"). Zet dit op compact zodra je in Shopify onder Instellingen → Winkelgegevens → Valutanotatie een € aan het formaat toevoegt.",
+      "options": [
+        { "value": "with_currency", "label": "Met valuta (47,00 EUR)" },
+        { "value": "compact", "label": "Compact (47,00)" }
+      ],
+      "default": "with_currency"
+    },
+    {
       "type": "text",
       "id": "price_title",
-      "label": "Label prijs",
-      "default": "Verwachte prijs"
+      "label": "Label boven de prijs",
+      "default": "Jouw prijs als early adopter"
+    },
+    {
+      "type": "text",
+      "id": "now_label",
+      "label": "Omschrijving wachtlijstprijs",
+      "info": "Niet zichtbaar, alleen voor schermlezers.",
+      "default": "Prijs voor de wachtlijst"
+    },
+    {
+      "type": "text",
+      "id": "compare_label",
+      "label": "Omschrijving normale prijs",
+      "info": "Niet zichtbaar, alleen voor schermlezers.",
+      "default": "Normale prijs"
+    },
+    {
+      "type": "text",
+      "id": "saving_prefix",
+      "label": "Tekst voor het bespaarbedrag",
+      "info": "Het bedrag komt er automatisch achter. Leeg laten om de regel te verbergen.",
+      "default": "Je bespaart"
     },
     {
       "type": "text",
       "id": "price_label",
-      "label": "Prijs",
+      "label": "Prijs (handmatig)",
+      "info": "Alleen gebruikt als er geen product gekozen is.",
       "default": "[€ 49]"
     },
     {
@@ -233,6 +372,30 @@
       "type": "color",
       "id": "flag_text_color",
       "label": "Label tekst",
+      "default": "#f8f8ed"
+    },
+    {
+      "type": "color",
+      "id": "price_now_color",
+      "label": "Wachtlijstprijs",
+      "default": "#180223"
+    },
+    {
+      "type": "color",
+      "id": "price_was_color",
+      "label": "Doorgehaalde prijs",
+      "default": "#634c61"
+    },
+    {
+      "type": "color",
+      "id": "badge_bg_color",
+      "label": "Kortingsbadge achtergrond",
+      "default": "#511a39"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Kortingsbadge tekst",
       "default": "#f8f8ed"
     }
   ],

@@ -190,8 +190,22 @@ forceren op een bestaande pagina), in Chrome op 390×844 met device-emulatie:
 - Alle afbeeldingen zijn `image_picker`-instellingen met een placeholder-terugval.
   Het ontwerp had ze als lege slots met een briefingtekst; die briefing staat nu
   in het `info`-veld van de betreffende instelling.
-- Prijs en levering zijn tekstinstellingen (`[€ 49]`, `[najaar 2026]`), geen
-  `money`-filter: er is nog geen product. Vervang ze zodra dat er is.
+- **Prijs in `custom-bc-package`** komt uit een `product`-instelling (nu gekoppeld
+  aan `daily-elektrolyte`, Energy Foundation). De wachtlijstprijs wordt daaruit
+  afgeleid met `discount_percent` (standaard 25) en beide bedragen staan naast
+  elkaar, met doorhaling, kortingsbadge en bespaarbedrag. Bedragen zijn integer
+  centen: delen door `100.0` forceert float-rekenen zodat 25% van € 47,00 op
+  € 35,25 uitkomt in plaats van af te kappen. Kies je geen product, dan valt de
+  sectie terug op de handmatige tekstprijs — nodig zolang een product nog niet
+  bestaat. Levering blijft altijd tekst: "[najaar 2026]" is een schatting.
+- **Valutanotatie.** De `moneyFormat` van deze winkel is
+  `{{amount_with_comma_separator}}`, dus zónder symbool: `| money` levert een kaal
+  "47,00". Twee kale getallen naast elkaar zijn op een advertentiepagina
+  dubbelzinnig, daarom een `money_format`-select die kiest tussen `money` en
+  `money_with_currency` (standaard met valuta: "47,00 EUR"). Beide takken blijven
+  binnen Liquid's money-filters — nooit zelf een valutastring bouwen, dat breekt
+  zodra er een tweede markt bijkomt. Voegt de winkel later een € aan het
+  prijsformaat toe, zet de select dan op compact.
 - Schema-labels staan hardcoded in het Nederlands, net als in de overige
   `custom-*` secties. Klantgerichte tekst komt volledig uit settings, dus geen
   nieuwe `t:`-keys nodig.

@@ -236,7 +236,10 @@
         }
       },
       "block_order": ["item-1", "item-2", "item-3", "item-4"],
-      "settings": {}
+      "settings": {
+        "product": "daily-elektrolyte",
+        "discount_percent": 25
+      }
     },
     "faq": {
       "type": "custom-bc-faq",

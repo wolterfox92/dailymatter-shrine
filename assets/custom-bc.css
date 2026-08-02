@@ -1236,6 +1236,81 @@ bc-sticky-cta {
   color: var(--bc-ink);
 }
 
+/* Price ------------------------------------------------------- */
+
+/* Full width rather than a half-column fact: two prices plus a badge do not fit
+   in ~150px at 390px, and the discount is the whole point of this block. */
+.bc-package__price {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(24, 2, 35, 0.12);
+}
+
+.bc-package__price-label {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bc-grape);
+}
+
+.bc-package__price-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 6px 0 0;
+}
+
+.bc-package__price-now {
+  font-family: var(--bc-font-display);
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--bc-price-now, var(--bc-ink));
+}
+
+.bc-package__price-was {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--bc-price-was, var(--bc-grape));
+  /* The default strike is hairline at this weight; thicken it so the comparison
+     reads at a glance on a phone. */
+  text-decoration-line: line-through;
+  text-decoration-thickness: 2px;
+}
+
+.bc-package__price-badge {
+  padding: 5px 9px;
+  border-radius: var(--bc-radius-pill);
+  background: var(--bc-price-badge-bg, var(--bc-cherry-deep));
+  color: var(--bc-price-badge-ink, var(--bc-cream));
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.bc-package__price-note {
+  margin: 7px 0 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--bc-price-was, var(--bc-grape));
+}
+
+/* When the price block already drew the divider, the facts below must not. */
+.bc-package__price + .bc-package__facts {
+  margin-top: 14px;
+  padding-top: 0;
+  border-top: none;
+}
+
 .bc-package__facts {
   display: flex;
   gap: 10px;
