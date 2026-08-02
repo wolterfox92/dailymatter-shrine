@@ -60,7 +60,7 @@
               "name": "DM Rating",
               "settings": {
                 "visibility": "always-display",
-                "star_color": "#CBFF78",
+                "star_color": "#cbff78",
                 "text_color": "#25162f",
                 "rating_text": "(4.7/5)",
                 "users_text": "300+ dagelijkse gebruikers",
@@ -203,7 +203,7 @@
                 "frequency_label": "Bezorgfrequentie",
                 "most_popular_label": "",
                 "most_popular_match": "",
-                "most_popular_color": "#CBFF78",
+                "most_popular_color": "#cbff78",
                 "gifts_count": 0,
                 "gifts_heading": "Gratis cadeaus",
                 "gift_free_label": "GRATIS",
@@ -252,9 +252,9 @@
                 "skip_cart": false,
                 "color_scheme": "background-1",
                 "heading_size": "h3",
-                "accent_color": "#CBFF78",
+                "accent_color": "#cbff78",
                 "accent_text_color": "#25162f",
-                "button_color": "#CBFF78",
+                "button_color": "#cbff78",
                 "button_text_color": "#25162f",
                 "corner_radius": 10,
                 "atc_corner_radius": 10,
@@ -1115,9 +1115,9 @@
         "layer_pq8iVx": {
           "type": "layer",
           "settings": {
-            "kicker": "Werkt nu",
+            "kicker": "DIRECT IN JE ROUTINE",
             "title": "Het water",
-            "text": "<p>Eén zakje op 500 ml koud water: meteen een halve liter binnen. Het makkelijkste goede besluit van je dag.</p>",
+            "text": "<p>Eén zakje meng je met 500 ml koud water. Zo maak je van een halve liter drinken een vaste, makkelijke routine van je dag.</p>",
             "icon": "drop",
             "icon_bg": "#e4f5bc",
             "icon_color": "#191634"
@@ -1126,9 +1126,9 @@
         "layer_PVhNEy": {
           "type": "layer",
           "settings": {
-            "kicker": "Werkt vandaag",
-            "title": "De zouten",
-            "text": "<p>Natrium, kalium en magnesium: wat je door de dag verliest, vul je terug aan.*</p>",
+            "kicker": "ONDERSTEUNT DOOR DE DAG",
+            "title": "De elektrolyten",
+            "text": "<p>Natrium, kalium en magnesium zijn elektrolyten. Magnesium ondersteunt je elektrolytenbalans; kalium ondersteunt de normale werking van je spieren en zenuwstelsel.</p>",
             "icon": "salts",
             "icon_bg": "#d5f08e",
             "icon_color": "#191634"
@@ -1137,9 +1137,9 @@
         "layer_QedPn8": {
           "type": "layer",
           "settings": {
-            "kicker": "Werkt elke dag",
+            "kicker": "DAGELIJKSE ONDERSTEUNING",
             "title": "De vitamines",
-            "text": "<p>B5, B6, B12, C en magnesium. Niet de brandstof — de bougies.*</p>",
+            "text": "<p>B5, B6, B12, C en magnesium helpen je lichaam energie uit voeding vrij te maken en helpen vermoeidheid te verminderen. Geen snelle kick, wel ondersteuning van je normale energiehuishouding.</p>",
             "icon": "bolt",
             "icon_bg": "#c3ea3e",
             "icon_color": "#191634"
@@ -1148,9 +1148,9 @@
         "layer_LVbmwp": {
           "type": "layer",
           "settings": {
-            "kicker": "Werkt na 30 dagen",
+            "kicker": "BOUWT OP OVER TIJD",
             "title": "De creatine",
-            "text": "<p>5 gram per dag, de volle dosis. Werkt via verzadiging: elke dag telt op.</p>",
+            "text": "<p>5 gram per dag bouwt geleidelijk de creatinevoorraad in je spieren op. Creatine verbetert fysieke prestaties bij herhaalde korte, intensieve inspanningen.* Daarom telt iedere dag.</p>",
             "icon": "capsule",
             "icon_bg": "#191634",
             "icon_color": "#c3ea3e"
