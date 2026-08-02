@@ -95,6 +95,22 @@ Een private key mag hier nooit in.
 Beide geven HTTP 202 bij succes. De tweede call is best effort: de aanmelding is
 dan al gelukt, dus een mislukte property-write onderbreekt de bezoeker niet.
 
+**Double opt-in maakt de aanmelding onzichtbaar tot bevestiging.** Stond de lijst
+op `double_opt_in`, dan gaf `/client/subscriptions` netjes 202 maar gebeurde er
+verder niets waarneembaars: geen profiel, geen consent-record, geen event — en de
+bevestigingsmail kwam niet aan. Met `single_opt_in` op dezelfde lijst, dezelfde
+key en dezelfde payload landde alles binnen vijf seconden (geverifieerd
+2026-08-02: profiel met `first_name`, `$source`, `$consent`, `consent: SUBSCRIBED`,
+`method: API`, `custom_method_detail`, plus beide enquête-velden).
+
+Wil je alsnog double opt-in — verdedigbaar, want het formulier heeft geen
+toestemmings-vinkje — controleer dan éérst of de opt-in bevestigingsmail
+daadwerkelijk verstuurd wordt. Ten tijde van de test stond de accountbranding nog
+op een ander merk met een afwijkend afzenderadres; dat is een plausibele reden dat
+die mail nooit aankwam. Let ook op: de opt-in-instelling zit **per lijst** (List →
+Settings → Opt-in process). Het account-brede vinkje verandert bestaande lijsten
+niet, en de API blijft dan gewoon `double_opt_in` melden.
+
 **Belangrijk: 202 is géén bewijs dat het profiel bestaat.** Klaviyo accepteert het
 verzoek en verwerkt het daarna asynchroon; ongeldige of onbezorgbare adressen
 worden in die tweede stap stil weggegooid, zonder foutmelding richting de client.
@@ -161,6 +177,9 @@ forceren op een bestaande pagina), in Chrome op 390×844 met device-emulatie:
 - Formulierflow end-to-end getest via het honeypot-pad (verstuurt niets):
   aanmelden → bedanktpaneel → vraag 1 → vraag 2 → afsluittekst, met de focus die
   bij elke stap meeverhuist. Foutpad zet `aria-invalid` en meldt in de live region.
+- Klaviyo-koppeling écht getest tegen lijst `RXr2FJ` met public key `V7Badc`:
+  profiel aangemaakt met voornaam, `$source`, consent-record (`SUBSCRIBED`,
+  `method: API`) en beide enquête-velden. Zie de opt-in-waarschuwing hierboven.
 
 ### Let op
 
