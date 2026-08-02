@@ -974,7 +974,7 @@
           "type": "option",
           "settings": {
             "label": "De ochtend",
-            "subheading": "Start your day right — a clean boost the moment you wake up.",
+            "subheading": "Begin je dag goed, een frisse start zodra je wakker wordt.",
             "image": "shopify://shop_images/ChatGPT_Image_May_3_2026_01_02_17_PM.png",
             "caption": ""
           }
@@ -982,8 +982,8 @@
         "option_GtNYEn": {
           "type": "option",
           "settings": {
-            "label": "Laag in energie",
-            "subheading": "Beat the afternoon slump without the crash.",
+            "label": "De middagdip",
+            "subheading": "Voorkom de middagdip zonder de crash.",
             "caption": ""
           }
         },
@@ -1033,6 +1033,90 @@
         "color_scheme": "background-1",
         "padding_top": 40,
         "padding_bottom": 40
+      }
+    },
+    "custom_how_it_works_Ufct9c": {
+      "type": "custom-how-it-works",
+      "blocks": {
+        "layer_pq8iVx": {
+          "type": "layer",
+          "settings": {
+            "kicker": "DIRECT IN JE ROUTINE",
+            "title": "Het water",
+            "text": "<p>Eén zakje meng je met 500 ml koud water. Zo maak je van een halve liter drinken een vaste, makkelijke routine van je dag.</p>",
+            "icon": "drop",
+            "icon_bg": "#e4f5bc",
+            "icon_color": "#191634"
+          }
+        },
+        "layer_PVhNEy": {
+          "type": "layer",
+          "settings": {
+            "kicker": "ONDERSTEUNT DOOR DE DAG",
+            "title": "De elektrolyten",
+            "text": "<p>Ondersteunen de normale werking van je spieren en zenuwstelsel.</p>",
+            "icon": "salts",
+            "icon_bg": "#d5f08e",
+            "icon_color": "#191634"
+          }
+        },
+        "layer_QedPn8": {
+          "type": "layer",
+          "settings": {
+            "kicker": "DAGELIJKSE ONDERSTEUNING",
+            "title": "De vitamines",
+            "text": "<p>B5, B6, B12, C en magnesium helpen je lichaam energie uit voeding vrij te maken en helpen vermoeidheid te verminderen. Geen snelle kick, wel ondersteuning van je normale energiehuishouding.</p>",
+            "icon": "bolt",
+            "icon_bg": "#c3ea3e",
+            "icon_color": "#191634"
+          }
+        },
+        "layer_LVbmwp": {
+          "type": "layer",
+          "settings": {
+            "kicker": "BOUWT OP OVER TIJD",
+            "title": "De creatine",
+            "text": "<p>5 gram per dag bouwt geleidelijk de creatinevoorraad in je spieren op. Creatine verbetert fysieke prestaties bij herhaalde korte, intensieve inspanningen.* Daarom telt iedere dag.</p>",
+            "icon": "capsule",
+            "icon_bg": "#191634",
+            "icon_color": "#c3ea3e"
+          }
+        }
+      },
+      "block_order": [
+        "layer_pq8iVx",
+        "layer_PVhNEy",
+        "layer_QedPn8",
+        "layer_LVbmwp"
+      ],
+      "name": "Zo werkt het (tijdlijn)",
+      "settings": {
+        "eyebrow": "Zo werkt Energy Foundation",
+        "eyebrow_size": 12,
+        "heading": "Aanvullen, niet oppeppen.",
+        "heading_size": "h0",
+        "heading_custom_mobile_size": 32,
+        "heading_custom_desktop_size": 44,
+        "intro": "<p>In vier lagen, elk met een eigen tempo.</p>",
+        "content_alignment": "left",
+        "content_max_width": 640,
+        "marker_size": 48,
+        "item_gap": 32,
+        "rail_style": "dashed",
+        "rail_width": 2,
+        "kicker_size": 11,
+        "item_title_size": 19,
+        "body_size": 15,
+        "footnote": "<p>* Zie het claimoverzicht bij de receptuur.</p>",
+        "footnote_size": 13,
+        "bg_color": "#ffffff",
+        "text_color": "#191634",
+        "muted_color": "#5b5768",
+        "eyebrow_color": "#191634",
+        "kicker_color": "#6e6a7d",
+        "rail_color": "#c9c6d2",
+        "padding_top": 48,
+        "padding_bottom": 48
       }
     },
     "custom_ingredient_explorer_wCwePV": {
@@ -1119,90 +1203,6 @@
         "tab_active_text": "#ffffff",
         "badge_bg": "#ccfa78",
         "badge_text": "#25162f",
-        "padding_top": 48,
-        "padding_bottom": 48
-      }
-    },
-    "custom_how_it_works_Ufct9c": {
-      "type": "custom-how-it-works",
-      "blocks": {
-        "layer_pq8iVx": {
-          "type": "layer",
-          "settings": {
-            "kicker": "DIRECT IN JE ROUTINE",
-            "title": "Het water",
-            "text": "<p>Eén zakje meng je met 500 ml koud water. Zo maak je van een halve liter drinken een vaste, makkelijke routine van je dag.</p>",
-            "icon": "drop",
-            "icon_bg": "#e4f5bc",
-            "icon_color": "#191634"
-          }
-        },
-        "layer_PVhNEy": {
-          "type": "layer",
-          "settings": {
-            "kicker": "ONDERSTEUNT DOOR DE DAG",
-            "title": "De elektrolyten",
-            "text": "<p>Natrium, kalium en magnesium zijn elektrolyten. Magnesium ondersteunt je elektrolytenbalans; kalium ondersteunt de normale werking van je spieren en zenuwstelsel.</p>",
-            "icon": "salts",
-            "icon_bg": "#d5f08e",
-            "icon_color": "#191634"
-          }
-        },
-        "layer_QedPn8": {
-          "type": "layer",
-          "settings": {
-            "kicker": "DAGELIJKSE ONDERSTEUNING",
-            "title": "De vitamines",
-            "text": "<p>B5, B6, B12, C en magnesium helpen je lichaam energie uit voeding vrij te maken en helpen vermoeidheid te verminderen. Geen snelle kick, wel ondersteuning van je normale energiehuishouding.</p>",
-            "icon": "bolt",
-            "icon_bg": "#c3ea3e",
-            "icon_color": "#191634"
-          }
-        },
-        "layer_LVbmwp": {
-          "type": "layer",
-          "settings": {
-            "kicker": "BOUWT OP OVER TIJD",
-            "title": "De creatine",
-            "text": "<p>5 gram per dag bouwt geleidelijk de creatinevoorraad in je spieren op. Creatine verbetert fysieke prestaties bij herhaalde korte, intensieve inspanningen.* Daarom telt iedere dag.</p>",
-            "icon": "capsule",
-            "icon_bg": "#191634",
-            "icon_color": "#c3ea3e"
-          }
-        }
-      },
-      "block_order": [
-        "layer_pq8iVx",
-        "layer_PVhNEy",
-        "layer_QedPn8",
-        "layer_LVbmwp"
-      ],
-      "name": "Zo werkt het (tijdlijn)",
-      "settings": {
-        "eyebrow": "Zo werkt Energy Foundation",
-        "eyebrow_size": 12,
-        "heading": "Aanvullen, niet oppeppen.",
-        "heading_size": "h0",
-        "heading_custom_mobile_size": 32,
-        "heading_custom_desktop_size": 44,
-        "intro": "<p>In vier lagen, elk met een eigen tempo.</p>",
-        "content_alignment": "left",
-        "content_max_width": 640,
-        "marker_size": 48,
-        "item_gap": 32,
-        "rail_style": "dashed",
-        "rail_width": 2,
-        "kicker_size": 11,
-        "item_title_size": 19,
-        "body_size": 15,
-        "footnote": "<p>* Zie het claimoverzicht bij de receptuur.</p>",
-        "footnote_size": 13,
-        "bg_color": "#ffffff",
-        "text_color": "#191634",
-        "muted_color": "#5b5768",
-        "eyebrow_color": "#191634",
-        "kicker_color": "#6e6a7d",
-        "rail_color": "#c9c6d2",
         "padding_top": 48,
         "padding_bottom": 48
       }
@@ -1591,8 +1591,8 @@
     "review_cards_dm",
     "custom_daily_steps_mdtFtT",
     "color_switch_6FNyPd",
-    "custom_ingredient_explorer_wCwePV",
     "custom_how_it_works_Ufct9c",
+    "custom_ingredient_explorer_wCwePV",
     "custom_stack_comparison_AXk6jC",
     "custom_bundle_builder_9N4jpq",
     "collapsible_content_44w8jM",
