@@ -990,7 +990,7 @@
         "option_Tmq8aC": {
           "type": "option",
           "settings": {
-            "label": "Pre/post workout",
+            "label": "Voor, tijdens of na sporten",
             "subheading": "Fuel up before and recover faster after training.",
             "caption": ""
           }
@@ -998,8 +998,8 @@
         "option_APHdEb": {
           "type": "option",
           "settings": {
-            "label": "Kater",
-            "subheading": "Rehydrate and bounce back the morning after.",
+            "label": "Night out",
+            "subheading": "Hydrateer jezelf en voel je de volgende ochtend weer helemaal fit.",
             "caption": ""
           }
         }
