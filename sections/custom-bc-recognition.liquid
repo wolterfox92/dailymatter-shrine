@@ -1,0 +1,205 @@
+{%- comment -%}
+  Black Cherry waitlist — section 3 "Herkenning".
+  Eyebrow, heading, two paragraphs and a three-image collage (one wide, two square).
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+
+  assign image_count = 0
+  for block in section.blocks
+    if block.type == 'image'
+      assign image_count = image_count | plus: 1
+    endif
+  endfor
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .bc-recognition {
+    background: {{ s.bg_color }};
+    --bc-eyebrow-color: {{ s.eyebrow_color }};
+    --bc-heading-color: {{ s.heading_color }};
+    --bc-body-color: {{ s.body_color }};
+    --bc-lead-color: {{ s.lead_color }};
+    --bc-h2-size: clamp({{ s.heading_size_min }}px, 7.6vw, {{ s.heading_size_max }}px);
+  }
+{%- endstyle -%}
+
+<section class="bc-recognition">
+  <div class="bc-inner">
+    {%- if s.eyebrow != blank -%}
+      <p class="bc-eyebrow">{{ s.eyebrow | escape }}</p>
+    {%- endif -%}
+
+    {%- if s.heading != blank -%}
+      <h2 class="bc-h2">{{ s.heading | escape }}</h2>
+    {%- endif -%}
+
+    {%- if s.body != blank -%}
+      <div class="bc-body">{{ s.body }}</div>
+    {%- endif -%}
+
+    {%- if s.lead != blank -%}
+      <div class="bc-body bc-body--lead">{{ s.lead }}</div>
+    {%- endif -%}
+
+    {%- if image_count > 0 -%}
+      <ul class="bc-collage" role="list">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'image' -%}
+            {%- liquid
+              assign img = block.settings.image
+              assign img_alt = img.alt | default: block.settings.alt_fallback | strip_html | escape
+              assign wide_class = ''
+              if block.settings.wide
+                assign wide_class = ' bc-collage__item--wide'
+              endif
+            -%}
+            <li class="bc-media bc-collage__item{{ wide_class }}" {{ block.shopify_attributes }}>
+              {%- if img != blank -%}
+                {{-
+                  img
+                  | image_url: width: 1040
+                  | image_tag:
+                    width: img.width,
+                    height: img.height,
+                    alt: img_alt,
+                    sizes: '(min-width: 552px) 520px, 100vw',
+                    widths: '260, 390, 520, 780, 1040',
+                    loading: 'lazy',
+                    decoding: 'async'
+                -}}
+              {%- else -%}
+                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+              {%- endif -%}
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "BC · Herkenning",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Everyday energy"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Your days ask a lot."
+    },
+    {
+      "type": "range",
+      "id": "heading_size_min",
+      "min": 20,
+      "max": 44,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading minimum",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "heading_size_max",
+      "min": 26,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading maximum",
+      "default": 38
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Tekst",
+      "default": "<p>Werk, studie, sport, vrienden en alles wat daar tussendoor gebeurt. Goed voor jezelf zorgen helpt, maar wordt al snel nóg iets om bij te houden. Meerdere potten, losse scheppen en ingewikkelde routines passen niet altijd in het echte leven.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "lead",
+      "label": "Uitgelichte zin",
+      "default": "<p>Daarom brengen we de dagelijkse basis samen in één sachet.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Kleuren"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Achtergrond",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow",
+      "default": "#634c61"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#180223"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Tekst",
+      "default": "#52415a"
+    },
+    {
+      "type": "color",
+      "id": "lead_color",
+      "label": "Uitgelichte zin",
+      "default": "#180223"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Afbeelding",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Afbeelding"
+        },
+        {
+          "type": "checkbox",
+          "id": "wide",
+          "label": "Volle breedte",
+          "info": "Twee kolommen breed, 16:10 in plaats van vierkant.",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "alt_fallback",
+          "label": "Alt-tekst (terugval)",
+          "info": "Gebruikt als de afbeelding zelf geen alt-tekst heeft."
+        }
+      ]
+    },
+    { "type": "@app" }
+  ],
+  "presets": [
+    {
+      "name": "BC · Herkenning",
+      "blocks": [
+        { "type": "image", "settings": { "wide": true, "alt_fallback": "Onderweg met sachet" } },
+        { "type": "image", "settings": { "wide": false } },
+        { "type": "image", "settings": { "wide": false } }
+      ]
+    }
+  ]
+}
+{% endschema %}

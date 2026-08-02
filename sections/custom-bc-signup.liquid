@@ -1,0 +1,649 @@
+{%- comment -%}
+  Black Cherry waitlist — section 10 "First drop signup".
+
+  The commerce-critical section. Signups go straight to a Klaviyo list via the
+  client-side subscription endpoint; the two follow-up questions are written to
+  the same profile as properties. No Klaviyo onsite script is loaded, so this
+  costs no third-party JavaScript on the page you buy traffic to.
+
+  Design reference: the source stored signups in localStorage, which is a
+  prototype stand-in. Everything else follows the design.
+
+  Anchor #bc-signup — the announcement bar, header, hero and sticky bar link here.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+
+  assign is_configured = false
+  if s.klaviyo_public_key != blank and s.klaviyo_list_id != blank
+    assign is_configured = true
+  endif
+
+  assign perk_count = 0
+  assign tag_count = 0
+  for block in section.blocks
+    case block.type
+      when 'perk'
+        assign perk_count = perk_count | plus: 1
+      when 'tag'
+        assign tag_count = tag_count | plus: 1
+    endcase
+  endfor
+
+  assign q1_options = s.q1_options | split: ','
+  assign q2_options = s.q2_options | split: ','
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .bc-signup {
+    background: {{ s.bg_color }};
+    --bc-eyebrow-color: {{ s.eyebrow_color }};
+    --bc-heading-color: {{ s.heading_color }};
+    --bc-body-color: {{ s.body_color }};
+    --bc-h2-size: clamp({{ s.heading_size_min }}px, 10vw, {{ s.heading_size_max }}px);
+  }
+
+  #shopify-section-{{ section.id }} .bc-perk__icon {
+    background: {{ s.perk_icon_bg_color }};
+    color: {{ s.perk_icon_color }};
+  }
+
+  #shopify-section-{{ section.id }} .bc-perk__title,
+  #shopify-section-{{ section.id }} .bc-perk__sub {
+    color: {{ s.perk_text_color }};
+  }
+{%- endstyle -%}
+
+<section class="bc-signup" id="bc-signup">
+  <div class="bc-signup__inner">
+    {%- if request.design_mode and is_configured == false -%}
+      <p class="bc-signup__error">
+        Waitlist nog niet gekoppeld: vul de Klaviyo public API key (site ID) en het
+        lijst-ID in bij de instellingen van deze sectie. Zonder die twee kan het
+        formulier geen aanmeldingen versturen.
+      </p>
+    {%- endif -%}
+
+    {%- if s.eyebrow != blank -%}
+      <p class="bc-eyebrow">{{ s.eyebrow | escape }}</p>
+    {%- endif -%}
+
+    {%- if s.heading != blank -%}
+      <h2 class="bc-h2">{{ s.heading | escape }}</h2>
+    {%- endif -%}
+
+    {%- if s.body != blank -%}
+      <div class="bc-body">{{ s.body }}</div>
+    {%- endif -%}
+
+    {%- if perk_count > 0 or tag_count > 0 -%}
+      <ul class="bc-perks" role="list">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'perk' and block.settings.title != blank -%}
+            <li class="bc-perk" {{ block.shopify_attributes }}>
+              <span class="bc-perk__icon">
+                {% render 'custom-bc-icon', icon: block.settings.icon, size: 17 %}
+              </span>
+              <span>
+                <span class="bc-perk__title">{{ block.settings.title | escape }}</span>
+                {%- if block.settings.subtitle != blank -%}
+                  <span class="bc-perk__sub">{{ block.settings.subtitle | escape }}</span>
+                {%- endif -%}
+              </span>
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- if tag_count > 0 -%}
+          <li>
+            <ul class="bc-signup__tags" role="list">
+              {%- for block in section.blocks -%}
+                {%- if block.type == 'tag' and block.settings.text != blank -%}
+                  <li class="bc-chip" {{ block.shopify_attributes }}>
+                    {% render 'custom-bc-icon', icon: block.settings.icon, size: 15 %}
+                    {{ block.settings.text | escape }}
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          </li>
+        {%- endif -%}
+      </ul>
+    {%- endif -%}
+
+    <bc-signup-form
+      data-company-id="{{ s.klaviyo_public_key | escape }}"
+      data-list-id="{{ s.klaviyo_list_id | escape }}"
+      data-custom-source="{{ s.klaviyo_custom_source | escape }}"
+      data-success-title="{{ s.success_title | escape }}"
+      data-success-title-named="{{ s.success_title_named | escape }}"
+    >
+      <div class="bc-signup__panel" data-bc-panel>
+        <form novalidate data-bc-form>
+          {%- if s.show_name -%}
+            <div class="bc-field">
+              <label class="bc-label" for="BcName-{{ section.id }}">{{ s.name_label | escape }}</label>
+              <input
+                class="bc-input"
+                id="BcName-{{ section.id }}"
+                type="text"
+                name="first_name"
+                autocomplete="given-name"
+                placeholder="{{ s.name_placeholder | escape }}"
+              >
+            </div>
+          {%- endif -%}
+
+          <div class="bc-field">
+            <label class="bc-label" for="BcEmail-{{ section.id }}">{{ s.email_label | escape }}</label>
+            <input
+              class="bc-input"
+              id="BcEmail-{{ section.id }}"
+              type="email"
+              name="email"
+              autocomplete="email"
+              inputmode="email"
+              spellcheck="false"
+              autocapitalize="off"
+              required
+              placeholder="{{ s.email_placeholder | escape }}"
+              aria-describedby="BcStatus-{{ section.id }}"
+            >
+          </div>
+
+          {%- comment -%}
+            Honeypot. Off-screen and out of the tab order: bots fill it, people
+            don't. A filled value makes the JS fake a success and send nothing.
+          {%- endcomment -%}
+          <div class="bc-trap" aria-hidden="true">
+            <label for="BcCompany-{{ section.id }}">Bedrijf</label>
+            <input id="BcCompany-{{ section.id }}" type="text" name="company" tabindex="-1" autocomplete="off">
+          </div>
+
+          {%- if s.show_consent -%}
+            <div class="bc-signup__consent">
+              <input
+                class="bc-signup__checkbox"
+                id="BcConsent-{{ section.id }}"
+                type="checkbox"
+                name="consent"
+                {% if s.consent_required %}
+                  required
+                {% endif %}
+              >
+              <label class="bc-signup__consent-label" for="BcConsent-{{ section.id }}">
+                {{ s.consent_label | escape }}
+              </label>
+            </div>
+          {%- endif -%}
+
+          <p
+            class="bc-signup__error"
+            id="BcStatus-{{ section.id }}"
+            role="status"
+            aria-live="polite"
+            data-bc-status
+            data-error-text="{{ s.error_text | escape }}"
+            data-invalid-text="{{ s.invalid_email_text | escape }}"
+            data-consent-text="{{ s.consent_error_text | escape }}"
+          ></p>
+
+          <div class="bc-signup__submit">
+            <button class="bc-btn bc-btn--dark bc-btn--full" type="submit" data-bc-submit>
+              {{- s.button_label | escape -}}
+              {% render 'custom-bc-icon', icon: 'arrow_forward', size: 22 %}
+            </button>
+          </div>
+
+          {%- if s.fine_print != blank -%}
+            <div class="bc-signup__fine">{{ s.fine_print }}</div>
+          {%- endif -%}
+        </form>
+      </div>
+
+      <div class="bc-signup__panel bc-thanks" data-bc-thanks hidden>
+        <div class="bc-thanks__head">
+          <span class="bc-thanks__mark">
+            {% render 'custom-bc-icon', icon: 'check', size: 22 %}
+          </span>
+          <h3 class="bc-thanks__title" tabindex="-1" data-bc-thanks-title>{{ s.success_title | escape }}</h3>
+        </div>
+
+        {%- if s.q1_enabled and s.q1_question != blank and q1_options.size > 0 -%}
+          <fieldset class="bc-survey" data-bc-survey data-property="{{ s.q1_property | escape }}" hidden>
+            <legend class="bc-survey__legend">{{ s.q1_question | escape }}</legend>
+            <div class="bc-survey__options">
+              {%- for option in q1_options -%}
+                {%- assign option_label = option | strip -%}
+                {%- if option_label != blank -%}
+                  <button
+                    class="bc-survey__option"
+                    type="button"
+                    aria-pressed="false"
+                    data-bc-option
+                    value="{{ option_label | escape }}"
+                  >
+                    {{- option_label | escape -}}
+                  </button>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          </fieldset>
+        {%- endif -%}
+
+        {%- if s.q2_enabled and s.q2_question != blank and q2_options.size > 0 -%}
+          <fieldset class="bc-survey" data-bc-survey data-property="{{ s.q2_property | escape }}" hidden>
+            <legend class="bc-survey__legend">{{ s.q2_question | escape }}</legend>
+            <div class="bc-survey__options">
+              {%- for option in q2_options -%}
+                {%- assign option_label = option | strip -%}
+                {%- if option_label != blank -%}
+                  <button
+                    class="bc-survey__option"
+                    type="button"
+                    aria-pressed="false"
+                    data-bc-option
+                    value="{{ option_label | escape }}"
+                  >
+                    {{- option_label | escape -}}
+                  </button>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          </fieldset>
+        {%- endif -%}
+
+        {%- if s.success_text != blank -%}
+          <div class="bc-thanks__done" data-bc-done hidden>{{ s.success_text }}</div>
+        {%- endif -%}
+      </div>
+    </bc-signup-form>
+  </div>
+</section>
+
+<script src="{{ 'custom-bc-signup.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "BC · Aanmelden",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Klaviyo-koppeling"
+    },
+    {
+      "type": "paragraph",
+      "content": "Public API key (site ID) staat in Klaviyo onder Settings > API keys, het lijst-ID onder Lists & Segments. De public key hoort thuis in client-side code; gebruik hier nooit een private key."
+    },
+    {
+      "type": "text",
+      "id": "klaviyo_public_key",
+      "label": "Klaviyo public API key (site ID)"
+    },
+    {
+      "type": "text",
+      "id": "klaviyo_list_id",
+      "label": "Klaviyo lijst-ID"
+    },
+    {
+      "type": "text",
+      "id": "klaviyo_custom_source",
+      "label": "Bron (custom source)",
+      "default": "Black Cherry waitlist"
+    },
+    {
+      "type": "header",
+      "content": "Inhoud"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The first batch"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Be first in."
+    },
+    {
+      "type": "range",
+      "id": "heading_size_min",
+      "min": 24,
+      "max": 56,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading minimum",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "heading_size_max",
+      "min": 30,
+      "max": 72,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading maximum",
+      "default": 48
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Tekst",
+      "default": "<p>Black Cherry wordt de eerste smaak van Energy Foundation. Meld je aan en krijg als eerste toegang zodra de founding batch beschikbaar is.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Formulier"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_name",
+      "label": "Vraag om voornaam",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "name_label",
+      "label": "Label naamveld",
+      "default": "Voornaam",
+      "visible_if": "{{ section.settings.show_name }}"
+    },
+    {
+      "type": "text",
+      "id": "name_placeholder",
+      "label": "Placeholder naamveld",
+      "default": "Je voornaam",
+      "visible_if": "{{ section.settings.show_name }}"
+    },
+    {
+      "type": "text",
+      "id": "email_label",
+      "label": "Label e-mailveld",
+      "default": "E-mailadres"
+    },
+    {
+      "type": "text",
+      "id": "email_placeholder",
+      "label": "Placeholder e-mailveld",
+      "default": "je@mail.nl"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Knoptekst",
+      "default": "Join the first drop"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_consent",
+      "label": "Toestemmings-checkbox tonen",
+      "info": "Het ontwerp heeft er geen. Aanzetten als je expliciete opt-in wilt vastleggen naast de dubbele opt-in van je Klaviyo-lijst.",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "consent_label",
+      "label": "Tekst bij checkbox",
+      "default": "Ja, hou mij per e-mail op de hoogte van de lancering.",
+      "visible_if": "{{ section.settings.show_consent }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "consent_required",
+      "label": "Checkbox verplicht",
+      "default": true,
+      "visible_if": "{{ section.settings.show_consent }}"
+    },
+    {
+      "type": "richtext",
+      "id": "fine_print",
+      "label": "Kleine letters",
+      "default": "<p>Geen dagelijkse mails. Alleen relevante updates over Black Cherry en de eerste lancering.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Na aanmelding"
+    },
+    {
+      "type": "text",
+      "id": "success_title",
+      "label": "Titel",
+      "default": "Je staat op de lijst."
+    },
+    {
+      "type": "text",
+      "id": "success_title_named",
+      "label": "Titel met naam",
+      "info": "[naam] wordt vervangen door de ingevulde voornaam.",
+      "default": "Je staat op de lijst, [naam]."
+    },
+    {
+      "type": "richtext",
+      "id": "success_text",
+      "label": "Afsluitende tekst",
+      "default": "<p>Dank je. Dit helpt ons de eerste batch precies goed te maken. Je hoort van ons zodra Black Cherry klaarstaat.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Vraag 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "q1_enabled",
+      "label": "Vraag 1 tonen",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "q1_question",
+      "label": "Vraag",
+      "default": "Hoe waarschijnlijk is het dat je Energy Foundation zou proberen?",
+      "visible_if": "{{ section.settings.q1_enabled }}"
+    },
+    {
+      "type": "text",
+      "id": "q1_options",
+      "label": "Antwoorden",
+      "info": "Gescheiden door komma's.",
+      "default": "Zeker, Waarschijnlijk, Misschien, Eerst meer informatie",
+      "visible_if": "{{ section.settings.q1_enabled }}"
+    },
+    {
+      "type": "text",
+      "id": "q1_property",
+      "label": "Klaviyo profielveld",
+      "default": "waitlist_intent",
+      "visible_if": "{{ section.settings.q1_enabled }}"
+    },
+    {
+      "type": "header",
+      "content": "Vraag 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "q2_enabled",
+      "label": "Vraag 2 tonen",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "q2_question",
+      "label": "Vraag",
+      "default": "Wat zou je verwachten te betalen voor 30 sachets?",
+      "visible_if": "{{ section.settings.q2_enabled }}"
+    },
+    {
+      "type": "text",
+      "id": "q2_options",
+      "label": "Antwoorden",
+      "info": "Gescheiden door komma's.",
+      "default": "€ 25–35, € 35–45, € 45–55, € 55+",
+      "visible_if": "{{ section.settings.q2_enabled }}"
+    },
+    {
+      "type": "text",
+      "id": "q2_property",
+      "label": "Klaviyo profielveld",
+      "default": "waitlist_price_expectation",
+      "visible_if": "{{ section.settings.q2_enabled }}"
+    },
+    {
+      "type": "header",
+      "content": "Foutmeldingen"
+    },
+    {
+      "type": "text",
+      "id": "error_text",
+      "label": "Algemeen",
+      "default": "Er ging iets mis. Probeer het zo nog eens."
+    },
+    {
+      "type": "text",
+      "id": "invalid_email_text",
+      "label": "Ongeldig e-mailadres",
+      "default": "Vul een geldig e-mailadres in."
+    },
+    {
+      "type": "text",
+      "id": "consent_error_text",
+      "label": "Toestemming ontbreekt",
+      "default": "Zet een vinkje om je aan te melden."
+    },
+    {
+      "type": "header",
+      "content": "Kleuren"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Achtergrond",
+      "default": "#cbff78"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow",
+      "default": "#243511"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#243511"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Tekst",
+      "default": "#243511"
+    },
+    {
+      "type": "color",
+      "id": "perk_icon_bg_color",
+      "label": "Voordeel icooncirkel",
+      "default": "#243511"
+    },
+    {
+      "type": "color",
+      "id": "perk_icon_color",
+      "label": "Voordeel icoon",
+      "default": "#cbff78"
+    },
+    {
+      "type": "color",
+      "id": "perk_text_color",
+      "label": "Voordeel tekst",
+      "default": "#243511"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "perk",
+      "name": "Voordeel",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icoon",
+          "options": [
+            { "value": "sell", "label": "Label" },
+            { "value": "water_drop", "label": "Druppel" },
+            { "value": "key", "label": "Sleutel" },
+            { "value": "mark_email_read", "label": "Mail" },
+            { "value": "check", "label": "Vinkje" },
+            { "value": "bolt", "label": "Bliksem" }
+          ],
+          "default": "sell"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titel",
+          "default": "25% korting op je order"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Ondertitel",
+          "default": "Alleen voor de first drop-lijst"
+        }
+      ]
+    },
+    {
+      "type": "tag",
+      "name": "Tag",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icoon",
+          "options": [
+            { "value": "key", "label": "Sleutel" },
+            { "value": "mark_email_read", "label": "Mail" },
+            { "value": "check", "label": "Vinkje" },
+            { "value": "bolt", "label": "Bliksem" }
+          ],
+          "default": "key"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Tekst",
+          "default": "Early access"
+        }
+      ]
+    },
+    { "type": "@app" }
+  ],
+  "presets": [
+    {
+      "name": "BC · Aanmelden",
+      "blocks": [
+        {
+          "type": "perk",
+          "settings": {
+            "icon": "sell",
+            "title": "25% korting op je order",
+            "subtitle": "Alleen voor de first drop-lijst"
+          }
+        },
+        {
+          "type": "perk",
+          "settings": {
+            "icon": "water_drop",
+            "title": "Gratis waterfles t.w.v. € 17,95",
+            "subtitle": "Bij je eerste bestelling"
+          }
+        },
+        { "type": "tag", "settings": { "icon": "key", "text": "Early access" } },
+        { "type": "tag", "settings": { "icon": "mark_email_read", "text": "First batch updates" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

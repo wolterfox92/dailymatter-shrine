@@ -1,0 +1,65 @@
+{%- comment -%}
+  Black Cherry waitlist — announcement bar (design section "Announcement bar").
+  The design made this a div with role="button"; here it is a real link, so it
+  works with the keyboard, on middle-click and without JS.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --bc-announce-bg: {{ s.bg_color }};
+    --bc-announce-text: {{ s.text_color }};
+  }
+{%- endstyle -%}
+
+{%- if s.text != blank -%}
+  <a class="bc-announce" href="{{ s.link | default: '#bc-signup' }}">
+    <span>{{ s.text }}</span>
+    {%- if s.show_icon -%}
+      {% render 'custom-bc-icon', icon: 'arrow_downward', size: 14 %}
+    {%- endif -%}
+  </a>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "BC · Announcement",
+  "settings": [
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Tekst",
+      "default": "Black Cherry is coming — join & krijg 25% korting + gratis waterfles"
+    },
+    {
+      "type": "text",
+      "id": "link",
+      "label": "Link",
+      "info": "Standaard #bc-signup: springt naar het aanmeldformulier op deze pagina.",
+      "default": "#bc-signup"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_icon",
+      "label": "Pijl tonen",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Achtergrond",
+      "default": "#511a39"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Tekst",
+      "default": "#f8f8ed"
+    }
+  ],
+  "presets": [{ "name": "BC · Announcement" }]
+}
+{% endschema %}

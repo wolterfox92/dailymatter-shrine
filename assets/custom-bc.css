@@ -1,0 +1,1429 @@
+/* ============================================================
+   Black Cherry waitlist — shared stylesheet
+   Source: Claude Design project "Daily Matters PDP opbouw",
+   file "Black Cherry Waitlist.dc.html" + the Daily Matters design system.
+
+   One file for all custom-bc-* sections: they always ship together on the
+   waitlist template, so a single cached request beats seventeen.
+
+   Tokens are scoped to .bc-page (the JSON template's wrapper), never :root,
+   so nothing here can leak into Shrine's own pages.
+
+   Mobile-first. The design is a single 520px column by decision; the layout
+   primitives below are deliberately kept in one place (--bc-col, .bc-inner,
+   .bc-media) so a desktop layer can be added later without a rebuild.
+   ============================================================ */
+
+.bc-page {
+  /* ---- Ink ---- */
+  --bc-ink: #180223;
+  --bc-ink-90: rgba(24, 2, 35, 0.9);
+  --bc-ink-75: rgba(24, 2, 35, 0.75);
+  --bc-ink-55: rgba(24, 2, 35, 0.55);
+  --bc-ink-30: rgba(24, 2, 35, 0.3);
+  --bc-grape: #634c61;
+  --bc-green-ink: #243511;
+
+  /* ---- Brand pastels ---- */
+  --bc-lavender: #cac0ff;
+  --bc-lime: #cbff78;
+  --bc-lime-deep: #c9f073;
+  --bc-pink: #ff9cff;
+
+  /* ---- Paper ---- */
+  --bc-paper: #ffffff;
+  --bc-cream: #f8f8ed;
+  --bc-cream-65: rgba(248, 248, 237, 0.65);
+  --bc-cream-80: rgba(248, 248, 237, 0.8);
+
+  /* ---- Black Cherry accents ----
+     The design expressed these as color-mix(in oklab, …). Resolved to hex so
+     they work as editor colour settings and need no color-mix support. */
+  --bc-cherry: #d94a5c;
+  --bc-cherry-deep: #511a39; /* 34% cherry + ink */
+  --bc-cherry-tint: #fee7e7; /* 14% cherry + white */
+  --bc-cherry-text: #882e49; /* 62% cherry + ink */
+
+  /* ---- Lines ---- */
+  --bc-border-subtle: rgba(24, 2, 35, 0.12);
+  --bc-border-hair: rgba(24, 2, 35, 0.08);
+  --bc-error: #b3273c;
+
+  /* ---- Radius ---- */
+  --bc-radius-sm: 12px;
+  --bc-radius-md: 16px;
+  --bc-radius-lg: 20px;
+  --bc-radius-xl: 24px;
+  --bc-radius-pill: 999px;
+
+  /* ---- Shadow ---- */
+  --bc-shadow-chip: 0 2px 6px rgba(24, 2, 35, 0.06);
+  --bc-shadow-card: 0 1px 2px rgba(24, 2, 35, 0.04), 0 10px 28px rgba(24, 2, 35, 0.07);
+
+  /* ---- Motion ---- */
+  --bc-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --bc-dur-fast: 140ms;
+  --bc-dur-base: 220ms;
+
+  /* ---- Layout ---- */
+  --bc-col: 520px;
+  --bc-gutter: 16px;
+
+  /* Fonts are set by sections/custom-bc-page-style.liquid from its font_picker
+     settings; these fallbacks keep the page readable if that section is absent. */
+  --bc-font-display: var(--font-heading-family, inherit);
+  --bc-font-sans: var(--font-body-family, inherit);
+
+  max-width: var(--bc-col);
+  margin: 0 auto;
+  background: var(--bc-paper);
+  color: var(--bc-ink);
+  font-family: var(--bc-font-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom elements are inline by default. */
+bc-signup-form,
+bc-sticky-cta {
+  display: block;
+}
+
+/* The header is sticky, so anchor jumps must clear it. */
+.bc-page [id] {
+  scroll-margin-top: 72px;
+}
+
+.bc-vh {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   Primitives
+   ============================================================ */
+
+.bc-inner {
+  padding: 40px var(--bc-gutter) 44px;
+}
+
+.bc-eyebrow {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bc-eyebrow-color, var(--bc-grape));
+}
+
+.bc-h1,
+.bc-h2 {
+  margin: 8px 0 0;
+  font-family: var(--bc-font-display);
+  letter-spacing: -0.02em;
+  text-wrap: pretty;
+  color: var(--bc-heading-color, var(--bc-ink));
+}
+
+.bc-h1 {
+  margin-top: 10px;
+  font-size: var(--bc-h1-size, clamp(38px, 10.4vw, 50px));
+  font-weight: 900;
+  line-height: 0.92;
+}
+
+.bc-h2 {
+  font-size: var(--bc-h2-size, clamp(28px, 7.6vw, 38px));
+  font-weight: 800;
+  line-height: 0.98;
+}
+
+.bc-body {
+  margin: 14px 0 0;
+  font-size: 15px;
+  line-height: 1.6;
+  text-wrap: pretty;
+  color: var(--bc-body-color, var(--bc-ink-75));
+}
+
+.bc-body > :first-child {
+  margin-top: 0;
+}
+
+.bc-body > :last-child {
+  margin-bottom: 0;
+}
+
+.bc-body--lead {
+  margin-top: 10px;
+  font-weight: 700;
+  color: var(--bc-lead-color, var(--bc-ink));
+}
+
+.bc-icon {
+  display: block;
+  flex: 0 0 auto;
+}
+
+/* ---- Buttons ------------------------------------------------ */
+
+.bc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 58px;
+  padding: 17px 30px;
+  border: none;
+  border-radius: var(--bc-radius-pill);
+  font-family: var(--bc-font-sans);
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: filter var(--bc-dur-fast) var(--bc-ease), box-shadow var(--bc-dur-base) var(--bc-ease);
+}
+
+.bc-btn--primary {
+  background: var(--bc-lime-deep);
+  color: var(--bc-ink);
+  box-shadow: var(--bc-shadow-chip);
+}
+
+.bc-btn--dark {
+  background: var(--bc-ink);
+  color: var(--bc-lime);
+}
+
+.bc-btn--full {
+  width: 100%;
+}
+
+.bc-btn:hover {
+  filter: brightness(0.96);
+}
+
+.bc-btn:focus-visible {
+  outline: 3px solid var(--bc-ink);
+  outline-offset: 3px;
+}
+
+.bc-btn--dark:focus-visible {
+  outline-color: var(--bc-lime);
+}
+
+.bc-btn[disabled] {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+/* Small header CTA — a pill, not a full-size button. Still 44px tall: it is the
+   header's only action and thumbs do not care that it looks compact. */
+.bc-btn--sm {
+  min-height: 44px;
+  padding: 12px 16px;
+  font-size: 12.5px;
+  gap: 6px;
+  background: var(--bc-lime);
+  color: var(--bc-green-ink);
+}
+
+/* ---- Chips -------------------------------------------------- */
+
+.bc-chips {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 13px;
+  border-radius: var(--bc-radius-pill);
+  background: var(--bc-chip-bg, rgba(255, 255, 255, 0.75));
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--bc-chip-text, var(--bc-ink));
+}
+
+.bc-chip .bc-icon {
+  color: var(--bc-chip-icon, var(--bc-cherry-text));
+}
+
+/* ---- Media -------------------------------------------------- */
+
+.bc-media {
+  position: relative;
+  overflow: hidden;
+  background: var(--bc-media-bg, var(--bc-cream));
+}
+
+.bc-media img,
+.bc-media svg.placeholder-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bc-media__tag {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  padding: 7px 13px;
+  border-radius: var(--bc-radius-pill);
+  background: rgba(255, 255, 255, 0.92);
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--bc-ink);
+  pointer-events: none;
+}
+
+/* ---- Cards -------------------------------------------------- */
+
+.bc-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bc-card {
+  overflow: hidden;
+  border-radius: var(--bc-radius-lg);
+  background: var(--bc-paper);
+}
+
+.bc-card--raised {
+  box-shadow: var(--bc-shadow-card);
+}
+
+.bc-card__media {
+  aspect-ratio: 16 / 9;
+}
+
+.bc-card__body {
+  padding: 16px 18px 18px;
+}
+
+.bc-card__titlerow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.bc-card__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--bc-radius-pill);
+  background: var(--bc-lime);
+  color: var(--bc-green-ink);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.bc-card__title {
+  margin: 0;
+  font-family: var(--bc-font-display);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--bc-ink);
+}
+
+.bc-card__text {
+  margin: 6px 0 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--bc-ink-75);
+}
+
+/* ---- Accordion ---------------------------------------------- */
+
+.bc-acc {
+  background: var(--bc-paper);
+}
+
+.bc-acc > summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  list-style: none;
+  /* Keeps the row at a 44px+ target without changing the visual rhythm. */
+  min-height: 44px;
+}
+
+.bc-acc > summary::-webkit-details-marker {
+  display: none;
+}
+
+.bc-acc > summary:focus-visible {
+  outline: 3px solid var(--bc-ink);
+  outline-offset: -3px;
+  border-radius: var(--bc-radius-sm);
+}
+
+.bc-acc__chev {
+  flex: 0 0 auto;
+  color: var(--bc-ink-55);
+  transition: transform var(--bc-dur-base) var(--bc-ease);
+}
+
+.bc-acc[open] .bc-acc__chev {
+  transform: rotate(180deg);
+}
+
+/* ============================================================
+   Announcement bar
+   ============================================================ */
+
+.bc-announce {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  padding: 9px 14px;
+  border: none;
+  background: var(--bc-announce-bg, var(--bc-cherry-deep));
+  color: var(--bc-announce-text, var(--bc-cream));
+  font-family: var(--bc-font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.bc-announce:focus-visible {
+  outline: 3px solid var(--bc-cream);
+  outline-offset: -3px;
+}
+
+/* ============================================================
+   Header
+   ============================================================ */
+
+.bc-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  border-bottom: 1px solid var(--bc-border-hair);
+  background: var(--bc-header-bg, var(--bc-paper));
+}
+
+.bc-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px var(--bc-gutter);
+}
+
+.bc-wordmark {
+  font-family: var(--bc-font-display);
+  font-size: 17px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: var(--bc-ink);
+  text-decoration: none;
+}
+
+.bc-wordmark sup {
+  font-size: 10px;
+  vertical-align: super;
+}
+
+.bc-wordmark img {
+  display: block;
+  width: auto;
+  height: var(--bc-logo-height, 20px);
+}
+
+/* ============================================================
+   1 · Hero
+   ============================================================ */
+
+.bc-hero__inner {
+  padding: 28px var(--bc-gutter) 0;
+}
+
+.bc-hero__note {
+  margin: 9px 0 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.45;
+  text-align: center;
+  color: var(--bc-ink-75);
+}
+
+.bc-hero__link {
+  display: block;
+  margin-top: 8px;
+  text-align: center;
+}
+
+/* Padded to a 44px target, then pulled back with a negative margin so the extra
+   hit area costs no vertical rhythm. */
+.bc-hero__link a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 8px;
+  margin: -12px 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--bc-ink);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+}
+
+.bc-hero__cta {
+  margin-top: 20px;
+}
+
+.bc-hero__media {
+  margin-top: 24px;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--bc-radius-xl) var(--bc-radius-xl) 0 0;
+  --bc-media-bg: var(--bc-cherry-deep);
+}
+
+/* ============================================================
+   2 · Ticker
+   ============================================================ */
+
+.bc-ticker {
+  overflow: hidden;
+  padding: 12px 0;
+  background: var(--bc-ticker-bg, var(--bc-lime));
+  color: var(--bc-ticker-text, var(--bc-green-ink));
+}
+
+.bc-ticker__track {
+  display: flex;
+  width: max-content;
+  animation: bc-tick var(--bc-ticker-speed, 22s) linear infinite;
+}
+
+.bc-ticker__group {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-right: 18px;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+@keyframes bc-tick {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bc-ticker__track {
+    animation: none;
+    /* Without the marquee the duplicate half is dead weight — hide it. */
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .bc-ticker__track > [aria-hidden='true'] {
+    display: none;
+  }
+}
+
+/* ============================================================
+   3 · Recognition (collage)
+   ============================================================ */
+
+.bc-collage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bc-collage__item {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--bc-radius-md);
+}
+
+.bc-collage__item--wide {
+  grid-column: span 2;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--bc-radius-lg);
+}
+
+/* ============================================================
+   5 · Pillars
+   ============================================================ */
+
+.bc-pillar__eyebrow {
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bc-grape);
+}
+
+.bc-pillar__title {
+  margin: 5px 0 0;
+  font-family: var(--bc-font-display);
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--bc-ink);
+}
+
+.bc-pillar__text {
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 1.55;
+  text-wrap: pretty;
+  color: var(--bc-ink-75);
+}
+
+.bc-pillar .bc-card__body {
+  padding: 18px 20px 20px;
+}
+
+/* ============================================================
+   6 · Ingredients
+   ============================================================ */
+
+.bc-ingredients__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bc-ingredient {
+  border: 1.5px solid var(--bc-border-subtle);
+  border-radius: var(--bc-radius-md);
+  padding: 0 16px;
+}
+
+.bc-ingredient > summary {
+  padding: 15px 0;
+}
+
+.bc-ingredient__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--bc-radius-pill);
+  background: var(--bc-lime);
+  color: var(--bc-green-ink);
+}
+
+.bc-ingredient__label {
+  flex: 1;
+  min-width: 0;
+}
+
+.bc-ingredient__name {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--bc-ink);
+}
+
+.bc-ingredient__meta {
+  display: block;
+  margin-top: 3px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--bc-grape);
+}
+
+.bc-ingredient__text {
+  margin: 0;
+  padding: 0 0 15px 50px;
+  font-size: 14px;
+  line-height: 1.6;
+  text-wrap: pretty;
+  color: var(--bc-ink-75);
+}
+
+.bc-claims {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border: 1.5px solid var(--bc-border-subtle);
+  border-radius: var(--bc-radius-md);
+}
+
+.bc-claims__title {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bc-grape);
+}
+
+/* Design had ink-55 here; that is 4.41:1 on white, just under the 4.5:1 WCAG
+   floor for body text. Bumped to ink-75 (9.28:1). */
+.bc-claims__text {
+  margin: 7px 0 0;
+  font-size: 11.5px;
+  line-height: 1.6;
+  text-wrap: pretty;
+  color: var(--bc-ink-75);
+}
+
+/* ============================================================
+   7 · Flavour
+   ============================================================ */
+
+.bc-flavour__inner {
+  padding: 44px var(--bc-gutter) 48px;
+}
+
+.bc-flavour__tagline {
+  margin: 8px 0 0;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--bc-flavour-tagline, var(--bc-pink));
+}
+
+.bc-flavour__media {
+  margin-top: 22px;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--bc-radius-xl);
+}
+
+.bc-taste {
+  margin-top: 22px;
+  padding: 20px;
+  border-radius: var(--bc-radius-lg);
+  background: rgba(248, 248, 237, 0.08);
+}
+
+.bc-taste__title {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bc-lime);
+}
+
+.bc-taste__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bc-taste__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bc-taste__label {
+  flex: 0 0 auto;
+  width: 64px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--bc-cream);
+}
+
+.bc-taste__dots {
+  display: flex;
+  gap: 6px;
+}
+
+.bc-taste__dot {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--bc-radius-pill);
+  background: rgba(248, 248, 237, 0.18);
+}
+
+.bc-taste__dot--on {
+  background: var(--bc-lime);
+}
+
+/* ============================================================
+   8 · Daily rhythm
+   ============================================================ */
+
+.bc-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bc-week__day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 4px;
+  border-radius: var(--bc-radius-sm);
+  background: var(--bc-cream);
+}
+
+.bc-week__label {
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: var(--bc-grape);
+}
+
+.bc-week__check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--bc-radius-pill);
+  background: var(--bc-lime);
+  color: var(--bc-green-ink);
+}
+
+.bc-week__note {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--bc-grape);
+}
+
+/* ============================================================
+   9 · Story
+   ============================================================ */
+
+.bc-story__media {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bc-story__item {
+  aspect-ratio: 4 / 5;
+  border-radius: var(--bc-radius-md);
+}
+
+/* ============================================================
+   10 · Signup
+   ============================================================ */
+
+.bc-signup__inner {
+  padding: 44px var(--bc-gutter) 48px;
+}
+
+.bc-perks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bc-perk {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 13px 15px;
+  border-radius: var(--bc-radius-md);
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.bc-perk__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--bc-radius-pill);
+  background: var(--bc-green-ink);
+  color: var(--bc-lime);
+}
+
+.bc-perk__title {
+  display: block;
+  font-size: 14.5px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--bc-green-ink);
+}
+
+.bc-perk__sub {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--bc-green-ink);
+}
+
+.bc-signup__tags {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  --bc-chip-bg: rgba(255, 255, 255, 0.6);
+  --bc-chip-text: var(--bc-green-ink);
+  --bc-chip-icon: var(--bc-green-ink);
+}
+
+.bc-signup__panel {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: var(--bc-radius-xl);
+  background: var(--bc-paper);
+  box-shadow: var(--bc-shadow-card);
+}
+
+.bc-signup__panel[hidden] {
+  display: none;
+}
+
+.bc-field + .bc-field {
+  margin-top: 14px;
+}
+
+.bc-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bc-grape);
+}
+
+.bc-input {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 48px;
+  margin-top: 7px;
+  padding: 13px 14px;
+  border: 1.5px solid var(--bc-border-subtle);
+  border-radius: 14px;
+  background: var(--bc-paper);
+  color: var(--bc-ink);
+  font-family: var(--bc-font-sans);
+  /* 16px: anything smaller makes iOS Safari zoom on focus. */
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.bc-input::placeholder {
+  color: rgba(24, 2, 35, 0.38);
+}
+
+.bc-input:focus-visible {
+  outline: none;
+  border-color: var(--bc-ink);
+  box-shadow: 0 0 0 3px rgba(24, 2, 35, 0.18);
+}
+
+.bc-input[aria-invalid='true'] {
+  border-color: var(--bc-error);
+}
+
+.bc-trap {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.bc-signup__error {
+  margin: 8px 0 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--bc-error);
+}
+
+/* Shrine's base.css hides p:empty, which would drop the live region out of the
+   accessibility tree before the first message is announced. */
+.bc-signup__error:empty {
+  display: block;
+  margin: 0;
+}
+
+.bc-signup__submit {
+  margin-top: 16px;
+}
+
+.bc-signup__fine {
+  margin: 10px 0 0;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--bc-grape);
+}
+
+.bc-signup__consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.bc-signup__checkbox {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  margin: 2px 0 0;
+  accent-color: var(--bc-ink);
+}
+
+.bc-signup__consent-label {
+  padding: 11px 0;
+  margin: -11px 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--bc-grape);
+  cursor: pointer;
+}
+
+/* ---- Success + survey ---- */
+
+.bc-thanks[hidden] {
+  display: none;
+}
+
+.bc-thanks__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bc-thanks__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--bc-radius-pill);
+  background: var(--bc-lime);
+  color: var(--bc-green-ink);
+}
+
+.bc-thanks__title {
+  margin: 0;
+  font-family: var(--bc-font-display);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--bc-ink);
+}
+
+.bc-thanks__title:focus-visible {
+  outline: 3px solid var(--bc-ink);
+  outline-offset: 4px;
+}
+
+.bc-survey {
+  margin-top: 18px;
+  border: none;
+  padding: 0;
+}
+
+.bc-survey[hidden] {
+  display: none;
+}
+
+.bc-survey__legend {
+  padding: 0;
+  font-size: 14.5px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--bc-ink);
+}
+
+.bc-survey__options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.bc-survey__option {
+  min-height: 44px;
+  padding: 12px 10px;
+  border: 1.5px solid var(--bc-border-subtle);
+  border-radius: 14px;
+  background: var(--bc-paper);
+  color: var(--bc-ink);
+  font-family: var(--bc-font-sans);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--bc-dur-fast) var(--bc-ease), background var(--bc-dur-fast) var(--bc-ease);
+}
+
+.bc-survey__option:hover {
+  border-color: var(--bc-ink-30);
+}
+
+.bc-survey__option:focus-visible {
+  outline: 3px solid var(--bc-ink);
+  outline-offset: 2px;
+}
+
+.bc-survey__option[aria-pressed='true'] {
+  border: 2px solid var(--bc-ink);
+  background: var(--bc-cream);
+}
+
+.bc-thanks__done {
+  margin: 16px 0 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.55;
+  color: var(--bc-ink-75);
+}
+
+.bc-thanks__done[hidden] {
+  display: none;
+}
+
+/* ============================================================
+   11 · Package
+   ============================================================ */
+
+.bc-package {
+  margin-top: 20px;
+  overflow: hidden;
+  border-radius: var(--bc-radius-xl);
+  background: var(--bc-package-bg, var(--bc-cherry-tint));
+}
+
+.bc-package__media {
+  aspect-ratio: 16 / 10;
+}
+
+.bc-package__flag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 7px 13px;
+  border-radius: var(--bc-radius-pill);
+  background: var(--bc-cherry-deep);
+  color: var(--bc-cream);
+  font-size: 10.5px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.bc-package__body {
+  padding: 20px;
+}
+
+.bc-package__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--bc-ink);
+}
+
+.bc-package__list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bc-package__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--bc-ink);
+}
+
+.bc-package__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--bc-radius-pill);
+  background: var(--bc-paper);
+  color: var(--bc-ink);
+}
+
+.bc-package__facts {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(24, 2, 35, 0.12);
+}
+
+.bc-package__fact {
+  flex: 1;
+}
+
+.bc-package__fact dt {
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bc-grape);
+}
+
+.bc-package__fact dd {
+  margin: 4px 0 0;
+  font-family: var(--bc-font-display);
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--bc-ink);
+}
+
+/* ============================================================
+   12 · FAQ
+   ============================================================ */
+
+.bc-faq__list {
+  display: flex;
+  flex-direction: column;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bc-faq__item {
+  border-top: 1px solid var(--bc-border-subtle);
+  background: transparent;
+}
+
+.bc-faq__list > li:last-child .bc-faq__item {
+  border-bottom: 1px solid var(--bc-border-subtle);
+}
+
+.bc-faq__item > summary {
+  padding: 16px 0;
+}
+
+.bc-faq__q {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--bc-ink);
+}
+
+.bc-faq__a {
+  margin: 0;
+  padding: 0 0 16px;
+  font-size: 14.5px;
+  line-height: 1.6;
+  text-wrap: pretty;
+  color: var(--bc-ink-75);
+}
+
+/* ============================================================
+   13 · Final CTA
+   ============================================================ */
+
+.bc-final__inner {
+  padding: 40px var(--bc-gutter) 48px;
+}
+
+.bc-final__media {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--bc-radius-xl);
+}
+
+.bc-final .bc-h2 {
+  margin-top: 22px;
+}
+
+.bc-final__cta {
+  margin-top: 18px;
+}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+
+.bc-footer {
+  background: var(--bc-footer-bg, var(--bc-ink));
+  color: var(--bc-footer-text, var(--bc-cream));
+}
+
+.bc-footer__inner {
+  /* Bottom padding clears the fixed CTA bar. */
+  padding: 32px var(--bc-gutter) 120px;
+}
+
+.bc-footer .bc-wordmark {
+  font-size: 16px;
+  color: var(--bc-footer-text, var(--bc-cream));
+}
+
+.bc-footer__tagline {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--bc-cream-65);
+}
+
+.bc-footer__nav {
+  margin-top: 18px;
+}
+
+.bc-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 14px;
+  margin: -4px 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* 44px targets: footer links sit close together and are easy to mis-tap. */
+.bc-footer__links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--bc-footer-text, var(--bc-cream));
+  text-underline-offset: 3px;
+}
+
+.bc-footer__legal {
+  margin: 16px 0 0;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--bc-cream-65);
+}
+
+/* ============================================================
+   Sticky CTA
+   ============================================================ */
+
+.bc-sticky {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  background: var(--bc-paper);
+  border-top: 1px solid var(--bc-border-subtle);
+  box-shadow: 0 -12px 32px rgba(24, 2, 35, 0.1);
+  transform: translateY(120%);
+  transition: transform 320ms var(--bc-ease);
+}
+
+.bc-sticky[data-visible='true'] {
+  transform: translateY(0);
+}
+
+.bc-sticky__inner {
+  max-width: var(--bc-col);
+  margin: 0 auto;
+  padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+}
+
+.bc-sticky .bc-btn {
+  min-height: 54px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bc-sticky,
+  .bc-btn,
+  .bc-acc__chev,
+  .bc-survey__option {
+    transition: none;
+  }
+}

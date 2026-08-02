@@ -1,0 +1,188 @@
+{%- comment -%}
+  Black Cherry waitlist — section 8 "Waarom dagelijks".
+  The week strip is a comma-separated setting rather than seven blocks: it is one
+  label per weekday, and localising it should be one edit, not seven.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign days = s.days | split: ','
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .bc-daily {
+    background: {{ s.bg_color }};
+    --bc-eyebrow-color: {{ s.eyebrow_color }};
+    --bc-heading-color: {{ s.heading_color }};
+    --bc-body-color: {{ s.body_color }};
+    --bc-lead-color: {{ s.lead_color }};
+    --bc-h2-size: clamp({{ s.heading_size_min }}px, 7.6vw, {{ s.heading_size_max }}px);
+  }
+
+  #shopify-section-{{ section.id }} .bc-week__day {
+    background: {{ s.day_bg_color }};
+  }
+
+  #shopify-section-{{ section.id }} .bc-week__check {
+    background: {{ s.check_bg_color }};
+    color: {{ s.check_icon_color }};
+  }
+{%- endstyle -%}
+
+<section class="bc-daily">
+  <div class="bc-inner">
+    {%- if s.eyebrow != blank -%}
+      <p class="bc-eyebrow">{{ s.eyebrow | escape }}</p>
+    {%- endif -%}
+
+    {%- if s.heading != blank -%}
+      <h2 class="bc-h2">{{ s.heading | escape }}</h2>
+    {%- endif -%}
+
+    {%- if s.body != blank -%}
+      <div class="bc-body">{{ s.body }}</div>
+    {%- endif -%}
+
+    {%- if s.lead != blank -%}
+      <div class="bc-body bc-body--lead">{{ s.lead }}</div>
+    {%- endif -%}
+
+    {%- if days.size > 0 -%}
+      <ul class="bc-week" role="list">
+        {%- for day in days -%}
+          {%- assign day_label = day | strip -%}
+          {%- if day_label != blank -%}
+            <li class="bc-week__day">
+              <span class="bc-week__label">{{ day_label | escape }}</span>
+              <span class="bc-week__check">
+                {% render 'custom-bc-icon', icon: 'check', size: 13 %}
+              </span>
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    {%- if s.note != blank -%}
+      <p class="bc-week__note">{{ s.note | escape }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "BC · Dagelijks",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Why daily?"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Consistency changes the equation."
+    },
+    {
+      "type": "range",
+      "id": "heading_size_min",
+      "min": 20,
+      "max": 44,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading minimum",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "heading_size_max",
+      "min": 26,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading maximum",
+      "default": 38
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Tekst",
+      "default": "<p>Sommige ingrediënten horen niet alleen bij dat ene moment waarop je ze nodig denkt te hebben. Creatine wordt bijvoorbeeld dagelijks gebruikt om de hoeveelheid creatine in de spieren op peil te houden. Daarom is Energy Foundation ontworpen als een eenvoudige dagelijkse routine, niet als een snelle energy shot.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "lead",
+      "label": "Uitgelichte zin",
+      "default": "<p>Resultaat begint bij iets dat makkelijk genoeg is om te blijven doen.</p>"
+    },
+    {
+      "type": "text",
+      "id": "days",
+      "label": "Dagen",
+      "info": "Gescheiden door komma's.",
+      "default": "MON, TUE, WED, THU, FRI, SAT, SUN"
+    },
+    {
+      "type": "text",
+      "id": "note",
+      "label": "Tekst onder de dagen",
+      "default": "Iedere dag één sachet. Meer is het niet."
+    },
+    {
+      "type": "header",
+      "content": "Kleuren"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Achtergrond",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow",
+      "default": "#634c61"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#180223"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Tekst",
+      "default": "#52415a"
+    },
+    {
+      "type": "color",
+      "id": "lead_color",
+      "label": "Uitgelichte zin",
+      "default": "#180223"
+    },
+    {
+      "type": "color",
+      "id": "day_bg_color",
+      "label": "Dag achtergrond",
+      "default": "#f8f8ed"
+    },
+    {
+      "type": "color",
+      "id": "check_bg_color",
+      "label": "Vinkje achtergrond",
+      "default": "#cbff78"
+    },
+    {
+      "type": "color",
+      "id": "check_icon_color",
+      "label": "Vinkje icoon",
+      "default": "#243511"
+    }
+  ],
+  "presets": [{ "name": "BC · Dagelijks" }]
+}
+{% endschema %}

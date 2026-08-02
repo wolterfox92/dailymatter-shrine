@@ -1,0 +1,207 @@
+{%- comment -%}
+  Black Cherry waitlist — section 12 "FAQ".
+  Native <details> again. No FAQPage JSON-LD here: Google no longer shows FAQ
+  rich results for most sites, and an incomplete schema block is worse than none.
+  Add it deliberately if the SEO case appears.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+
+  assign item_count = 0
+  for block in section.blocks
+    if block.type == 'question'
+      assign item_count = item_count | plus: 1
+    endif
+  endfor
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .bc-faq {
+    background: {{ s.bg_color }};
+    --bc-eyebrow-color: {{ s.eyebrow_color }};
+    --bc-heading-color: {{ s.heading_color }};
+    --bc-h2-size: clamp({{ s.heading_size_min }}px, 7.6vw, {{ s.heading_size_max }}px);
+  }
+{%- endstyle -%}
+
+<section class="bc-faq">
+  <div class="bc-inner">
+    {%- if s.eyebrow != blank -%}
+      <p class="bc-eyebrow">{{ s.eyebrow | escape }}</p>
+    {%- endif -%}
+
+    {%- if s.heading != blank -%}
+      <h2 class="bc-h2">{{ s.heading | escape }}</h2>
+    {%- endif -%}
+
+    {%- if item_count > 0 -%}
+      <ul class="bc-faq__list" role="list">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'question' and block.settings.question != blank -%}
+            <li {{ block.shopify_attributes }}>
+              <details class="bc-acc bc-faq__item">
+                <summary>
+                  <span class="bc-faq__q">{{ block.settings.question | escape }}</span>
+                  <span class="bc-acc__chev">
+                    {% render 'custom-bc-icon', icon: 'expand_more', size: 22 %}
+                  </span>
+                </summary>
+                {%- if block.settings.answer != blank -%}
+                  <div class="bc-faq__a">{{ block.settings.answer }}</div>
+                {%- endif -%}
+              </details>
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "BC · FAQ",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Good to know"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "FAQ"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_min",
+      "min": 20,
+      "max": 44,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading minimum",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "heading_size_max",
+      "min": 26,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading maximum",
+      "default": 38
+    },
+    {
+      "type": "header",
+      "content": "Kleuren"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Achtergrond",
+      "default": "#f8f8ed"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow",
+      "default": "#634c61"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#180223"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Vraag",
+      "limit": 20,
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Vraag",
+          "default": "What is Energy Foundation?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Antwoord",
+          "default": "<p>Een dagelijkse drinkmix met creatine, elektrolyten, magnesium en B-vitaminen.</p>"
+        }
+      ]
+    },
+    { "type": "@app" }
+  ],
+  "presets": [
+    {
+      "name": "BC · FAQ",
+      "blocks": [
+        {
+          "type": "question",
+          "settings": {
+            "question": "What is Energy Foundation?",
+            "answer": "<p>Een dagelijkse drinkmix met creatine, elektrolyten, magnesium en B-vitaminen. Eén sachet meng je met koud water.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "Does it contain caffeine?",
+            "answer": "<p>Nee. Energy Foundation is cafeïnevrij.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "When should I take it?",
+            "answer": "<p>Kies vooral een moment dat je makkelijk iedere dag kunt herhalen. Bijvoorbeeld in de ochtend, tijdens je werkdag of rond je training.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "Do I need to exercise to use it?",
+            "answer": "<p>Energy Foundation is ontwikkeld voor actieve, volle dagen. De specifieke toegestane creatineclaim is gericht op volwassenen die intensieve inspanning leveren.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "How does Black Cherry taste?",
+            "answer": "<p>Fruitig, vol en licht fris, zonder overdreven zoet te worden.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "How much water should I use?",
+            "answer": "<p>Meng één sachet met ongeveer 500 ml koud water. Wie een sterkere smaak wil, kan iets minder water gebruiken.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "When will it launch?",
+            "answer": "<p>We bereiden momenteel de eerste batch voor. Leden van de first-drop-lijst krijgen als eerste de definitieve lanceringsdatum.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "Am I placing an order?",
+            "answer": "<p>Nee. Aanmelden voor de first drop is vrijblijvend en is nog geen bestelling.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

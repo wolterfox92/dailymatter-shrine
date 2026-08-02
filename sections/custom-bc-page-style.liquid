@@ -1,0 +1,80 @@
+{%- comment -%}
+  Page-level typography for the Black Cherry waitlist template.
+
+  Rendered statically from layout/custom-landing.liquid, so it cannot be removed
+  from the page and there is exactly one source of truth for the fonts. It has no
+  preset on purpose: a second copy would fight the first over the same tokens.
+
+  The Claude Design source specified Hanken Grotesk, which the design system
+  itself documents as a stand-in for the commercial brand fonts (Early Sans
+  Variable / Stack Sans Text), loaded from Google Fonts. Shopify's font library
+  does not carry Hanken Grotesk, and this theme serves Shopify-hosted fonts only,
+  so the default is Figtree: the same friendly geometric grotesque character with
+  the full 400-900 range the design leans on. All six weights subset to ~72 KB.
+
+  Note that theme check does NOT validate font handles — it only warns about ones
+  it knows to be deprecated. An invalid handle passes lint and is then rejected on
+  upload with "setting default is invalid". Verify changes against a dev server.
+{%- endcomment -%}
+
+{%- liquid
+  assign display_font = section.settings.display_font
+  assign body_font = section.settings.body_font
+
+  assign display_800 = display_font | font_modify: 'weight', '800'
+  assign display_900 = display_font | font_modify: 'weight', '900'
+  assign body_500 = body_font | font_modify: 'weight', '500'
+  assign body_600 = body_font | font_modify: 'weight', '600'
+  assign body_700 = body_font | font_modify: 'weight', '700'
+  assign body_800 = body_font | font_modify: 'weight', '800'
+-%}
+
+{% comment %}
+  Each weight the design uses gets a @font-face. The weight guards skip the
+  variant that equals the picked font itself, so a 900-weight display pick does
+  not emit the same rule twice. font_modify returns nil when the family has no
+  such weight, so a lighter family degrades instead of breaking.
+{% endcomment %}
+{% style %}
+  {{ display_font | font_face: font_display: 'swap' }}
+  {% if display_800 and display_font.weight != 800 %}
+    {{ display_800 | font_face: font_display: 'swap' }}
+  {% endif %}
+  {% if display_900 and display_font.weight != 900 %}
+    {{ display_900 | font_face: font_display: 'swap' }}
+  {% endif %}
+  {{ body_font | font_face: font_display: 'swap' }}
+  {% if body_500 and body_font.weight != 500 %}{{ body_500 | font_face: font_display: 'swap' }}{% endif %}
+  {% if body_600 and body_font.weight != 600 %}{{ body_600 | font_face: font_display: 'swap' }}{% endif %}
+  {% if body_700 and body_font.weight != 700 %}{{ body_700 | font_face: font_display: 'swap' }}{% endif %}
+  {% if body_800 and body_font.weight != 800 %}{{ body_800 | font_face: font_display: 'swap' }}{% endif %}
+
+  .bc-page {
+    --bc-font-display: {{ display_font.family }}, {{ display_font.fallback_families }};
+    --bc-font-sans: {{ body_font.family }}, {{ body_font.fallback_families }};
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Waitlist typografie",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Fonts voor de hele Black Cherry waitlist-pagina. Standaard Figtree, de dichtstbijzijnde grotesque bij de Hanken Grotesk uit het ontwerp, geserveerd vanaf Shopify's eigen CDN."
+    },
+    {
+      "type": "font_picker",
+      "id": "display_font",
+      "label": "Display font (koppen)",
+      "default": "figtree_n9"
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Body font (tekst en UI)",
+      "default": "figtree_n4"
+    }
+  ]
+}
+{% endschema %}

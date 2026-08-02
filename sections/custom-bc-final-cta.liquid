@@ -1,0 +1,140 @@
+{%- comment -%}
+  Black Cherry waitlist — section 13 "Eind-CTA".
+  Image, closing headline and one button back up to the signup form.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign image = s.image
+  assign image_alt = image.alt | default: s.heading | strip_html | escape
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .bc-final {
+    background: {{ s.bg_color }};
+    --bc-heading-color: {{ s.heading_color }};
+    --bc-body-color: {{ s.body_color }};
+    --bc-h2-size: clamp({{ s.heading_size_min }}px, 9vw, {{ s.heading_size_max }}px);
+  }
+{%- endstyle -%}
+
+<section class="bc-final">
+  <div class="bc-final__inner">
+    <div class="bc-media bc-final__media">
+      {%- if image != blank -%}
+        {{-
+          image
+          | image_url: width: 1040
+          | image_tag:
+            width: image.width,
+            height: image.height,
+            alt: image_alt,
+            sizes: '(min-width: 552px) 520px, 100vw',
+            widths: '390, 520, 780, 1040',
+            loading: 'lazy',
+            decoding: 'async'
+        -}}
+      {%- else -%}
+        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+    </div>
+
+    {%- if s.heading != blank -%}
+      <h2 class="bc-h2">{{ s.heading | escape }}</h2>
+    {%- endif -%}
+
+    {%- if s.body != blank -%}
+      <div class="bc-body">{{ s.body }}</div>
+    {%- endif -%}
+
+    {%- if s.cta_label != blank -%}
+      <div class="bc-final__cta">
+        <a class="bc-btn bc-btn--primary bc-btn--full" href="{{ s.cta_link | default: '#bc-signup' }}">
+          {{- s.cta_label | escape -}}
+          {% render 'custom-bc-icon', icon: 'arrow_upward', size: 22 %}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "BC · Eind-CTA",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Afbeelding",
+      "info": "4:3. Ontwerpbriefing: fles + verpakking + sachet, hard zonlicht."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Make it a daily matter."
+    },
+    {
+      "type": "range",
+      "id": "heading_size_min",
+      "min": 22,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading minimum",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "heading_size_max",
+      "min": 28,
+      "max": 68,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading maximum",
+      "default": 42
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Tekst",
+      "default": "<p>Black Cherry komt eraan. Sluit je aan bij de eerste batch: 25% korting op je order en een gratis waterfles t.w.v. € 17,95.</p>"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Knoptekst",
+      "default": "Join the first drop"
+    },
+    {
+      "type": "text",
+      "id": "cta_link",
+      "label": "Knoplink",
+      "default": "#bc-signup"
+    },
+    {
+      "type": "header",
+      "content": "Kleuren"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Achtergrond",
+      "default": "#fee7e7"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#180223"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Tekst",
+      "default": "#523b54"
+    }
+  ],
+  "presets": [{ "name": "BC · Eind-CTA" }]
+}
+{% endschema %}

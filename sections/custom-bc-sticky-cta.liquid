@@ -1,0 +1,58 @@
+{%- comment -%}
+  Black Cherry waitlist — sticky CTA bar.
+
+  Appears once the visitor has scrolled past the hero and hides again while the
+  signup form itself is on screen, so the bar never covers the thing it points at.
+  Driven by IntersectionObserver rather than a scroll handler: no work on the
+  main thread between intersections.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+-%}
+
+{%- if s.cta_label != blank -%}
+  <bc-sticky-cta
+    class="bc-sticky"
+    data-target="{{ s.cta_link | default: '#bc-signup' }}"
+    data-after="{{ s.after_selector | escape }}"
+  >
+    <div class="bc-sticky__inner">
+      <a class="bc-btn bc-btn--primary bc-btn--full" href="{{ s.cta_link | default: '#bc-signup' }}">
+        {{- s.cta_label | escape -}}
+        {% render 'custom-bc-icon', icon: 'arrow_downward', size: 22 %}
+      </a>
+    </div>
+  </bc-sticky-cta>
+
+  <script src="{{ 'custom-bc-sticky.js' | asset_url }}" defer></script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "BC · Sticky CTA",
+  "settings": [
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Knoptekst",
+      "default": "Join the first drop"
+    },
+    {
+      "type": "text",
+      "id": "cta_link",
+      "label": "Knoplink",
+      "info": "Verwijst naar het aanmeldformulier. De balk verbergt zichzelf zolang dat formulier in beeld is.",
+      "default": "#bc-signup"
+    },
+    {
+      "type": "text",
+      "id": "after_selector",
+      "label": "Verschijnt na",
+      "info": "CSS-selector van het element waar de balk na verschijnt. Standaard de hero.",
+      "default": ".bc-hero"
+    }
+  ],
+  "presets": [{ "name": "BC · Sticky CTA" }]
+}
+{% endschema %}

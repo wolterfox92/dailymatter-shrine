@@ -1,0 +1,154 @@
+{%- comment -%}
+  Black Cherry waitlist — footer.
+  Deliberately minimal: wordmark, one line of positioning, the legally required
+  links and the supplement disclaimer. Its bottom padding clears the fixed CTA bar.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+
+  assign link_count = 0
+  for block in section.blocks
+    if block.type == 'link'
+      assign link_count = link_count | plus: 1
+    endif
+  endfor
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .bc-footer {
+    --bc-footer-bg: {{ s.bg_color }};
+    --bc-footer-text: {{ s.text_color }};
+  }
+
+  #shopify-section-{{ section.id }} .bc-footer__tagline,
+  #shopify-section-{{ section.id }} .bc-footer__legal {
+    color: {{ s.muted_color }};
+  }
+{%- endstyle -%}
+
+<footer class="bc-footer">
+  <div class="bc-footer__inner">
+    <span class="bc-wordmark">
+      {{- s.wordmark | escape -}}
+      {%- if s.show_registered %}<sup>&reg;</sup>{% endif -%}
+    </span>
+
+    {%- if s.tagline != blank -%}
+      <p class="bc-footer__tagline">{{ s.tagline | escape }}</p>
+    {%- endif -%}
+
+    {%- if link_count > 0 -%}
+      <nav class="bc-footer__nav" aria-label="{{ s.nav_label | escape }}">
+        <ul class="bc-footer__links" role="list">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'link' and block.settings.label != blank -%}
+              <li {{ block.shopify_attributes }}>
+                <a href="{{ block.settings.url | default: '#' }}">{{ block.settings.label | escape }}</a>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    {%- if s.legal != blank -%}
+      <div class="bc-footer__legal">{{ s.legal }}</div>
+    {%- endif -%}
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "BC · Footer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "wordmark",
+      "label": "Woordmerk",
+      "default": "DAILY MATTERS"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_registered",
+      "label": "® tonen",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Taking care of yourself, made easier."
+    },
+    {
+      "type": "text",
+      "id": "nav_label",
+      "label": "Naam van de navigatie",
+      "info": "Voor schermlezers, niet zichtbaar.",
+      "default": "Footer"
+    },
+    {
+      "type": "richtext",
+      "id": "legal",
+      "label": "Juridische tekst",
+      "default": "<p>Voedingssupplement. Een gevarieerde, evenwichtige voeding en een gezonde levensstijl zijn belangrijk. [KvK-nummer] · [Bedrijfsadres] · © 2026 Daily Matters</p>"
+    },
+    {
+      "type": "header",
+      "content": "Kleuren"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Achtergrond",
+      "default": "#180223"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Tekst",
+      "default": "#f8f8ed"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "Secundaire tekst",
+      "default": "#aaa2a6"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Link",
+      "limit": 10,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Tekst",
+          "default": "Contact"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link"
+        }
+      ]
+    },
+    { "type": "@app" }
+  ],
+  "presets": [
+    {
+      "name": "BC · Footer",
+      "blocks": [
+        { "type": "link", "settings": { "label": "Contact" } },
+        { "type": "link", "settings": { "label": "Privacy policy" } },
+        { "type": "link", "settings": { "label": "Algemene voorwaarden" } },
+        { "type": "link", "settings": { "label": "Retourbeleid" } },
+        { "type": "link", "settings": { "label": "Instagram" } },
+        { "type": "link", "settings": { "label": "TikTok" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,297 @@
+{%- comment -%}
+  Black Cherry waitlist — section 6 "Ingrediënten".
+  Native <details> accordions: open/close, keyboard support and find-in-page all
+  come for free, and the content is in the DOM for crawlers even when collapsed.
+  Carries the #bc-ingredients anchor the hero links to.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+
+  assign item_count = 0
+  for block in section.blocks
+    if block.type == 'ingredient'
+      assign item_count = item_count | plus: 1
+    endif
+  endfor
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .bc-ingredients {
+    background: {{ s.bg_color }};
+    --bc-eyebrow-color: {{ s.eyebrow_color }};
+    --bc-heading-color: {{ s.heading_color }};
+    --bc-body-color: {{ s.body_color }};
+    --bc-h2-size: clamp({{ s.heading_size_min }}px, 7.6vw, {{ s.heading_size_max }}px);
+  }
+
+  #shopify-section-{{ section.id }} .bc-ingredient__badge {
+    background: {{ s.badge_bg_color }};
+    color: {{ s.badge_icon_color }};
+  }
+{%- endstyle -%}
+
+<section class="bc-ingredients" id="bc-ingredients">
+  <div class="bc-inner">
+    {%- if s.eyebrow != blank -%}
+      <p class="bc-eyebrow">{{ s.eyebrow | escape }}</p>
+    {%- endif -%}
+
+    {%- if s.heading != blank -%}
+      <h2 class="bc-h2">{{ s.heading | escape }}</h2>
+    {%- endif -%}
+
+    {%- if s.body != blank -%}
+      <div class="bc-body">{{ s.body }}</div>
+    {%- endif -%}
+
+    {%- if item_count > 0 -%}
+      <ul class="bc-ingredients__list" role="list">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'ingredient' and block.settings.name != blank -%}
+            <li {{ block.shopify_attributes }}>
+              <details class="bc-acc bc-ingredient">
+                <summary>
+                  <span class="bc-ingredient__badge">
+                    {% render 'custom-bc-icon', icon: block.settings.icon, size: 19 %}
+                  </span>
+                  <span class="bc-ingredient__label">
+                    <span class="bc-ingredient__name">{{ block.settings.name | escape }}</span>
+                    {%- if block.settings.meta != blank -%}
+                      <span class="bc-ingredient__meta">{{ block.settings.meta | escape }}</span>
+                    {%- endif -%}
+                  </span>
+                  <span class="bc-acc__chev">
+                    {% render 'custom-bc-icon', icon: 'expand_more', size: 21 %}
+                  </span>
+                </summary>
+                {%- if block.settings.text != blank -%}
+                  <div class="bc-ingredient__text">{{ block.settings.text }}</div>
+                {%- endif -%}
+              </details>
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    {%- if s.claims_text != blank -%}
+      <div class="bc-claims">
+        {%- if s.claims_title != blank -%}
+          <h3 class="bc-claims__title">{{ s.claims_title | escape }}</h3>
+        {%- endif -%}
+        <div class="bc-claims__text">{{ s.claims_text }}</div>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "BC · Ingrediënten",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Inside the sachet"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Every ingredient has a reason."
+    },
+    {
+      "type": "range",
+      "id": "heading_size_min",
+      "min": 20,
+      "max": 44,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading minimum",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "heading_size_max",
+      "min": 26,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading maximum",
+      "default": 38
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Tekst",
+      "default": "<p>Geen willekeurige stapel ingrediënten. Iedere component heeft een duidelijke plek in je dagelijkse routine.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Claims"
+    },
+    {
+      "type": "text",
+      "id": "claims_title",
+      "label": "Titel",
+      "default": "Claims"
+    },
+    {
+      "type": "richtext",
+      "id": "claims_text",
+      "label": "Tekst",
+      "info": "Juridische disclaimers bij de voedingsclaims.",
+      "default": "<p>* \"Zonder toegevoegde suikers\" wordt juridisch gecontroleerd op basis van de definitieve receptuur. ** De creatineclaim geldt bij een dagelijkse inname van 3 g en is bedoeld voor volwassenen die intensieve inspanning leveren. Doseringen en %RI volgen zodra de formule definitief is. Voedingssupplement — geen vervanging van een gevarieerde voeding en een gezonde levensstijl.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Kleuren"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Achtergrond",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow",
+      "default": "#634c61"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#180223"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Tekst",
+      "default": "#52415a"
+    },
+    {
+      "type": "color",
+      "id": "badge_bg_color",
+      "label": "Icooncirkel achtergrond",
+      "default": "#cbff78"
+    },
+    {
+      "type": "color",
+      "id": "badge_icon_color",
+      "label": "Icooncirkel icoon",
+      "default": "#243511"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "ingredient",
+      "name": "Ingredient",
+      "limit": 12,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icoon",
+          "options": [
+            { "value": "fitness_center", "label": "Halter" },
+            { "value": "spa", "label": "Blad" },
+            { "value": "psychology", "label": "Hoofd" },
+            { "value": "bolt", "label": "Bliksem" },
+            { "value": "brightness_5", "label": "Zon" },
+            { "value": "grain", "label": "Korrels" },
+            { "value": "water_drop", "label": "Druppel" },
+            { "value": "local_florist", "label": "Bloem" },
+            { "value": "check", "label": "Vinkje" }
+          ],
+          "default": "check"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Naam",
+          "default": "Creatine"
+        },
+        {
+          "type": "text",
+          "id": "meta",
+          "label": "Ondertitel",
+          "info": "Bijvoorbeeld doel + dosering.",
+          "default": "For intense efforts · [3 of 5 g] per sachet"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Uitleg",
+          "default": "<p>Creatine helpt fysieke prestaties te verhogen bij herhaalde, korte en intensieve inspanningen.**</p>"
+        }
+      ]
+    },
+    { "type": "@app" }
+  ],
+  "presets": [
+    {
+      "name": "BC · Ingrediënten",
+      "blocks": [
+        {
+          "type": "ingredient",
+          "settings": {
+            "icon": "fitness_center",
+            "name": "Creatine",
+            "meta": "For intense efforts · [3 of 5 g] per sachet",
+            "text": "<p>Creatine helpt fysieke prestaties te verhogen bij herhaalde, korte en intensieve inspanningen.** Het werkt niet als een directe stimulant: het effect komt door dagelijks gebruik.</p>"
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "icon": "spa",
+            "name": "Magnesium",
+            "meta": "For energy and less fatigue · [·· mg]",
+            "text": "<p>Magnesium ondersteunt een normale energiehuishouding en helpt vermoeidheid te verminderen. Het draagt daarnaast bij aan het normaal functioneren van het zenuwstelsel en aan een normale psychologische functie.</p>"
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "icon": "psychology",
+            "name": "Vitamine B5",
+            "meta": "For mental performance · [·· mg · ··% RI]",
+            "text": "<p>Vitamine B5 draagt bij aan normale mentale prestaties, ondersteunt de energiehuishouding en helpt vermoeidheid te verminderen.</p>"
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "icon": "bolt",
+            "name": "Vitamine B6 + B12",
+            "meta": "For everyday energy · [·· µg · ··% RI]",
+            "text": "<p>Vitamine B6 en B12 ondersteunen de normale energiehuishouding en helpen vermoeidheid te verminderen.</p>"
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "icon": "brightness_5",
+            "name": "Vitamine C",
+            "meta": "For everyday support · [·· mg · ··% RI]",
+            "text": "<p>Vitamine C ondersteunt een normale energiehuishouding, draagt bij aan de normale werking van het immuunsysteem en helpt vermoeidheid te verminderen.</p>"
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "icon": "grain",
+            "name": "Sodium + potassium",
+            "meta": "Electrolytes included · [·· mg]",
+            "text": "<p>Iedere sachet bevat natrium en kalium: twee bekende elektrolyten.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

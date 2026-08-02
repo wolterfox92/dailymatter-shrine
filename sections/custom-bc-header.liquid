@@ -1,0 +1,104 @@
+{%- comment -%}
+  Black Cherry waitlist — sticky header (design section "Header").
+  Wordmark plus a single CTA. No navigation: this page has one job.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign logo = s.logo
+  assign logo_alt = logo.alt | default: shop.name | escape
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --bc-header-bg: {{ s.bg_color }};
+    --bc-logo-height: {{ s.logo_height }}px;
+  }
+{%- endstyle -%}
+
+<header class="bc-header">
+  <div class="bc-header__inner">
+    {%- if logo != blank -%}
+      <a class="bc-wordmark" href="{{ routes.root_url }}">
+        {{-
+          logo
+          | image_url: width: 400
+          | image_tag:
+            width: logo.width,
+            height: logo.height,
+            alt: logo_alt,
+            sizes: '200px',
+            widths: '200, 300, 400',
+            loading: 'eager',
+            decoding: 'async'
+        -}}
+      </a>
+    {%- else -%}
+      <span class="bc-wordmark">
+        {{- s.wordmark | escape -}}
+        {%- if s.show_registered %}<sup>&reg;</sup>{% endif -%}
+      </span>
+    {%- endif -%}
+
+    {%- if s.cta_label != blank -%}
+      <a class="bc-btn bc-btn--sm" href="{{ s.cta_link | default: '#bc-signup' }}">
+        {{- s.cta_label | escape -}}
+      </a>
+    {%- endif -%}
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "BC · Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo",
+      "info": "Laat leeg om het woordmerk als tekst te tonen."
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "min": 14,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "label": "Logohoogte",
+      "default": 20
+    },
+    {
+      "type": "text",
+      "id": "wordmark",
+      "label": "Woordmerk (tekst)",
+      "default": "DAILY MATTERS"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_registered",
+      "label": "® tonen",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Knoptekst",
+      "default": "Join the first drop"
+    },
+    {
+      "type": "text",
+      "id": "cta_link",
+      "label": "Knoplink",
+      "default": "#bc-signup"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Achtergrond",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [{ "name": "BC · Header" }]
+}
+{% endschema %}
