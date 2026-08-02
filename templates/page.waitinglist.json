@@ -509,7 +509,7 @@
         "email_label": "E-mailadres",
         "email_placeholder": "je@mail.nl",
         "button_label": "Join the first drop",
-        "show_consent": false,
+        "show_consent": true,
         "consent_label": "Ja, hou mij per e-mail op de hoogte van de lancering.",
         "consent_required": true,
         "fine_print": "<p>Geen dagelijkse mails. Alleen relevante updates over Black Cherry en de eerste lancering.</p>",
