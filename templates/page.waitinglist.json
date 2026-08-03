@@ -17,14 +17,15 @@
         "text": "Energy Foundation is coming — join & krijg 25% korting + gratis waterfles",
         "link": "#bc-signup",
         "show_icon": true,
-        "bg_color": "#511a39",
+        "bg_color": "#221B3B",
         "text_color": "#f8f8ed"
       }
     },
     "header": {
       "type": "custom-bc-header",
       "settings": {
-        "logo_height": 20,
+        "logo": "shopify://shop_images/Logo_DM.svg",
+        "logo_height": 33,
         "wordmark": "DAILY MATTERS",
         "show_registered": true,
         "cta_label": "Join the first drop",
@@ -127,8 +128,8 @@
       "settings": {
         "speed": 12,
         "separator_icon": "bolt",
-        "bg_color": "#cbff78",
-        "text_color": "#243511"
+        "bg_color": "#FFFFFF",
+        "text_color": "#9787E9"
       }
     },
     "recognition": {
@@ -167,7 +168,7 @@
         "heading_size_min": 28,
         "heading_size_max": 38,
         "body": "<p>Werk, studie, sport, vrienden en alles wat daar tussendoor gebeurt. Goed voor jezelf zorgen helpt, maar wordt al snel nóg iets om bij te houden. Meerdere potten, losse scheppen en ingewikkelde routines passen niet altijd in het echte leven.</p>",
-        "lead": "<p>Daarom brengen we de dagelijkse basis voor energie samen in één sachet.</p>",
+        "lead": "<p>Daarom brengen we de dagelijkse basis voor energie samen in één sachet. </p>",
         "bg_color": "#ffffff",
         "eyebrow_color": "#634c61",
         "heading_color": "#180223",
@@ -212,11 +213,11 @@
         "heading_size_max": 38,
         "body": "<p>Energy Foundation brengt ingrediënten voor energiehuishouding, mentale performance en fysieke prestaties samen in één dagelijkse drinkmix. Scheur een sachet open, meng met koud water en ga verder met je dag.</p>",
         "show_numbers": true,
-        "bg_color": "#cac0ff",
-        "eyebrow_color": "#45325a",
-        "heading_color": "#180223",
-        "body_color": "#45325a",
-        "badge_bg_color": "#cbff78",
+        "bg_color": "#221B3B",
+        "eyebrow_color": "#CAC0FF",
+        "heading_color": "#CAC0FF",
+        "body_color": "#CAC0FF",
+        "badge_bg_color": "#CAC0FF",
         "badge_text_color": "#243511"
       }
     },
@@ -226,7 +227,7 @@
         "pillar-1": {
           "type": "pillar",
           "settings": {
-            "eyebrow": "Daily energy",
+            "eyebrow": "Dagelijkse energie",
             "title": "Minder vermoeidheid",
             "text": "<p>Magnesium en de vitamines B5, B6 en B12 helpen vermoeidheid en moeheid te verminderen.</p>"
           }
@@ -234,7 +235,7 @@
         "pillar-2": {
           "type": "pillar",
           "settings": {
-            "eyebrow": "Mental performance",
+            "eyebrow": "Mentale scherpte",
             "title": "Blijf bij de les",
             "text": "<p>Vitamine B5 draagt bij aan normale mentale prestaties.</p>"
           }
@@ -242,9 +243,9 @@
         "pillar-3": {
           "type": "pillar",
           "settings": {
-            "eyebrow": "Physical performance",
-            "title": "When it gets intense",
-            "text": "<p>Creatine verhoogt de fysieke prestaties bij opeenvolgende reeksen korte, intensieve oefeningen.**</p>"
+            "eyebrow": "Fysieke inspanning",
+            "title": "Wanneer je het het meest nodig hebt",
+            "text": "<p>Creatine verhoogt de fysieke prestaties bij opeenvolgende reeksen korte, intensieve oefeningen.</p>"
           }
         }
       },
@@ -392,7 +393,7 @@
         "body": "<p>Diep, fruitig en licht fris. Black Cherry heeft een volle kersensmaak zonder te voelen als siroop, snoep of een overdreven zoete sportdrank.</p>",
         "tagline": "Dark cherry, bright finish.",
         "taste_title": "Smaakprofiel",
-        "bg_color": "#511a39",
+        "bg_color": "#221B3B",
         "eyebrow_color": "#cbff78",
         "heading_color": "#f8f8ed",
         "body_color": "#d7ccc9",
