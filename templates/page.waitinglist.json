@@ -414,12 +414,12 @@
         "note": "Iedere dag één sachet. Meer is het niet.",
         "bg_color": "#ffffff",
         "eyebrow_color": "#634c61",
-        "heading_color": "#180223",
+        "heading_color": "#25162F",
         "body_color": "#52415a",
-        "lead_color": "#180223",
-        "day_bg_color": "#f8f8ed",
+        "lead_color": "#25162F",
+        "day_bg_color": "#F5EFE7",
         "check_bg_color": "#cbff78",
-        "check_icon_color": "#243511"
+        "check_icon_color": "#25162F"
       }
     },
     "story": {
@@ -449,10 +449,10 @@
         "heading_size_max": 34,
         "body": "<p>Daily Matters is ontstaan vanuit een simpele overtuiging: goed voor jezelf zorgen hoeft niet ingewikkeld, extreem of perfect te zijn. Het gaat meestal niet om wat je één keer doet, maar om wat je makkelijk genoeg maakt om te blijven herhalen.</p>",
         "body_second": "<p>Daarom ontwikkelen we producten die passen in het echte leven. Duidelijke formules, eenvoudige routines en smaken waar je daadwerkelijk naar uitkijkt.</p>",
-        "bg_color": "#f8f8ed",
+        "bg_color": "#F5EFE7",
         "eyebrow_color": "#634c61",
-        "heading_color": "#180223",
-        "body_color": "#504056"
+        "heading_color": "#2F1616",
+        "body_color": "#2F1616"
       }
     },
     "signup": {
