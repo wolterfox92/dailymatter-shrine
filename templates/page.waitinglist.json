@@ -83,12 +83,12 @@
         "link_label": "Discover what's inside",
         "link_url": "#bc-ingredients",
         "media_tag": "First flavour · Black Cherry",
-        "bg_color": "#fee7e7",
-        "eyebrow_color": "#882e49",
+        "bg_color": "#CAC0FF",
+        "eyebrow_color": "#221B3B",
         "heading_color": "#180223",
-        "body_color": "#523b54",
-        "chip_icon_color": "#882e49",
-        "media_bg_color": "#511a39"
+        "body_color": "#221B3B",
+        "chip_icon_color": "#221B3B",
+        "media_bg_color": "#F5EFE7"
       }
     },
     "ticker": {
@@ -259,7 +259,7 @@
         "heading": "Built for more than one moment.",
         "heading_size_min": 28,
         "heading_size_max": 38,
-        "bg_color": "#f8f8ed",
+        "bg_color": "#F5EFE7",
         "eyebrow_color": "#634c61",
         "heading_color": "#180223",
         "card_eyebrow_color": "#634c61"
