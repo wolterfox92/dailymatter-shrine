@@ -529,12 +529,12 @@
         "invalid_email_text": "Vul een geldig e-mailadres in.",
         "consent_error_text": "Zet een vinkje om je aan te melden.",
         "bg_color": "#CAC0FF",
-        "eyebrow_color": "#221B3B",
-        "heading_color": "#221B3B",
-        "body_color": "#221B3B",
-        "perk_icon_bg_color": "#221B3B",
+        "eyebrow_color": "#25162F",
+        "heading_color": "#25162F",
+        "body_color": "#25162F",
+        "perk_icon_bg_color": "#25162F",
         "perk_icon_color": "#cbff78",
-        "perk_text_color": "#243511"
+        "perk_text_color": "#25162F"
       }
     },
     "package": {
