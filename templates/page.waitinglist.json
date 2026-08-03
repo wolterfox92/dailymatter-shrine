@@ -693,9 +693,9 @@
         "body": "<p>Black Cherry komt eraan. Sluit je aan bij de eerste batch: 25% korting op je order en een gratis waterfles t.w.v. € 17,95.</p>",
         "cta_label": "Join the first drop",
         "cta_link": "#bc-signup",
-        "bg_color": "#fee7e7",
-        "heading_color": "#180223",
-        "body_color": "#523b54"
+        "bg_color": "#FFFFFF",
+        "heading_color": "#221B3B",
+        "body_color": "#221B3B"
       }
     },
     "footer": {
@@ -758,9 +758,9 @@
         "tagline": "Taking care of yourself, made easier.",
         "nav_label": "Footer",
         "legal": "<p>Voedingssupplement. Een gevarieerde, evenwichtige voeding en een gezonde levensstijl zijn belangrijk. [KvK-nummer] · [Bedrijfsadres] · © 2026 Daily Matters</p>",
-        "bg_color": "#180223",
-        "text_color": "#f8f8ed",
-        "muted_color": "#aaa2a6"
+        "bg_color": "#CAC0FF",
+        "text_color": "#221B3B",
+        "muted_color": "#221B3B"
       }
     },
     "sticky-cta": {
