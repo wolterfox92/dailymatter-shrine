@@ -14,10 +14,10 @@
     "announcement": {
       "type": "custom-bc-announcement",
       "settings": {
-        "text": "Energy Foundation is coming — join & krijg 25% korting + gratis waterfles",
+        "text": "Energy Foundation is coming | join & krijg 25% korting + gratis waterfles",
         "link": "#bc-signup",
         "show_icon": true,
-        "bg_color": "#25162F",
+        "bg_color": "#25162f",
         "text_color": "#f8f8ed"
       }
     },
@@ -54,7 +54,7 @@
           "type": "chip",
           "settings": {
             "icon": "local_florist",
-            "text": "Black Cherry"
+            "text": "Red Cherry"
           }
         },
         "chip-4": {
@@ -83,12 +83,12 @@
         "link_label": "Discover what's inside",
         "link_url": "#bc-ingredients",
         "media_tag": "First flavour · Black Cherry",
-        "bg_color": "#CAC0FF",
-        "eyebrow_color": "#25162F",
-        "heading_color": "#25162F",
-        "body_color": "#25162F",
-        "chip_icon_color": "#25162F",
-        "media_bg_color": "#F5EFE7"
+        "bg_color": "#cac0ff",
+        "eyebrow_color": "#25162f",
+        "heading_color": "#25162f",
+        "body_color": "#25162f",
+        "chip_icon_color": "#25162f",
+        "media_bg_color": "#f5efe7"
       }
     },
     "ticker": {
@@ -128,8 +128,8 @@
       "settings": {
         "speed": 12,
         "separator_icon": "bolt",
-        "bg_color": "#FFFFFF",
-        "text_color": "#9787E9"
+        "bg_color": "#ffffff",
+        "text_color": "#9787e9"
       }
     },
     "recognition": {
@@ -213,12 +213,12 @@
         "heading_size_max": 38,
         "body": "<p>Energy Foundation brengt ingrediënten voor energiehuishouding, mentale performance en fysieke prestaties samen in één dagelijkse drinkmix. Scheur een sachet open, meng met koud water en ga verder met je dag.</p>",
         "show_numbers": true,
-        "bg_color": "#CAC0FF",
-        "eyebrow_color": "#25162F",
-        "heading_color": "#25162F",
-        "body_color": "#25162F",
-        "badge_bg_color": "#CAC0FF",
-        "badge_text_color": "#25162F"
+        "bg_color": "#cac0ff",
+        "eyebrow_color": "#25162f",
+        "heading_color": "#25162f",
+        "body_color": "#25162f",
+        "badge_bg_color": "#cac0ff",
+        "badge_text_color": "#25162f"
       }
     },
     "pillars": {
@@ -259,7 +259,7 @@
         "heading": "Built for more than one moment.",
         "heading_size_min": 28,
         "heading_size_max": 38,
-        "bg_color": "#F5EFE7",
+        "bg_color": "#f5efe7",
         "eyebrow_color": "#634c61",
         "heading_color": "#180223",
         "card_eyebrow_color": "#634c61"
@@ -340,11 +340,11 @@
         "claims_title": "Claims",
         "claims_text": "<p>* \"Zonder toegevoegde suikers\" wordt juridisch gecontroleerd op basis van de definitieve receptuur. ** De creatineclaim geldt bij een dagelijkse inname van 3 g en is bedoeld voor volwassenen die intensieve inspanning leveren. Doseringen en %RI volgen zodra de formule definitief is. Voedingssupplement — geen vervanging van een gevarieerde voeding en een gezonde levensstijl.</p>",
         "bg_color": "#ffffff",
-        "eyebrow_color": "#BEB3F9",
-        "heading_color": "#25162F",
-        "body_color": "#25162F",
+        "eyebrow_color": "#beb3f9",
+        "heading_color": "#25162f",
+        "body_color": "#25162f",
         "badge_bg_color": "#cbff78",
-        "badge_icon_color": "#25162F"
+        "badge_icon_color": "#25162f"
       }
     },
     "flavour": {
@@ -393,11 +393,11 @@
         "body": "<p>Diep, fruitig en licht fris. Red Cherry heeft een volle kersensmaak zonder te voelen als siroop, snoep of een overdreven zoete sportdrank.</p>",
         "tagline": "",
         "taste_title": "Smaakprofiel",
-        "bg_color": "#CAC0FF",
-        "eyebrow_color": "#25162F",
-        "heading_color": "#25162F",
-        "body_color": "#25162F",
-        "tagline_color": "#AC0000",
+        "bg_color": "#cac0ff",
+        "eyebrow_color": "#25162f",
+        "heading_color": "#25162f",
+        "body_color": "#25162f",
+        "tagline_color": "#ac0000",
         "dot_color": "#cbff78"
       }
     },
@@ -414,12 +414,12 @@
         "note": "Iedere dag één sachet. Meer is het niet.",
         "bg_color": "#ffffff",
         "eyebrow_color": "#634c61",
-        "heading_color": "#25162F",
+        "heading_color": "#25162f",
         "body_color": "#52415a",
-        "lead_color": "#25162F",
-        "day_bg_color": "#F5EFE7",
+        "lead_color": "#25162f",
+        "day_bg_color": "#f5efe7",
         "check_bg_color": "#cbff78",
-        "check_icon_color": "#25162F"
+        "check_icon_color": "#25162f"
       }
     },
     "story": {
@@ -449,10 +449,10 @@
         "heading_size_max": 34,
         "body": "<p>Daily Matters is ontstaan vanuit een simpele overtuiging: goed voor jezelf zorgen hoeft niet ingewikkeld, extreem of perfect te zijn. Het gaat meestal niet om wat je één keer doet, maar om wat je makkelijk genoeg maakt om te blijven herhalen.</p>",
         "body_second": "<p>Daarom ontwikkelen we producten die passen in het echte leven. Duidelijke formules, eenvoudige routines en smaken waar je daadwerkelijk naar uitkijkt.</p>",
-        "bg_color": "#F5EFE7",
+        "bg_color": "#f5efe7",
         "eyebrow_color": "#634c61",
-        "heading_color": "#2F1616",
-        "body_color": "#2F1616"
+        "heading_color": "#2f1616",
+        "body_color": "#2f1616"
       }
     },
     "signup": {
@@ -528,13 +528,13 @@
         "error_text": "Er ging iets mis. Probeer het zo nog eens.",
         "invalid_email_text": "Vul een geldig e-mailadres in.",
         "consent_error_text": "Zet een vinkje om je aan te melden.",
-        "bg_color": "#CAC0FF",
-        "eyebrow_color": "#25162F",
-        "heading_color": "#25162F",
-        "body_color": "#25162F",
-        "perk_icon_bg_color": "#25162F",
+        "bg_color": "#cac0ff",
+        "eyebrow_color": "#25162f",
+        "heading_color": "#25162f",
+        "body_color": "#25162f",
+        "perk_icon_bg_color": "#25162f",
         "perk_icon_color": "#cbff78",
-        "perk_text_color": "#25162F"
+        "perk_text_color": "#25162f"
       }
     },
     "package": {
@@ -593,15 +593,15 @@
         "delivery_title": "Verwachte levering",
         "delivery_label": "November 2026",
         "bg_color": "#ffffff",
-        "eyebrow_color": "#25162F",
-        "heading_color": "#25162F",
-        "card_bg_color": "#CAC0FF",
-        "flag_bg_color": "#25162F",
+        "eyebrow_color": "#25162f",
+        "heading_color": "#25162f",
+        "card_bg_color": "#cac0ff",
+        "flag_bg_color": "#25162f",
         "flag_text_color": "#f8f8ed",
-        "price_now_color": "#25162F",
-        "price_was_color": "#25162F",
-        "badge_bg_color": "#CBFF78",
-        "badge_text_color": "#25162F"
+        "price_now_color": "#25162f",
+        "price_was_color": "#25162f",
+        "badge_bg_color": "#cbff78",
+        "badge_text_color": "#25162f"
       }
     },
     "faq": {
@@ -679,9 +679,9 @@
         "heading": "FAQ",
         "heading_size_min": 28,
         "heading_size_max": 38,
-        "bg_color": "#F5EFE7",
+        "bg_color": "#f5efe7",
         "eyebrow_color": "#634c61",
-        "heading_color": "#2F1616"
+        "heading_color": "#2f1616"
       }
     },
     "final-cta": {
@@ -693,9 +693,9 @@
         "body": "<p>Black Cherry komt eraan. Sluit je aan bij de eerste batch: 25% korting op je order en een gratis waterfles t.w.v. € 17,95.</p>",
         "cta_label": "Join the first drop",
         "cta_link": "#bc-signup",
-        "bg_color": "#FFFFFF",
-        "heading_color": "#25162F",
-        "body_color": "#25162F"
+        "bg_color": "#ffffff",
+        "heading_color": "#25162f",
+        "body_color": "#25162f"
       }
     },
     "footer": {
@@ -758,9 +758,9 @@
         "tagline": "Taking care of yourself, made easier.",
         "nav_label": "Footer",
         "legal": "<p>Voedingssupplement. Een gevarieerde, evenwichtige voeding en een gezonde levensstijl zijn belangrijk. [KvK-nummer] · [Bedrijfsadres] · © 2026 Daily Matters</p>",
-        "bg_color": "#CAC0FF",
-        "text_color": "#25162F",
-        "muted_color": "#25162F"
+        "bg_color": "#cac0ff",
+        "text_color": "#25162f",
+        "muted_color": "#25162f"
       }
     },
     "sticky-cta": {
