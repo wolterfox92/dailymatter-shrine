@@ -47,21 +47,21 @@
           "type": "chip",
           "settings": {
             "icon": "calendar_month",
-            "text": "Ondersteun herstel"
+            "text": "30 daily sachets"
           }
         },
         "chip-3": {
           "type": "chip",
           "settings": {
             "icon": "local_florist",
-            "text": "Minder vermoeidheid"
+            "text": "Red Cherry"
           }
         },
         "chip-4": {
           "type": "chip",
           "settings": {
             "icon": "water_drop",
-            "text": "Gratis waterfles"
+            "text": "Mix with cold water"
           }
         }
       },
