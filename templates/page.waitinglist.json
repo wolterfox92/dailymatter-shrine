@@ -17,7 +17,7 @@
         "text": "Energy Foundation is coming — join & krijg 25% korting + gratis waterfles",
         "link": "#bc-signup",
         "show_icon": true,
-        "bg_color": "#221B3B",
+        "bg_color": "#25162F",
         "text_color": "#f8f8ed"
       }
     },
@@ -84,10 +84,10 @@
         "link_url": "#bc-ingredients",
         "media_tag": "First flavour · Black Cherry",
         "bg_color": "#CAC0FF",
-        "eyebrow_color": "#221B3B",
-        "heading_color": "#180223",
-        "body_color": "#221B3B",
-        "chip_icon_color": "#221B3B",
+        "eyebrow_color": "#25162F",
+        "heading_color": "#25162F",
+        "body_color": "#25162F",
+        "chip_icon_color": "#25162F",
         "media_bg_color": "#F5EFE7"
       }
     },
@@ -214,11 +214,11 @@
         "body": "<p>Energy Foundation brengt ingrediënten voor energiehuishouding, mentale performance en fysieke prestaties samen in één dagelijkse drinkmix. Scheur een sachet open, meng met koud water en ga verder met je dag.</p>",
         "show_numbers": true,
         "bg_color": "#CAC0FF",
-        "eyebrow_color": "#221B3B",
-        "heading_color": "#221B3B",
-        "body_color": "#221B3B",
+        "eyebrow_color": "#25162F",
+        "heading_color": "#25162F",
+        "body_color": "#25162F",
         "badge_bg_color": "#CAC0FF",
-        "badge_text_color": "#243511"
+        "badge_text_color": "#25162F"
       }
     },
     "pillars": {
@@ -340,11 +340,11 @@
         "claims_title": "Claims",
         "claims_text": "<p>* \"Zonder toegevoegde suikers\" wordt juridisch gecontroleerd op basis van de definitieve receptuur. ** De creatineclaim geldt bij een dagelijkse inname van 3 g en is bedoeld voor volwassenen die intensieve inspanning leveren. Doseringen en %RI volgen zodra de formule definitief is. Voedingssupplement — geen vervanging van een gevarieerde voeding en een gezonde levensstijl.</p>",
         "bg_color": "#ffffff",
-        "eyebrow_color": "#634c61",
-        "heading_color": "#180223",
-        "body_color": "#52415a",
+        "eyebrow_color": "#BEB3F9",
+        "heading_color": "#25162F",
+        "body_color": "#25162F",
         "badge_bg_color": "#cbff78",
-        "badge_icon_color": "#243511"
+        "badge_icon_color": "#25162F"
       }
     },
     "flavour": {
@@ -394,9 +394,9 @@
         "tagline": "",
         "taste_title": "Smaakprofiel",
         "bg_color": "#CAC0FF",
-        "eyebrow_color": "#221B3B",
-        "heading_color": "#221B3B",
-        "body_color": "#221B3B",
+        "eyebrow_color": "#25162F",
+        "heading_color": "#25162F",
+        "body_color": "#25162F",
         "tagline_color": "#AC0000",
         "dot_color": "#cbff78"
       }
@@ -594,14 +594,14 @@
         "delivery_label": "November 2026",
         "bg_color": "#ffffff",
         "eyebrow_color": "#9787E9",
-        "heading_color": "#221B3B",
+        "heading_color": "#25162F",
         "card_bg_color": "#CAC0FF",
-        "flag_bg_color": "#221B3B",
+        "flag_bg_color": "#25162F",
         "flag_text_color": "#f8f8ed",
-        "price_now_color": "#221B3B",
-        "price_was_color": "#221B3B",
+        "price_now_color": "#25162F",
+        "price_was_color": "#25162F",
         "badge_bg_color": "#CBFF78",
-        "badge_text_color": "#221B3B"
+        "badge_text_color": "#25162F"
       }
     },
     "faq": {
@@ -694,8 +694,8 @@
         "cta_label": "Join the first drop",
         "cta_link": "#bc-signup",
         "bg_color": "#FFFFFF",
-        "heading_color": "#221B3B",
-        "body_color": "#221B3B"
+        "heading_color": "#25162F",
+        "body_color": "#25162F"
       }
     },
     "footer": {
@@ -759,8 +759,8 @@
         "nav_label": "Footer",
         "legal": "<p>Voedingssupplement. Een gevarieerde, evenwichtige voeding en een gezonde levensstijl zijn belangrijk. [KvK-nummer] · [Bedrijfsadres] · © 2026 Daily Matters</p>",
         "bg_color": "#CAC0FF",
-        "text_color": "#221B3B",
-        "muted_color": "#221B3B"
+        "text_color": "#25162F",
+        "muted_color": "#25162F"
       }
     },
     "sticky-cta": {
