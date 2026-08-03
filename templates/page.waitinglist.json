@@ -213,10 +213,10 @@
         "heading_size_max": 38,
         "body": "<p>Energy Foundation brengt ingrediënten voor energiehuishouding, mentale performance en fysieke prestaties samen in één dagelijkse drinkmix. Scheur een sachet open, meng met koud water en ga verder met je dag.</p>",
         "show_numbers": true,
-        "bg_color": "#221B3B",
-        "eyebrow_color": "#CAC0FF",
-        "heading_color": "#CAC0FF",
-        "body_color": "#CAC0FF",
+        "bg_color": "#CAC0FF",
+        "eyebrow_color": "#221B3B",
+        "heading_color": "#221B3B",
+        "body_color": "#221B3B",
         "badge_bg_color": "#CAC0FF",
         "badge_text_color": "#243511"
       }
@@ -393,11 +393,11 @@
         "body": "<p>Diep, fruitig en licht fris. Black Cherry heeft een volle kersensmaak zonder te voelen als siroop, snoep of een overdreven zoete sportdrank.</p>",
         "tagline": "Dark cherry, bright finish.",
         "taste_title": "Smaakprofiel",
-        "bg_color": "#221B3B",
-        "eyebrow_color": "#cbff78",
-        "heading_color": "#f8f8ed",
-        "body_color": "#d7ccc9",
-        "tagline_color": "#ff9cff",
+        "bg_color": "#CAC0FF",
+        "eyebrow_color": "#221B3B",
+        "heading_color": "#221B3B",
+        "body_color": "#221B3B",
+        "tagline_color": "#AC0000",
         "dot_color": "#cbff78"
       }
     },
@@ -528,11 +528,11 @@
         "error_text": "Er ging iets mis. Probeer het zo nog eens.",
         "invalid_email_text": "Vul een geldig e-mailadres in.",
         "consent_error_text": "Zet een vinkje om je aan te melden.",
-        "bg_color": "#cbff78",
+        "bg_color": "#CAC0FF",
         "eyebrow_color": "#243511",
-        "heading_color": "#243511",
-        "body_color": "#243511",
-        "perk_icon_bg_color": "#243511",
+        "heading_color": "#221B3B",
+        "body_color": "#221B3B",
+        "perk_icon_bg_color": "#221B3B",
         "perk_icon_color": "#cbff78",
         "perk_text_color": "#243511"
       }
