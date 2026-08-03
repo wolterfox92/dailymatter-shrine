@@ -679,9 +679,9 @@
         "heading": "FAQ",
         "heading_size_min": 28,
         "heading_size_max": 38,
-        "bg_color": "#f8f8ed",
+        "bg_color": "#F5EFE7",
         "eyebrow_color": "#634c61",
-        "heading_color": "#180223"
+        "heading_color": "#2F1616"
       }
     },
     "final-cta": {
