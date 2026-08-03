@@ -114,7 +114,7 @@
         "item-4": {
           "type": "item",
           "settings": {
-            "text": "Plans that run late"
+            "text": "Nights out"
           }
         }
       },
@@ -125,7 +125,7 @@
         "item-4"
       ],
       "settings": {
-        "speed": 22,
+        "speed": 12,
         "separator_icon": "bolt",
         "bg_color": "#cbff78",
         "text_color": "#243511"
@@ -596,7 +596,11 @@
         "heading_color": "#180223",
         "card_bg_color": "#fee7e7",
         "flag_bg_color": "#511a39",
-        "flag_text_color": "#f8f8ed"
+        "flag_text_color": "#f8f8ed",
+        "price_now_color": "#180223",
+        "price_was_color": "#634c61",
+        "badge_bg_color": "#511a39",
+        "badge_text_color": "#f8f8ed"
       }
     },
     "faq": {
