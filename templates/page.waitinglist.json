@@ -18,7 +18,7 @@
         "link": "#bc-signup",
         "show_icon": true,
         "bg_color": "#25162f",
-        "text_color": "#f8f8ed"
+        "text_color": "#FFFFFF"
       }
     },
     "header": {
@@ -47,21 +47,21 @@
           "type": "chip",
           "settings": {
             "icon": "calendar_month",
-            "text": "30 daily sachets"
+            "text": "Ondersteun herstel"
           }
         },
         "chip-3": {
           "type": "chip",
           "settings": {
             "icon": "local_florist",
-            "text": "Red Cherry"
+            "text": "Minder vermoeidheid"
           }
         },
         "chip-4": {
           "type": "chip",
           "settings": {
             "icon": "water_drop",
-            "text": "Mix with cold water"
+            "text": "Gratis waterfles"
           }
         }
       },
@@ -82,7 +82,7 @@
         "note": "<p>Als eerste toegang + <strong>25% korting</strong> op je order + een <strong>gratis waterfles</strong> t.w.v. € 17,95.</p>",
         "link_label": "Discover what's inside",
         "link_url": "#bc-ingredients",
-        "media_tag": "First flavour · Black Cherry",
+        "media_tag": "Eerste smaak · Red Cherry",
         "bg_color": "#cac0ff",
         "eyebrow_color": "#25162f",
         "heading_color": "#25162f",
