@@ -9,7 +9,8 @@
 
   IMPORTANT: remove the render and delete this file the moment the app embed starts
   emitting its own tag, or Clarity loads twice and double-counts every session.
-  The embed injects via {{ content_for_header }}, which this page also renders.
+  The embed injects via content_for_header, which this page also renders. As a
+  safety net this snippet no-ops when window.clarity is already defined.
 
   @param project_id {String} - Clarity project ID (Clarity -> Settings -> Overview).
 
@@ -19,17 +20,23 @@
 
 {%- if project_id != blank -%}
   <script>
-    (function (c, l, a, r, i, t, y) {
-      c[a] =
-        c[a] ||
-        function () {
-          (c[a].q = c[a].q || []).push(arguments);
-        };
-      t = l.createElement(r);
-      t.async = 1;
-      t.src = 'https://www.clarity.ms/tag/' + i;
-      y = l.getElementsByTagName(r)[0];
-      y.parentNode.insertBefore(t, y);
-    })(window, document, 'clarity', 'script', {{ project_id | json }});
+    // The app embed injects via content_for_header, which this layout renders above
+    // this snippet. So if the embed ever does reach this page, its tag has already
+    // defined window.clarity by now and this one stands down rather than loading a
+    // second tag and double-counting every session.
+    if (!window.clarity) {
+      (function (c, l, a, r, i, t, y) {
+        c[a] =
+          c[a] ||
+          function () {
+            (c[a].q = c[a].q || []).push(arguments);
+          };
+        t = l.createElement(r);
+        t.async = 1;
+        t.src = 'https://www.clarity.ms/tag/' + i;
+        y = l.getElementsByTagName(r)[0];
+        y.parentNode.insertBefore(t, y);
+      })(window, document, 'clarity', 'script', {{ project_id | json }});
+    }
   </script>
 {%- endif -%}
