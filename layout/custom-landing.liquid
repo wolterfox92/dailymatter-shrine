@@ -42,6 +42,12 @@
 
     {{ content_for_header }}
 
+    {%- comment -%}
+      Loaded here rather than via the Clarity app embed, which is enabled but emits
+      nothing. See snippets/custom-clarity.liquid and docs/sections.md#microsoft-clarity.
+    {%- endcomment -%}
+    {% render 'custom-clarity', project_id: 'y0trvvheh2' %}
+
     {{ 'custom-bc.css' | asset_url | stylesheet_tag }}
     {% section 'custom-bc-page-style' %}
 

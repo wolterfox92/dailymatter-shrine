@@ -290,3 +290,44 @@ component-defaults; de sectie blijft werken.
 **Let op:** schema-labels hardcoded in het Nederlands, conform de rest van de
 `custom-*` secties; klantgerichte tekst komt uit settings, dus geen nieuwe
 `t:`-keys.
+
+---
+
+## Microsoft Clarity
+
+**Bestanden:** `snippets/custom-clarity.liquid`, gerenderd vanuit
+`layout/custom-landing.liquid` (direct na `{{ content_for_header }}`).
+
+**Waarom hardcoded:** `CLAUDE.md` schrijft voor dat third-party scripts via een
+app embed lopen. Dat is hier geprobeerd en werkt niet: het blok
+`shopify://apps/microsoft-clarity/blocks/clarity_js/31c3d126-…` staat in
+`settings_data.json` met `"disabled": false` en `"settings": {}`, maar rendert
+leeg in de HTML — de Shopify-app is niet aan een Clarity-project gekoppeld, dus
+er komt geen tag op de pagina. De Data Export API gaf navenant lege metrics
+terug. Dit is een bewuste, gedocumenteerde uitzondering op de regel.
+
+**Scope:** alleen de waitlist-pagina. `custom-landing` is de layout van
+uitsluitend `templates/page.waitinglist.json`; de rest van de winkel draait op
+`layout/theme.liquid` en heeft dus géén Clarity. Wil je winkelbreed meten, dan
+moet dat via de app embed of via een `CUSTOM-START/END` hook in `theme.liquid`
+mét een entry in `docs/changes.md`.
+
+**Project-ID:** `y0trvvheh2`, meegegeven als `project_id`-parameter aan het
+snippet (niet in het snippet zelf hardcoded, zodat het herbruikbaar blijft).
+Uitvoer gaat door `| json`, dus de waarde kan het script niet breken.
+
+**Terugdraaien — belangrijk:** zodra de app embed wél een tag uitzendt, moet de
+`{% render 'custom-clarity' %}` uit `custom-landing.liquid` en moet het snippet
+weg. De embed injecteert via `{{ content_for_header }}`, dat deze layout óók
+rendert, dus anders laadt Clarity twee keer en telt elke sessie dubbel.
+
+**Consent:** het script vuurt nu onvoorwaardelijk, net zoals de app embed zou
+doen. Clarity neemt sessies op; voor EU-verkeer hoort dat achter
+analytics-toestemming (Shopify Customer Privacy API). Openstaand punt, bewust
+niet stilzwijgend ingebouwd omdat een gate zonder werkende consent-banner alle
+data zou blokkeren.
+
+**Data ophalen:** MCP-server `@microsoft/clarity-mcp-server`, geconfigureerd in
+`~/.claude.json` (project-scope) zodat het API-token niet in de repo staat.
+Limiet: 10 requests per project per dag, alleen de laatste 1–3 dagen, max. 3
+dimensies en 1.000 rijen per request.
