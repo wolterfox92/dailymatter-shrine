@@ -227,16 +227,16 @@
         "pillar-1": {
           "type": "pillar",
           "settings": {
-            "eyebrow": "Dagelijkse energie",
-            "title": "Minder vermoeidheid",
-            "text": "<p>Magnesium en de vitamines B5, B6 en B12 helpen vermoeidheid en moeheid te verminderen.</p>"
+            "eyebrow": "",
+            "title": "Dagelijkse energie",
+            "text": "<p>B5, B6, B12, magnesium en vitamine C dragen bij tot een normaal energieleverend metabolisme.</p>"
           }
         },
         "pillar-2": {
           "type": "pillar",
           "settings": {
-            "eyebrow": "Mentale scherpte",
-            "title": "Blijf bij de les",
+            "eyebrow": "",
+            "title": "Mentale scherpte",
             "text": "<p>Vitamine B5 draagt bij aan normale mentale prestaties.</p>"
           }
         },
@@ -255,7 +255,7 @@
         "pillar-3"
       ],
       "settings": {
-        "eyebrow": "Why it matters",
+        "eyebrow": "When it matters",
         "heading": "Built for more than one moment.",
         "heading_size_min": 28,
         "heading_size_max": 38,
