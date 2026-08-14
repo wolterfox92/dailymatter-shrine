@@ -18,7 +18,7 @@
         "link": "#bc-signup",
         "show_icon": true,
         "bg_color": "#25162f",
-        "text_color": "#FFFFFF"
+        "text_color": "#ffffff"
       }
     },
     "header": {
@@ -705,7 +705,7 @@
           "type": "link",
           "settings": {
             "label": "Contact",
-            "url": ""
+            "url": "shopify://pages/contact"
           }
         },
         "link-2": {
@@ -719,45 +719,21 @@
           "type": "link",
           "settings": {
             "label": "Algemene voorwaarden",
-            "url": ""
-          }
-        },
-        "link-4": {
-          "type": "link",
-          "settings": {
-            "label": "Retourbeleid",
-            "url": ""
-          }
-        },
-        "link-5": {
-          "type": "link",
-          "settings": {
-            "label": "Instagram",
-            "url": ""
-          }
-        },
-        "link-6": {
-          "type": "link",
-          "settings": {
-            "label": "TikTok",
-            "url": ""
+            "url": "shopify://pages/algemene-voorwaarden"
           }
         }
       },
       "block_order": [
         "link-1",
         "link-2",
-        "link-3",
-        "link-4",
-        "link-5",
-        "link-6"
+        "link-3"
       ],
       "settings": {
-        "wordmark": "DAILY MATTERS",
+        "wordmark": "Daily Matters",
         "show_registered": true,
         "tagline": "Taking care of yourself, made easier.",
         "nav_label": "Footer",
-        "legal": "<p>Voedingssupplement. Een gevarieerde, evenwichtige voeding en een gezonde levensstijl zijn belangrijk. [KvK-nummer] · [Bedrijfsadres] · © 2026 Daily Matters</p>",
+        "legal": "<p>Voedingssupplement. Onze producten zijn geen vervanging voor gevarieerd en evenwichtige dieet. Een gezonde levensstijl is belangrijk. KVK: 85232114 · Jan Tooropstraat 709, 1061AE, Amsterdam · © 2026 Daily Matters</p>",
         "bg_color": "#cac0ff",
         "text_color": "#25162f",
         "muted_color": "#25162f"
