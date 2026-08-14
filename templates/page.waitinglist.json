@@ -584,7 +584,7 @@
         "card_title": "Energy Foundation — Black Cherry",
         "product": "daily-elektrolyte",
         "discount_percent": 25,
-        "money_format": "with_currency",
+        "money_format": "compact",
         "price_title": "Jouw prijs als early adopter",
         "now_label": "Prijs voor de wachtlijst",
         "compare_label": "Normale prijs",
