@@ -499,7 +499,7 @@
         "klaviyo_public_key": "V7Badc",
         "klaviyo_list_id": "RXr2FJ",
         "klaviyo_custom_source": "Black Cherry waitlist",
-        "eyebrow": "The first batch",
+        "eyebrow": "De eerste batch",
         "heading": "Be first in.",
         "heading_size_min": 36,
         "heading_size_max": 48,
@@ -513,7 +513,7 @@
         "show_consent": true,
         "consent_label": "Ja, hou mij per e-mail op de hoogte van de lancering.",
         "consent_required": true,
-        "fine_print": "<p>Geen dagelijkse mails. Alleen relevante updates over Black Cherry en de eerste lancering.</p>",
+        "fine_print": "<p>Geen dagelijkse mails. Alleen relevante updates over Red Cherry en de eerste lancering.</p>",
         "success_title": "Je staat op de lijst.",
         "success_title_named": "Je staat op de lijst, [naam].",
         "success_text": "<p>Dank je. Dit helpt ons de eerste batch precies goed te maken. Je hoort van ons zodra Black Cherry klaarstaat.</p>",
@@ -564,8 +564,8 @@
         "item-4": {
           "type": "item",
           "settings": {
-            "icon": "water_drop",
-            "text": "Voeg de Daily Matters bottle toe bij launch"
+            "icon": "check",
+            "text": "GRATIS Daily Matters bottle t.w.v. 17,95"
           }
         }
       },
