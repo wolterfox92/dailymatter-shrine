@@ -76,7 +76,7 @@
         "heading": "What you do daily, matters.",
         "heading_size_min": 38,
         "heading_size_max": 50,
-        "body": "<p>Eén dagelijkse mix met creatine, elektrolyten, magnesium en B-vitaminen. Gemaakt voor volle dagen, actieve plannen en een routine die je wél volhoudt. Zonder cafeïne en zonder toegevoegde suikers.*</p>",
+        "body": "<p>Eén dagelijkse mix met <strong>creatine</strong>, <strong>elektrolyten</strong>, <strong>magnesium</strong> en <strong>B-vitaminen</strong>. Gemaakt voor volle dagen, actieve plannen en een routine die je wél volhoudt. Zonder cafeïne en zonder toegevoegde suikers.</p>",
         "cta_label": "Join the first drop",
         "cta_link": "#bc-signup",
         "note": "<p>Als eerste toegang + <strong>25% korting</strong> op je order + een <strong>gratis waterfles</strong> t.w.v. € 17,95.</p>",
@@ -168,7 +168,7 @@
         "heading_size_min": 28,
         "heading_size_max": 38,
         "body": "<p>Werk, studie, sport, vrienden en alles wat daar tussendoor gebeurt. Goed voor jezelf zorgen helpt, maar wordt al snel nóg iets om bij te houden. Meerdere potten, losse scheppen en ingewikkelde routines passen niet altijd in het echte leven.</p>",
-        "lead": "<p>Daarom brengen we de dagelijkse basis voor energie samen in één sachet. </p>",
+        "lead": "<p>Daarom brengen we de dagelijkse basis voor energie, focus en fysieke prestaties samen in één sachet. </p>",
         "bg_color": "#ffffff",
         "eyebrow_color": "#634c61",
         "heading_color": "#180223",
@@ -273,8 +273,17 @@
           "settings": {
             "icon": "fitness_center",
             "name": "Creatine Monohydraat",
-            "meta": "For intense efforts · [3 of 5 g] per sachet",
+            "meta": "For intense efforts · 5 g per sachet",
             "text": "<p>Creatine helpt fysieke prestaties te verhogen bij herhaalde, korte en intensieve inspanningen.** Het werkt niet als een directe stimulant: het effect komt door dagelijks gebruik.</p>"
+          }
+        },
+        "ing-6": {
+          "type": "ingredient",
+          "settings": {
+            "icon": "grain",
+            "name": "Sodium + potassium",
+            "meta": "Electrolytes included · [·· mg]",
+            "text": "<p>Iedere sachet bevat natrium en kalium: twee bekende elektrolyten.</p>"
           }
         },
         "ing-2": {
@@ -312,24 +321,15 @@
             "meta": "For everyday support · [·· mg · ··% RI]",
             "text": "<p>Vitamine C ondersteunt een normale energiehuishouding, draagt bij aan de normale werking van het immuunsysteem en helpt vermoeidheid te verminderen.</p>"
           }
-        },
-        "ing-6": {
-          "type": "ingredient",
-          "settings": {
-            "icon": "grain",
-            "name": "Sodium + potassium",
-            "meta": "Electrolytes included · [·· mg]",
-            "text": "<p>Iedere sachet bevat natrium en kalium: twee bekende elektrolyten.</p>"
-          }
         }
       },
       "block_order": [
         "ing-1",
+        "ing-6",
         "ing-2",
         "ing-3",
         "ing-4",
-        "ing-5",
-        "ing-6"
+        "ing-5"
       ],
       "settings": {
         "eyebrow": "Inside the sachet",
@@ -337,8 +337,8 @@
         "heading_size_min": 28,
         "heading_size_max": 38,
         "body": "<p>Geen willekeurige stapel ingrediënten. Iedere component heeft een duidelijke plek in je dagelijkse routine.</p>",
-        "claims_title": "Claims",
-        "claims_text": "<p>* \"Zonder toegevoegde suikers\" wordt juridisch gecontroleerd op basis van de definitieve receptuur. ** De creatineclaim geldt bij een dagelijkse inname van 3 g en is bedoeld voor volwassenen die intensieve inspanning leveren. Doseringen en %RI volgen zodra de formule definitief is. Voedingssupplement — geen vervanging van een gevarieerde voeding en een gezonde levensstijl.</p>",
+        "claims_title": "De wetenschap",
+        "claims_text": "<p></p><p>Voedingssupplement — geen vervanging van een gevarieerde voeding en een gezonde levensstijl.</p>",
         "bg_color": "#ffffff",
         "eyebrow_color": "#beb3f9",
         "heading_color": "#25162f",
