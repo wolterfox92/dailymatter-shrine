@@ -323,11 +323,105 @@ rendert, dus anders laadt Clarity twee keer en telt elke sessie dubbel.
 
 **Consent:** het script vuurt nu onvoorwaardelijk, net zoals de app embed zou
 doen. Clarity neemt sessies op; voor EU-verkeer hoort dat achter
-analytics-toestemming (Shopify Customer Privacy API). Openstaand punt, bewust
-niet stilzwijgend ingebouwd omdat een gate zonder werkende consent-banner alle
-data zou blokkeren.
+analytics-toestemming (Shopify Customer Privacy API).
+
+**Gecorrigeerd 2026-08-12 — de banner bestaat wél.** In de browser gemeten op de
+dev-server: Shopify's eigen privacybanner (`#shopify-pc__banner`, "Cookietoestemming")
+rendert op deze pagina via `{{ content_for_header }}`, `window.Shopify.customerPrivacy`
+is beschikbaar, en `analyticsProcessingAllowed()` gaf **`false`** terug terwijl de
+Clarity-tag gewoon draaide en opnam. De eerdere redenering — "een gate zou alle data
+blokkeren want er is geen banner" — klopt dus niet: de toestemming wórdt opgehaald,
+Clarity negeert alleen de uitkomst. Een gate is daarmee een reële optie geworden in
+plaats van een doodlopende weg. Nog steeds een bewuste keuze om te maken, geen
+stilzwijgende inbouw: gaten dicht je pas nadat je weet hoeveel verkeer je erdoor
+verliest.
 
 **Data ophalen:** MCP-server `@microsoft/clarity-mcp-server`, geconfigureerd in
 `~/.claude.json` (project-scope) zodat het API-token niet in de repo staat.
 Limiet: 10 requests per project per dag, alleen de laatste 1–3 dagen, max. 3
 dimensies en 1.000 rijen per request.
+
+---
+
+## Clarity-meetlaag (waitlist-funnel)
+
+**Bestanden:** `assets/custom-bc-clarity.js`, geladen vanuit
+`layout/custom-landing.liquid` direct onder de tag-render. Dit is de tweede helft
+van dezelfde gedocumenteerde uitzondering hierboven: geen vendor-script in Liquid,
+maar eigen code die een global aanroept die al bestaat. Verwijderen = dit bestand
+weg plus die ene scripttag.
+
+**Waarom één bestand:** de secties blijven zo herbruikbaar op een andere pagina
+zonder Clarity-afhankelijkheid, alle listeners zijn gedelegeerd op `document` en
+overleven dus het opnieuw renderen van een sectie in de theme-editor, en de hele
+meetlaag is op één plek te auditen.
+
+### Events — `clarity("event", …)`
+
+| Event | Vuurt bij | Vraag |
+|---|---|---|
+| `cta_click` | klik op een `a[href="#bc-signup"]` | werkt de overtuiging |
+| `signup_seen` | `[data-bc-form]` ≥25% zichtbaar, ≥1s | bereikt men het formulier |
+| `signup_start` | eerste focus in een echt veld | wordt het formulier aangeraakt |
+| `signup_submit` | `submit`, capture-fase | hoeveel pogingen |
+| `waitlist_signup` | `bc:subscribed` (Klaviyo 2xx) | **de conversie** |
+| `signup_err_email` | ongeldig/leeg e-mailadres | is het e-mailveld de drempel |
+| `signup_err_consent` | verplichte consent niet aangevinkt | is de checkbox de drempel |
+| `signup_err_api` | Klaviyo-fout of ontbrekende config | worden inschrijvingen verloren |
+| `survey_answer` | klik op `[data-bc-option]` | wordt de survey ingevuld |
+| `faq_open` / `ingredient_open` | eerste `toggle` op een `details.bc-acc` | welke twijfel zoekt men op |
+
+### Tags — `clarity("set", …)`
+
+| Key | Waarden |
+|---|---|
+| `cta_source` | `announce` \| `header` \| `hero` \| `final` \| `sticky` |
+| `faq_q` | vraagtekst, max 255 tekens |
+| `ingredient` | ingrediëntnaam, max 255 tekens |
+| `api_status` | HTTP-status, `network`, of `config` |
+
+Eén `cta_click`-event plus een tag met vijf waarden, in plaats van vijf events:
+bij dit verkeersvolume zouden vijf losse tellingen elk twee sessies groot zijn.
+
+`clarity("upgrade", "signup_error")` bij elke mislukte inschrijving, zodat Clarity
+juist díe opnames bewaart zodra het gaat samplen. `clarity("identify")` wordt
+bewust nooit aangeroepen.
+
+### Integratiepunten (DOM-events, hertesten na elke wijziging)
+
+| Event | Bron | Payload |
+|---|---|---|
+| `bc:subscribed` | `assets/custom-bc-signup.js`, bij Klaviyo 2xx | `{ email, listId }` — **de meetlaag leest `detail` niet** |
+| `bc:signup-error` | idem, vier faalpaden | `{ reason: 'email' \| 'consent' \| 'config' \| 'api', status }` — `status` is de HTTP-status, of `null` als de fetch nooit een response kreeg |
+
+`custom-bc-signup.js` roept `preventDefault()` aan maar nooit `stopPropagation()`,
+dus het `submit`-event bereikt `document`. `signup_submit` telt in de capture-fase,
+vóór de honeypot-tak: `signup_submit` min (`waitlist_signup` + de drie
+error-events) ís het aantal inzendingen dat de honeypot heeft opgeslokt. Gaat
+browser-autofill ooit het veld "Bedrijf" invullen, dan krijgen echte bezoekers een
+nep-succes zonder ingeschreven te worden — en die som is het enige dat dat zichtbaar
+maakt.
+
+`toggle` bubbelt niet; de accordeon-listener draait daarom in de capture-fase.
+
+### Maskering
+
+- Naam- en e-mailvelden vallen onder Clarity's standaardmaskering. Niets in
+  `[data-bc-form]` unmasken.
+- `[data-bc-thanks-title]` heeft `data-clarity-mask="true"` nodig en heeft die:
+  `custom-bc-signup.js` schrijft de voornaam van de bezoeker als paginatekst in die
+  titel, en de standaardmaskering dekt alleen velden, getallen en e-mailadressen.
+- Controleer in Clarity → Settings → Masking dat het project op Balanced of Strict
+  staat; op Relaxed klopt het bovenstaande niet meer.
+
+### Wat de API wél en niet kan
+
+De Data Export API kent geen dimensie voor custom events: **aantallen per event
+lees je in de Clarity-UI**, niet via MCP. Recordings zijn wél op eventnaam te
+filteren via `smartEvents`, mits het event in Clarity als Smart Event is
+geregistreerd. Custom tags zijn UI-only. Heatmaps zitten helemaal niet in de API.
+
+Meetmethode, vaste queryset en de snapshots: `docs/clarity/README.md`.
+
+**Geen `t:`-keys:** event- en tagnamen zijn interne identifiers, geen
+klantgerichte tekst, en blijven daarom Engels en hardcoded.

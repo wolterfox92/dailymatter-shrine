@@ -207,7 +207,20 @@
           <span class="bc-thanks__mark">
             {% render 'custom-bc-icon', icon: 'check', size: 22 %}
           </span>
-          <h3 class="bc-thanks__title" tabindex="-1" data-bc-thanks-title>{{ s.success_title | escape }}</h3>
+          {%- comment -%}
+            custom-bc-signup.js writes the visitor's first name into this heading.
+            That makes it page text, and Clarity's default masking only covers form
+            fields, numbers and email addresses — so without this attribute the name
+            is readable in every session replay.
+          {%- endcomment -%}
+          <h3
+            class="bc-thanks__title"
+            tabindex="-1"
+            data-bc-thanks-title
+            data-clarity-mask="true"
+          >
+            {{- s.success_title | escape -}}
+          </h3>
         </div>
 
         {%- if s.q1_enabled and s.q1_question != blank and q1_options.size > 0 -%}

@@ -48,6 +48,13 @@
     {%- endcomment -%}
     {% render 'custom-clarity', project_id: 'y0trvvheh2' %}
 
+    {%- comment -%}
+      Every Clarity call for this page sits in this one file, next to the tag it
+      talks to. Delete both lines and the measurement layer is gone, with no
+      leftovers in the sections. Taxonomy: docs/sections.md#microsoft-clarity.
+    {%- endcomment -%}
+    <script src="{{ 'custom-bc-clarity.js' | asset_url }}" defer></script>
+
     {{ 'custom-bc.css' | asset_url | stylesheet_tag }}
     {% section 'custom-bc-page-style' %}
 

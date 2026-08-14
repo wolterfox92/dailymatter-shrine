@@ -73,6 +73,7 @@ class BcSignupForm extends HTMLElement {
 
     if (!email || !emailField.checkValidity()) {
       this.#showError(this.#status?.dataset.invalidText);
+      this.#fail('email');
       emailField.setAttribute('aria-invalid', 'true');
       emailField.focus();
       return;
@@ -81,6 +82,7 @@ class BcSignupForm extends HTMLElement {
 
     if (consentField?.required && !consentField.checked) {
       this.#showError(this.#status?.dataset.consentText);
+      this.#fail('consent');
       consentField.focus();
       return;
     }
@@ -88,6 +90,7 @@ class BcSignupForm extends HTMLElement {
     const { companyId, listId } = this.dataset;
     if (!companyId || !listId) {
       this.#showError(this.#status?.dataset.errorText);
+      this.#fail('config');
       return;
     }
 
@@ -106,7 +109,13 @@ class BcSignupForm extends HTMLElement {
         }
       );
 
-      if (!response.ok) throw new Error(`Klaviyo responded ${response.status}`);
+      if (!response.ok) {
+        // Carry the status through the catch: a response that failed and a fetch
+        // that never got one need different answers.
+        const failure = new Error(`Klaviyo responded ${response.status}`);
+        failure.status = response.status;
+        throw failure;
+      }
 
       this.#email = email;
       this.#showThanks(firstName);
@@ -116,10 +125,24 @@ class BcSignupForm extends HTMLElement {
     } catch (error) {
       console.error('[custom-bc-signup]', error);
       this.#showError(this.#status?.dataset.errorText);
+      this.#fail('api', error.status ?? null);
     } finally {
       this.#setBusy(false);
     }
   };
+
+  /* Announce why a signup did not happen. The three showError branches above and
+     this catch all write the same two or three strings into the status line, so
+     from the outside they are indistinguishable — and they need opposite responses:
+     a blanked setting silently drops every signup, a 500 is Klaviyo having a
+     moment. Analytics listens for this; nothing here knows about a vendor.
+     Payload: reason 'email' | 'consent' | 'config' | 'api', and for 'api' the HTTP
+     status, or null when the fetch never got a response at all. */
+  #fail(reason, status = null) {
+    this.dispatchEvent(
+      new CustomEvent('bc:signup-error', { bubbles: true, detail: { reason, status } })
+    );
+  }
 
   #subscriptionPayload(email, firstName, listId) {
     // first_name is a first-class profile attribute on this endpoint. Sending it
