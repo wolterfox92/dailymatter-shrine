@@ -40,7 +40,7 @@
           "type": "chip",
           "settings": {
             "icon": "local_cafe",
-            "text": "Caffeine-free"
+            "text": "Cafeïnevrij"
           }
         },
         "chip-2": {
@@ -72,8 +72,8 @@
         "chip-4"
       ],
       "settings": {
-        "eyebrow": "Energy Foundation · Red Cherry",
-        "heading": "What you do daily, matters.",
+        "eyebrow": "",
+        "heading": "Energy for the things that matter most",
         "heading_size_min": 38,
         "heading_size_max": 50,
         "body": "<p>Eén dagelijkse mix met <strong>creatine</strong>, <strong>elektrolyten</strong>, <strong>magnesium</strong> en <strong>B-vitaminen</strong>. Gemaakt voor volle dagen, actieve plannen en een routine die je wél volhoudt. Zonder cafeïne en zonder toegevoegde suikers.</p>",
@@ -82,6 +82,7 @@
         "note": "<p>Als eerste toegang + <strong>25% korting</strong> op je order + een <strong>gratis waterfles</strong> t.w.v. € 17,95.</p>",
         "link_label": "Discover what's inside",
         "link_url": "#bc-ingredients",
+        "image": "shopify://shop_images/ChatGPT_Image_Aug_1_2026_11_16_30_AM123.webp",
         "media_tag": "Eerste smaak · Red Cherry",
         "bg_color": "#cac0ff",
         "eyebrow_color": "#25162f",
@@ -529,12 +530,12 @@
         "invalid_email_text": "Vul een geldig e-mailadres in.",
         "consent_error_text": "Zet een vinkje om je aan te melden.",
         "bg_color": "#cac0ff",
-        "eyebrow_color": "#25162F",
-        "heading_color": "#25162F",
-        "body_color": "#25162F",
-        "perk_icon_bg_color": "#25162F",
+        "eyebrow_color": "#25162f",
+        "heading_color": "#25162f",
+        "body_color": "#25162f",
+        "perk_icon_bg_color": "#25162f",
         "perk_icon_color": "#cbff78",
-        "perk_text_color": "#25162F"
+        "perk_text_color": "#25162f"
       }
     },
     "package": {
