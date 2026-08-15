@@ -39,29 +39,29 @@
         "chip-1": {
           "type": "chip",
           "settings": {
-            "icon": "local_cafe",
-            "text": "Cafeïnevrij"
+            "icon": "check",
+            "text": "Minder vermoeidheid"
           }
         },
         "chip-2": {
           "type": "chip",
           "settings": {
-            "icon": "calendar_month",
-            "text": "30 daily sachets"
+            "icon": "check",
+            "text": "Boost fysieke prestaties"
           }
         },
         "chip-3": {
           "type": "chip",
           "settings": {
-            "icon": "local_florist",
-            "text": "Red Cherry"
+            "icon": "check",
+            "text": "Mentale scherpte"
           }
         },
         "chip-4": {
           "type": "chip",
           "settings": {
-            "icon": "water_drop",
-            "text": "Mix with cold water"
+            "icon": "check",
+            "text": "Dagelijkse energie"
           }
         }
       },
