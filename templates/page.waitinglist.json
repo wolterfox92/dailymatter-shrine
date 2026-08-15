@@ -177,6 +177,77 @@
         "lead_color": "#180223"
       }
     },
+    "color_switch_gMJeaA": {
+      "type": "color-switch",
+      "blocks": {
+        "option_ReRVQ6": {
+          "type": "option",
+          "settings": {
+            "label": "First thing",
+            "subheading": "Begin je dag goed, een frisse start zodra je wakker wordt.",
+            "caption": ""
+          }
+        },
+        "option_Fy3WWk": {
+          "type": "option",
+          "settings": {
+            "label": "Low energy",
+            "subheading": "Kom door de middagdip heen zonder de energiedip erna van de derde koffie.",
+            "caption": ""
+          }
+        },
+        "option_mmLk8k": {
+          "type": "option",
+          "settings": {
+            "label": "Pre/post workout",
+            "subheading": "Laad op voor je training en herstel sneller erna.",
+            "caption": ""
+          }
+        },
+        "option_Wxck94": {
+          "type": "option",
+          "settings": {
+            "label": "Nights out",
+            "subheading": "Hydrateer en begin de volgende ochtend weer fris.",
+            "caption": ""
+          }
+        }
+      },
+      "block_order": [
+        "option_ReRVQ6",
+        "option_Fy3WWk",
+        "option_mmLk8k",
+        "option_Wxck94"
+      ],
+      "name": "Color switch",
+      "settings": {
+        "eyebrow": "When it matters?",
+        "eyebrow_size": 11,
+        "eyebrow_color": "#634c61",
+        "heading": "Built for more than one moment.",
+        "heading_size": "h0",
+        "heading_custom_desktop_size": 40,
+        "heading_custom_mobile_size": 34,
+        "heading_color": "#25162f",
+        "content_alignment": "left",
+        "button_gap": 8,
+        "button_radius": 8,
+        "button_active_background": "#cbff78",
+        "button_active_text": "#25162f",
+        "button_inactive_text": "#25162f",
+        "button_inactive_border": "#d2cdc7",
+        "max_width": 1100,
+        "image_position": "right",
+        "column_gap": 60,
+        "image_ratio": "3 / 2",
+        "image_fit": "cover",
+        "image_radius": 23,
+        "stage_background": "#f4f0ec",
+        "color_scheme": "background-1",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
     "solution": {
       "type": "custom-bc-solution",
       "blocks": {
@@ -230,7 +301,7 @@
           "settings": {
             "eyebrow": "",
             "title": "Dagelijkse energie",
-            "text": "<p>B5, B6, B12, magnesium en vitamine C dragen bij tot een normaal energieleverend metabolisme.</p>"
+            "text": "<p>Voor werkdagen, sport, studie, nachtjes uit en alles wat ertussen gebeurt.</p>"
           }
         },
         "pillar-2": {
@@ -755,6 +826,7 @@
     "hero",
     "ticker",
     "recognition",
+    "color_switch_gMJeaA",
     "solution",
     "pillars",
     "ingredients",
