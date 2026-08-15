@@ -1017,6 +1017,7 @@
         "heading_custom_desktop_size": 40,
         "heading_custom_mobile_size": 34,
         "heading_color": "#25162f",
+        "content_alignment": "center",
         "button_gap": 8,
         "button_radius": 8,
         "button_active_background": "#cbff78",

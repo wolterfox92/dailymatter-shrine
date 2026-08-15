@@ -293,6 +293,63 @@ component-defaults; de sectie blijft werken.
 
 ---
 
+## Color switch — `color-switch`, `color-switch-2`
+
+**Datum:** 2026-08-14
+**Bestanden:**
+- `sections/color-switch.liquid` (subheading boven de knoppen — in gebruik op
+  `templates/product.json`)
+- `sections/color-switch-2.liquid` (variant met titel + tekst als overlay óver
+  de afbeelding, in plaats van de subheading)
+
+**Doel:** "When does it matter?" — een rij knoppen die per moment een andere
+afbeelding en subheading toont. Mobiel gestapeld, desktop tekst links /
+afbeelding rechts (of omgekeerd).
+
+**Header:** optionele eyebrow boven de heading, plus een uitlijning-setting
+(links/gecentreerd). Eyebrow en heading zijn getekend naar `.bc-eyebrow` en
+`.bc-h2` uit `assets/custom-bc.css` — zelfde grootte, gewicht, letterspatiëring
+en `--bc-gutter`-inspringing — zodat de sectie op de waitlist tussen zijn buren
+past. De uitlijning stopt bij 990px: daarboven is de sectie een tweekolomsgrid
+en hoort de header links. Eyebrow is standaard leeg, dus bestaande instanties
+krijgen er niet ineens een.
+
+**Draait op twee layouts.** Deze secties worden zowel op `layout/theme.liquid`
+als op `layout/custom-landing.liquid` geplaatst. Die tweede laadt bewust
+géén `base.css` en géén `:root`-tokenblok, en daar liep de sectie eerst op stuk:
+alles werd ~1,6× te groot en het heading-font viel weg. Het contract is nu:
+
+- **Geen `rem`, alleen `px`.** `theme.liquid` zet `html { font-size: 62.5% }`
+  (1rem = 10px), `custom-landing.liquid` niet (1rem = 16px). Elke lengte in
+  deze secties is px. Zet hier nooit een rem-waarde terug.
+- **Fonts via `--cs-font-heading` / `--cs-font-heading-weight`.** Die ketenen
+  `--font-heading-family` (theme) → `--bc-font-display` (landingspagina) →
+  `inherit`. Nooit rechtstreeks `var(--font-heading-family)` gebruiken.
+- **Fallbacks staan in `:where()`**, dus met specificiteit 0. De heading-classes
+  (`hxl`/`h0`–`h3`) en `.page-width` uit `base.css` winnen daardoor gewoon zodra
+  die wél geladen is; de fallbacks springen alleen in waar ze ontbreken. De
+  fallback voor `h0` is letterlijk de clamp van `.bc-h2`; de andere stappen
+  schalen daaromheen volgens de verhoudingen uit `base.css`.
+
+Gevolg: de heading volgt per pagina het ontwerpsysteem waar hij in staat — op de
+productpagina de theme-typografie, op de waitlist die van `custom-bc.css`. Dat is
+bedoeld, niet toevallig.
+
+**Shrine-integratie:** geen commerce-logica. Wel `base.css`-classes
+(`.page-width`, `hxl`/`h0`–`h3`) en de color scheme-classes
+(`color-<scheme> gradient`) waar die bestaan — allemaal optioneel per bovenstaand
+contract. De setting "Color scheme" doet daardoor niets op
+`custom-landing.liquid`; kleuren komen daar uit de eigen kleurinstellingen van de
+sectie.
+
+**Let op:** het `<style>`-blok in beide bestanden is *niet* per sectie-id
+gescoped, terwijl er wél settings in geïnterpoleerd worden. Twee instanties op
+dezelfde pagina vechten dus om dezelfde regels — de laatste wint. Zolang er één
+per template staat is dat geen probleem; wordt het dat wel, scope dan op
+`.color-switch-{{ section.id }}`.
+
+---
+
 ## Microsoft Clarity
 
 **Bestanden:** `snippets/custom-clarity.liquid`, gerenderd vanuit

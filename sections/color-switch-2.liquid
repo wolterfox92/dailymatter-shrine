@@ -1,12 +1,54 @@
+{%- comment -%}
+  Layout-independent by design. This section also runs on templates that use
+  layout/custom-landing.liquid, which deliberately loads neither Shrine's
+  base.css nor the :root token block from layout/theme.liquid. Three
+  consequences, each handled below:
+
+  1. No `html { font-size: 62.5% }`, so 1rem is 16px there instead of 10px.
+     Every length in this section is therefore px, never rem.
+  2. --font-heading-family / --font-heading-weight are undefined. The --cs-font-*
+     tokens below chain through the landing page's own tokens to `inherit`.
+  3. The .h0/.h1/.hxl heading classes and .page-width live in base.css. Fallbacks
+     for both are wrapped in :where() so they carry zero specificity and lose to
+     the real thing wherever base.css *is* loaded.
+{%- endcomment -%}
+
+{%- liquid
+  # Fallback heading size for layouts without base.css, expressed the way the
+  # waitlist sections express theirs (assets/custom-bc.css). 'h0' is literally
+  # .bc-h2's clamp, so the default lands on the same size as its neighbours
+  # there; the other steps scale around it along base.css's own ratios.
+  case section.settings.heading_size
+    when 'h3'
+      assign heading_fallback = 'clamp(17px, 4.5vw, 18px)'
+    when 'h2'
+      assign heading_fallback = 'clamp(20px, 5.3vw, 24px)'
+    when 'h1'
+      assign heading_fallback = 'clamp(23px, 6.1vw, 30px)'
+    when 'hxl'
+      assign heading_fallback = 'clamp(40px, 10.5vw, 55px)'
+    else
+      assign heading_fallback = 'clamp(28px, 7.6vw, 38px)'
+  endcase
+-%}
+
 {%- style -%}
   .color-switch-{{ section.id }} {
     --cs-radius: {{ section.settings.image_radius }}px;
     --cs-btn-radius: {{ section.settings.button_radius }}px;
-    --cs-gap: {{ section.settings.button_gap | divided_by: 10.0 }}rem;
+    --cs-gap: {{ section.settings.button_gap }}px;
     --cs-active-bg: {{ section.settings.button_active_background }};
     --cs-active-text: {{ section.settings.button_active_text }};
     --cs-inactive-text: {{ section.settings.button_inactive_text }};
     --cs-inactive-border: {{ section.settings.button_inactive_border }};
+    --cs-align: {{ section.settings.content_alignment }};
+    --cs-eyebrow-size: {{ section.settings.eyebrow_size }}px;
+    --cs-eyebrow-color: {{ section.settings.eyebrow_color }};
+
+    /* Theme token first, then the landing page's own display font, then plain
+       inheritance. Nothing here may assume theme.liquid ran. */
+    --cs-font-heading: var(--font-heading-family, var(--bc-font-display, inherit));
+    --cs-font-heading-weight: var(--font-heading-weight, 800);
   }
 
   .section-{{ section.id }}-padding {
@@ -23,29 +65,69 @@
 
   {%- if section.settings.heading_size == 'custom' -%}
     .color-switch-{{ section.id }} .color-switch__heading {
-      font-size: {{ section.settings.heading_custom_mobile_size | divided_by: 10.0 }}rem;
+      font-size: {{ section.settings.heading_custom_mobile_size }}px;
     }
 
     @media screen and (min-width: 750px) {
       .color-switch-{{ section.id }} .color-switch__heading {
-        font-size: {{ section.settings.heading_custom_desktop_size | divided_by: 10.0 }}rem;
+        font-size: {{ section.settings.heading_custom_desktop_size }}px;
       }
+    }
+  {%- else -%}
+    :where(.color-switch-{{ section.id }} .color-switch__heading) {
+      font-size: {{ heading_fallback }};
     }
   {%- endif -%}
 {%- endstyle -%}
 
 <style>
+  /* Stand-in for .page-width, which lives in base.css. Zero specificity, so the
+     real .page-width still wins on templates that load it. */
+  :where(.color-switch__wrap) {
+    max-width: var(--page-width, 1400px);
+    margin-inline: auto;
+    /* --bc-gutter lines the section up with the waitlist sections above and
+       below it; 15px is what .page-width would have given anywhere else. */
+    padding-inline: var(--bc-gutter, 15px);
+  }
+
   .color-switch {
     margin: 0 auto;
     max-width: {{ section.settings.max_width }}px;
   }
 
+  /* Eyebrow + heading as one block, mirroring .bc-eyebrow / .bc-h2 on the
+     waitlist template so the section sits in line with its neighbours. */
+  .color-switch__header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+    text-align: var(--cs-align);
+  }
+
+  .color-switch__eyebrow {
+    margin: 0;
+    font-size: var(--cs-eyebrow-size);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cs-eyebrow-color);
+  }
+
   .color-switch__heading {
-    text-align: center;
-    margin: 0 0 2.4rem;
-    font-family: var(--font-heading-family);
-    font-weight: var(--font-heading-weight);
+    margin: 0;
+    font-family: var(--cs-font-heading);
+    font-weight: var(--cs-font-heading-weight);
     color: {{ section.settings.heading_color }};
+  }
+
+  /* base.css gives .h0/.h1/… their line-height and letter-spacing from theme
+     tokens; these only apply where that rule is absent. */
+  :where(.color-switch__heading) {
+    line-height: 0.98;
+    letter-spacing: -0.02em;
   }
 
   /* Stacked, full-width buttons */
@@ -53,22 +135,22 @@
     display: flex;
     flex-direction: column;
     gap: var(--cs-gap);
-    margin-bottom: 2.4rem;
+    margin-bottom: 24px;
   }
 
   .color-switch__btn {
     appearance: none;
     cursor: pointer;
     width: 100%;
-    min-height: 4rem;
-    padding: 1rem 1.6rem;
+    min-height: 40px;
+    padding: 10px 16px;
     border: 1px solid var(--cs-inactive-border);
     border-radius: var(--cs-btn-radius);
     background: transparent;
     color: var(--cs-inactive-text);
-    font-family: var(--font-heading-family);
+    font-family: var(--cs-font-heading);
     font-weight: 700;
-    font-size: 1.4rem;
+    font-size: 14px;
     line-height: 1;
     letter-spacing: -0.01em;
     text-transform: uppercase;
@@ -129,7 +211,7 @@
     right: 0;
     bottom: 0;
     margin: 0;
-    padding: 6rem 2.4rem 2.4rem;
+    padding: 60px 24px 24px;
     color: {{ section.settings.overlay_text_color }};
     background: linear-gradient(
       to top,
@@ -139,17 +221,17 @@
   }
 
   .color-switch__overlay-title {
-    margin: 0 0 0.6rem;
-    font-family: var(--font-heading-family);
+    margin: 0 0 6px;
+    font-family: var(--cs-font-heading);
     font-weight: 700;
-    font-size: 2.2rem;
+    font-size: 22px;
     line-height: 1.15;
     letter-spacing: -0.01em;
   }
 
   .color-switch__overlay-text {
     margin: 0;
-    font-size: 1.5rem;
+    font-size: 15px;
     line-height: 1.45;
     letter-spacing: -0.01em;
     color: {{ section.settings.overlay_text_color | color_modify: 'alpha', 0.9 }};
@@ -161,7 +243,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       align-items: center;
-      column-gap: {{ section.settings.column_gap | divided_by: 10.0 }}rem;
+      column-gap: {{ section.settings.column_gap }}px;
     }
 
     .color-switch--img-left .color-switch__content {
@@ -176,7 +258,10 @@
       min-width: 0;
     }
 
-    .color-switch__heading {
+    /* The alignment setting stops at this breakpoint on purpose: from here the
+       section is a two-column grid and a centred header floating over the left
+       half reads as a mistake. Below 990px the setting is fully in charge. */
+    .color-switch__header {
       text-align: left;
     }
 
@@ -193,14 +278,22 @@
 </style>
 
 <div class="color-{{ section.settings.color_scheme }} gradient">
-  <div class="page-width section-{{ section.id }}-padding">
+  <div class="page-width color-switch__wrap section-{{ section.id }}-padding">
     <div
       class="color-switch color-switch-{{ section.id }} color-switch--img-{{ section.settings.image_position }}"
       data-color-switch
     >
       <div class="color-switch__content">
-        {%- if section.settings.heading != blank -%}
-          <h2 class="color-switch__heading{% unless section.settings.heading_size == 'custom' %} {{ section.settings.heading_size }}{% endunless %}">{{ section.settings.heading }}</h2>
+        {%- if section.settings.eyebrow != blank or section.settings.heading != blank -%}
+          <div class="color-switch__header">
+            {%- if section.settings.eyebrow != blank -%}
+              <p class="color-switch__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+            {%- endif -%}
+
+            {%- if section.settings.heading != blank -%}
+              <h2 class="color-switch__heading{% unless section.settings.heading_size == 'custom' %} {{ section.settings.heading_size }}{% endunless %}">{{ section.settings.heading }}</h2>
+            {%- endif -%}
+          </div>
         {%- endif -%}
 
         {%- if section.blocks.size > 0 -%}
@@ -330,6 +423,28 @@
     },
     {
       "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "info": "Small uppercase line above the heading. Leave empty to hide it."
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size",
+      "min": 9,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Eyebrow size",
+      "default": 11
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow color",
+      "default": "#634c61"
+    },
+    {
+      "type": "text",
       "id": "heading",
       "label": "Heading",
       "default": "When does it matter?"
@@ -368,6 +483,17 @@
       "id": "heading_color",
       "label": "Heading color",
       "default": "#25162f"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Header alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Centered" }
+      ],
+      "default": "left",
+      "info": "From 990px the header is always left-aligned: the section becomes a two-column grid there."
     },
     {
       "type": "header",
