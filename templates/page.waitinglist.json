@@ -667,14 +667,14 @@
         "q-1": {
           "type": "question",
           "settings": {
-            "question": "What is Energy Foundation?",
+            "question": "Wat is Energie Foundation?",
             "answer": "<p>Een dagelijkse drinkmix met creatine, elektrolyten, magnesium en B-vitaminen. Eén sachet meng je met koud water.</p>"
           }
         },
         "q-2": {
           "type": "question",
           "settings": {
-            "question": "Does it contain caffeine?",
+            "question": "Bevat Energy Foundation cafeïne?",
             "answer": "<p>Nee. Energy Foundation is cafeïnevrij.</p>"
           }
         },
