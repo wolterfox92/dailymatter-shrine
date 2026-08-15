@@ -142,26 +142,10 @@
             "wide": true,
             "alt_fallback": "Onderweg met sachet"
           }
-        },
-        "image-2": {
-          "type": "image",
-          "settings": {
-            "wide": false,
-            "alt_fallback": "Fles in tas met laptop of sportkleding"
-          }
-        },
-        "image-3": {
-          "type": "image",
-          "settings": {
-            "wide": false,
-            "alt_fallback": "Onderweg op de fiets met fles in de hand"
-          }
         }
       },
       "block_order": [
-        "image-1",
-        "image-2",
-        "image-3"
+        "image-1"
       ],
       "settings": {
         "eyebrow": "Everyday energy",
