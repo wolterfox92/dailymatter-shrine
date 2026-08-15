@@ -207,8 +207,9 @@
         "option_Wxck94": {
           "type": "option",
           "settings": {
-            "label": "Nights out",
-            "subheading": "Hydrateer en begin de volgende ochtend weer fris.",
+            "label": "Morning after",
+            "subheading": "Lange nacht gehad? Hydrateer en begin de volgende ochtend weer fris.",
+            "image": "shopify://shop_images/11d2b029-0b53-4b5d-95af-4e0f0cf221511.webp",
             "caption": ""
           }
         }
