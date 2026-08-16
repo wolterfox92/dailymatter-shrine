@@ -568,7 +568,7 @@ bc-sticky-cta {
   min-width: 100vw;
   gap: 18px;
   padding-right: 18px;
-  font-size: 15px;
+  font-size: var(--bc-ticker-text-size, 15px);
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.01em;
@@ -1943,7 +1943,7 @@ bc-sticky-cta {
   .bc-ticker__group {
     gap: 22px;
     padding-right: 22px;
-    font-size: 17px;
+    font-size: var(--bc-ticker-text-size-desktop, 17px);
   }
 
   /* ---- 3 · Recognition -------------------------------------- */

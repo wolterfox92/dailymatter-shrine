@@ -15,6 +15,10 @@
 {%- liquid
   assign s = section.settings
 
+  # Sections saved before the size settings existed have no stored value.
+  assign size_mobile = s.text_size_mobile | default: 15
+  assign size_desktop = s.text_size_desktop | default: 17
+
   assign item_count = 0
   assign char_count = 0
   for block in section.blocks
@@ -25,11 +29,13 @@
     endif
   endfor
 
-  # Width of one pass through the list, estimated from the copy: ~6px per
-  # character plus ~50px for each separator icon and its gaps. Deliberately on
-  # the low side — guessing too narrow only adds an off-screen repeat, guessing
-  # too wide brings the gap back. min-width on the group catches the rest.
-  assign list_width = char_count | times: 6
+  # Width of one pass through the list, estimated from the copy: a character of
+  # this bold face runs about 0.46× the font size, so 0.35× keeps the estimate
+  # deliberately on the low side. Each separator icon is a fixed 14px plus its
+  # gaps, so ~50px per item regardless of the type size. Guessing too narrow only
+  # adds an off-screen repeat; guessing too wide brings the gap back, and
+  # min-width on the group catches whatever is left.
+  assign list_width = char_count | times: size_desktop | times: 35 | divided_by: 100
   assign icon_width = item_count | times: 50
   assign list_width = list_width | plus: icon_width
 
@@ -65,6 +71,8 @@
     --bc-ticker-bg: {{ s.bg_color }};
     --bc-ticker-text: {{ s.text_color }};
     --bc-ticker-speed: {{ duration }}s;
+    --bc-ticker-text-size: {{ size_mobile }}px;
+    --bc-ticker-text-size-desktop: {{ size_desktop }}px;
   }
 {%- endstyle -%}
 
@@ -120,6 +128,27 @@
         { "value": "grain", "label": "Korrels" }
       ],
       "default": "bolt"
+    },
+    {
+      "type": "range",
+      "id": "text_size_mobile",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Tekstgrootte mobiel",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "text_size_desktop",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Tekstgrootte desktop",
+      "info": "Vanaf 950px breed. Het aantal herhalingen in de balk past zich automatisch aan.",
+      "default": 17
     },
     {
       "type": "color",
