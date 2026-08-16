@@ -139,6 +139,7 @@
         "image-1": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/ChatGPT_Image_Aug_16_2026_05_11_04_PM.webp",
             "wide": true,
             "alt_fallback": "Onderweg met sachet"
           }
