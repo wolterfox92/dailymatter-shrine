@@ -355,6 +355,7 @@
         "pillar-2",
         "pillar-3"
       ],
+      "disabled": true,
       "settings": {
         "eyebrow": "When it matters",
         "heading": "Built for more than one moment.",
@@ -683,8 +684,8 @@
         "perk_icon_bg_color": "#25162f",
         "perk_icon_color": "#cbff78",
         "perk_text_color": "#25162f",
-        "submit_bg_color": "#243511",
-        "submit_text_color": "#cbff78"
+        "submit_bg_color": "#CCFA78",
+        "submit_text_color": "#221B3B"
       }
     },
     "package": {
