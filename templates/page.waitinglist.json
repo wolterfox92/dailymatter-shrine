@@ -148,6 +148,34 @@
         "image-1"
       ],
       "settings": {
+        "eyebrow": "DE OORZAAK DIE JE MAKKELIJK MIST",
+        "heading": "Energie? Het begint bij een goede basis.",
+        "heading_size_min": 28,
+        "heading_size_max": 38,
+        "body": "<p>Werk, studie, sport, vrienden en alles wat daar tussendoor gebeurt. Goed voor jezelf zorgen helpt, maar wordt al snel nóg iets om bij te houden. Meerdere potten, losse scheppen en ingewikkelde routines passen niet altijd in het echte leven.</p>",
+        "lead": "<p>Daarom brengen we de dagelijkse basis voor energie, focus en fysieke prestaties samen in één sachet. </p>",
+        "bg_color": "#ffffff",
+        "eyebrow_color": "#634c61",
+        "heading_color": "#180223",
+        "body_color": "#52415a",
+        "lead_color": "#180223"
+      }
+    },
+    "custom_bc_recognition_YCdFLH": {
+      "type": "custom-bc-recognition",
+      "blocks": {
+        "image_gREGa7": {
+          "type": "image",
+          "settings": {
+            "wide": true,
+            "alt_fallback": "Onderweg met sachet"
+          }
+        }
+      },
+      "block_order": [
+        "image_gREGa7"
+      ],
+      "settings": {
         "eyebrow": "Everyday energy",
         "heading": "Drukke dagen kennen we allemaal",
         "heading_size_min": 28,
@@ -230,7 +258,7 @@
         "heading_color": "#25162f",
         "content_alignment": "left",
         "button_gap": 8,
-        "button_radius": 8,
+        "button_radius": 20,
         "button_active_background": "#cbff78",
         "button_active_text": "#25162f",
         "button_inactive_text": "#25162f",
@@ -876,6 +904,7 @@
     "hero",
     "ticker",
     "recognition",
+    "custom_bc_recognition_YCdFLH",
     "divider_DUptLE",
     "color_switch_gMJeaA",
     "solution",
