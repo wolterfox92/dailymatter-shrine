@@ -4,24 +4,67 @@
   copy is aria-hidden: it is the same words again, and screen readers should not
   read them twice. Under prefers-reduced-motion the animation stops and the copy
   is hidden entirely (see custom-bc.css).
+
+  One -50% cycle scrolls exactly one group, so a group narrower than the viewport
+  drags a blank tail in behind the last word — the word list is therefore
+  repeated inside each group until one group covers a desktop viewport. Only the
+  first pass carries the block attributes and stays readable; the repeats are
+  aria-hidden so a screen reader hears the list once.
 {%- endcomment -%}
 
 {%- liquid
   assign s = section.settings
 
   assign item_count = 0
+  assign char_count = 0
   for block in section.blocks
-    if block.type == 'item'
+    if block.type == 'item' and block.settings.text != blank
       assign item_count = item_count | plus: 1
+      assign text_size = block.settings.text | size
+      assign char_count = char_count | plus: text_size
     endif
   endfor
+
+  # Width of one pass through the list, estimated from the copy: ~6px per
+  # character plus ~50px for each separator icon and its gaps. Deliberately on
+  # the low side — guessing too narrow only adds an off-screen repeat, guessing
+  # too wide brings the gap back. min-width on the group catches the rest.
+  assign list_width = char_count | times: 6
+  assign icon_width = item_count | times: 50
+  assign list_width = list_width | plus: icon_width
+
+  assign repeats = 1
+  if list_width > 0
+    assign repeats = 1920 | divided_by: list_width | plus: 1
+  endif
+  if repeats > 6
+    assign repeats = 6
+  endif
+
+  # A cycle now covers `repeats` passes, so the duration scales with it and the
+  # words keep moving at the speed the merchant set per pass.
+  assign duration = s.speed | times: repeats
 -%}
+
+{%- comment -%}
+  One extra pass through the list. The wrapper is display: contents, so the words
+  still line up as direct flex children of the group; it exists so the repeats can
+  be hidden as a set under prefers-reduced-motion.
+{%- endcomment -%}
+{%- capture ticker_repeat -%}
+  {%- for block in section.blocks -%}
+    {%- if block.type == 'item' and block.settings.text != blank -%}
+      <span>{{ block.settings.text | escape }}</span>
+      {% render 'custom-bc-icon', icon: s.separator_icon, size: 14 %}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
 
 {%- style -%}
   #shopify-section-{{ section.id }} .bc-ticker {
     --bc-ticker-bg: {{ s.bg_color }};
     --bc-ticker-text: {{ s.text_color }};
-    --bc-ticker-speed: {{ s.speed }}s;
+    --bc-ticker-speed: {{ duration }}s;
   }
 {%- endstyle -%}
 
@@ -35,13 +78,16 @@
             {% render 'custom-bc-icon', icon: s.separator_icon, size: 14 %}
           {%- endif -%}
         {%- endfor -%}
+        {%- if repeats > 1 -%}
+          {%- assign filler_count = repeats | minus: 1 -%}
+          {%- for i in (1..filler_count) -%}
+            <span class="bc-ticker__repeat" aria-hidden="true">{{ ticker_repeat }}</span>
+          {%- endfor -%}
+        {%- endif -%}
       </div>
       <div class="bc-ticker__group" aria-hidden="true">
-        {%- for block in section.blocks -%}
-          {%- if block.type == 'item' and block.settings.text != blank -%}
-            <span>{{ block.settings.text | escape }}</span>
-            {% render 'custom-bc-icon', icon: s.separator_icon, size: 14 %}
-          {%- endif -%}
+        {%- for i in (1..repeats) -%}
+          <span class="bc-ticker__repeat">{{ ticker_repeat }}</span>
         {%- endfor -%}
       </div>
     </div>

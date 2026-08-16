@@ -559,6 +559,13 @@ bc-sticky-cta {
 .bc-ticker__group {
   display: flex;
   align-items: center;
+  /* Safety net for the repeat count the section estimates in Liquid: a group
+     narrower than the viewport would scroll a blank tail into view, so stretch
+     it to the viewport. space-around then spreads the words instead of leaving
+     a hole, and its half-unit at each edge joins into one full unit at the seam,
+     so the rhythm stays even. Both are inert once the group is wide enough. */
+  justify-content: space-around;
+  min-width: 100vw;
   gap: 18px;
   padding-right: 18px;
   font-size: 15px;
@@ -566,6 +573,12 @@ bc-sticky-cta {
   line-height: 1;
   letter-spacing: -0.01em;
   white-space: nowrap;
+}
+
+/* Repeated passes through the word list. contents keeps the words themselves as
+   the group's flex children, so gap and alignment are unaffected. */
+.bc-ticker__repeat {
+  display: contents;
 }
 
 @keyframes bc-tick {
@@ -585,6 +598,17 @@ bc-sticky-cta {
 
   .bc-ticker__track > [aria-hidden='true'] {
     display: none;
+  }
+
+  /* Standing still there is nothing to fill, so drop back to the list once at
+     its natural width. */
+  .bc-ticker__repeat {
+    display: none;
+  }
+
+  .bc-ticker__group {
+    justify-content: flex-start;
+    min-width: 0;
   }
 }
 
