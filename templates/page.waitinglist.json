@@ -595,6 +595,7 @@
         },
         "tag-1": {
           "type": "tag",
+          "disabled": true,
           "settings": {
             "icon": "key",
             "text": "Early access"
@@ -602,6 +603,7 @@
         },
         "tag-2": {
           "type": "tag",
+          "disabled": true,
           "settings": {
             "icon": "mark_email_read",
             "text": "First batch updates"
@@ -646,7 +648,7 @@
         "heading": "Be first in.",
         "heading_size_min": 36,
         "heading_size_max": 48,
-        "body": "<p>Energy Matters lanceert in drie smaken: Red Cherry, Peach-A-Licious en Tropical Pineapple. Meld je aan en krijg als eerste toegang zodra de founding batch beschikbaar is.</p>",
+        "body": "<p>Pak je voordeel, meld je aan en krijg als eerste toegang zodra de founding batch beschikbaar is. Met aanmelden plaats je uiteraard nog geen bestelling!</p>",
         "show_name": true,
         "name_label": "Voornaam",
         "name_placeholder": "Je voornaam",
