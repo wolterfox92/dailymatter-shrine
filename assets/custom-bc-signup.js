@@ -3,7 +3,8 @@
    Two Klaviyo client-side endpoints, both authenticated with the public API key
    (site ID) only:
    - POST /client/subscriptions  subscribes the email to the waitlist
-   - POST /client/profiles       writes the two survey answers as profile properties
+   - POST /client/profiles       writes the survey answers and the flavour choice
+                                 as profile properties
    Docs: https://developers.klaviyo.com/en/reference/create_client_subscription
          https://developers.klaviyo.com/en/reference/create_client_profile
 
@@ -21,6 +22,7 @@ class BcSignupForm extends HTMLElement {
   #status;
   #button;
   #done;
+  #flavour;
   #surveys = [];
   #email = '';
   #busy = false;
@@ -35,6 +37,7 @@ class BcSignupForm extends HTMLElement {
     this.#status = this.querySelector('[data-bc-status]');
     this.#button = this.querySelector('[data-bc-submit]');
     this.#done = this.querySelector('[data-bc-done]');
+    this.#flavour = this.querySelector('[data-bc-flavour]');
     this.#surveys = [...this.querySelectorAll('[data-bc-survey]')];
 
     this.#form.addEventListener('submit', this.#onSubmit);
@@ -87,6 +90,16 @@ class BcSignupForm extends HTMLElement {
       return;
     }
 
+    const flavour = String(data.get('flavour') || '').trim();
+    const flavourRequired = this.#flavour?.querySelector('input[required]');
+
+    if (flavourRequired && !flavour) {
+      this.#showError(this.#status?.dataset.flavourText);
+      this.#fail('flavour');
+      this.#flavour.querySelector('input')?.focus();
+      return;
+    }
+
     const { companyId, listId } = this.dataset;
     if (!companyId || !listId) {
       this.#showError(this.#status?.dataset.errorText);
@@ -122,6 +135,12 @@ class BcSignupForm extends HTMLElement {
       this.dispatchEvent(
         new CustomEvent('bc:subscribed', { bubbles: true, detail: { email, listId } })
       );
+
+      /* Deliberately after the thanks panel and not awaited: the subscription is
+         what counts, and the profile write travels the same proven path as the
+         survey answers. A flavour that never lands costs a data point, not a
+         signup. */
+      if (flavour) this.#writeProperty(this.#flavour?.dataset.property, flavour);
     } catch (error) {
       console.error('[custom-bc-signup]', error);
       this.#showError(this.#status?.dataset.errorText);
@@ -170,16 +189,18 @@ class BcSignupForm extends HTMLElement {
       other.setAttribute('aria-pressed', String(other === option));
     }
 
-    const property = survey.dataset.property;
-    const answer = option.value;
-
     survey.hidden = true;
     this.#advance(this.#surveys.indexOf(survey) + 1);
 
-    // Best effort: the signup already succeeded, so a failed property write is
-    // not worth interrupting the visitor for.
+    await this.#writeProperty(survey.dataset.property, option.value);
+  }
+
+  /* Write one custom property onto the profile that just subscribed. Best effort:
+     the signup already succeeded, so a failed write is not worth interrupting the
+     visitor for. */
+  async #writeProperty(property, value) {
     const { companyId } = this.dataset;
-    if (!companyId || !property || !this.#email) return;
+    if (!companyId || !property || !value || !this.#email) return;
 
     try {
       await fetch(`${KLAVIYO_PROFILE_URL}?company_id=${encodeURIComponent(companyId)}`, {
@@ -191,7 +212,7 @@ class BcSignupForm extends HTMLElement {
         body: JSON.stringify({
           data: {
             type: 'profile',
-            attributes: { email: this.#email, properties: { [property]: answer } },
+            attributes: { email: this.#email, properties: { [property]: value } },
           },
         }),
       });

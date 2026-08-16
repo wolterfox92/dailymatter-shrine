@@ -12,6 +12,9 @@
    Mobile-first. The design is a single 520px column by decision; the layout
    primitives below are deliberately kept in one place (--bc-col, .bc-inner,
    .bc-media) so a desktop layer can be added later without a rebuild.
+
+   That desktop layer now exists, at the bottom of this file behind one
+   breakpoint (950px). Everything above it is the mobile design, untouched.
    ============================================================ */
 
 .bc-page {
@@ -67,6 +70,9 @@
 
   /* ---- Layout ---- */
   --bc-col: 520px;
+  /* The desktop container. 1200px is the width the desktop design was drawn at;
+     it is a token so every section's inner wrapper lines up on one grid. */
+  --bc-col-wide: 1200px;
   --bc-gutter: 16px;
 
   /* Fonts are set by sections/custom-bc-page-style.liquid from its font_picker
@@ -110,6 +116,18 @@ bc-sticky-cta {
 
 .bc-inner {
   padding: 40px var(--bc-gutter) 44px;
+}
+
+/* Column wrappers for the desktop splits. `display: contents` means they draw no
+   box at all on mobile: the children stay direct participants of .bc-inner's
+   block flow, so the phone layout is byte-for-byte what it was before the
+   wrappers existed. The desktop layer turns them into real grid items.
+   Selector matching is unaffected by display:contents, so sibling rules like
+   `.bc-field + .bc-field` keep working across a wrapper. */
+.bc-split__body,
+.bc-split__aside,
+.bc-fieldrow {
+  display: contents;
 }
 
 .bc-eyebrow {
@@ -723,49 +741,138 @@ bc-sticky-cta {
 }
 
 /* ============================================================
-   7 · Flavour
+   7 · Flavours (horizontale scroller)
    ============================================================ */
 
-.bc-flavour__inner {
-  padding: 44px var(--bc-gutter) 48px;
+.bc-flavours__head {
+  padding: 44px var(--bc-gutter) 0;
 }
 
-.bc-flavour__tagline {
-  margin: 8px 0 0;
+.bc-flavours__note {
+  margin: 14px 0 0;
   font-size: 14px;
   font-weight: 700;
-  line-height: 1.4;
-  color: var(--bc-flavour-tagline, var(--bc-pink));
+  line-height: 1.45;
+  color: var(--bc-flavours-note, var(--bc-lime));
 }
 
-.bc-flavour__media {
+.bc-flavours__note > :first-child {
+  margin-top: 0;
+}
+
+.bc-flavours__note > :last-child {
+  margin-bottom: 0;
+}
+
+.bc-flavours__note a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
+
+/* De scroller is de focusbare laag: pijltjestoetsen scrollen hem, en dat is het
+   alternatief voor vegen. Vandaar tabindex + label in de Liquid, en een eigen
+   focusring hier — de kaarten zelf bevatten niets klikbaars. */
+.bc-flavours__scroller {
   margin-top: 22px;
-  aspect-ratio: 4 / 5;
-  border-radius: var(--bc-radius-xl);
+  padding: 0 var(--bc-gutter) 48px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--bc-gutter);
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
-.bc-taste {
-  margin-top: 22px;
-  padding: 20px;
-  border-radius: var(--bc-radius-lg);
-  background: rgba(248, 248, 237, 0.08);
+.bc-flavours__scroller::-webkit-scrollbar {
+  display: none;
 }
 
-.bc-taste__title {
+.bc-flavours__scroller:focus-visible {
+  outline: 2px solid var(--bc-flavours-note, var(--bc-lime));
+  outline-offset: -2px;
+}
+
+.bc-flavours__track {
+  --bc-flavours-gap: 14px;
+
+  display: flex;
+  gap: var(--bc-flavours-gap);
   margin: 0;
-  font-size: 10px;
+  padding: 0;
+  list-style: none;
+}
+
+/* Aan het eind van de scroll telt alleen de border box van de kaarten mee:
+   padding op de scroller en marge op de laatste kaart worden allebei genegeerd,
+   dus plakt de laatste kaart tegen de rand. Een echt element wél. De gap levert
+   al 14px; deze spacer vult aan tot een hele gutter. */
+.bc-flavours__track::after {
+  content: "";
+  flex: 0 0 calc(var(--bc-gutter) - var(--bc-flavours-gap));
+}
+
+/* 77% laat de volgende kaart net voorbij de rand piepen: de enige affordance
+   die zegt dat er meer smaken staan. */
+.bc-flavour-card {
+  display: flex;
+  flex: 0 0 77%;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--bc-radius-xl);
+  background: var(--bc-flavour-card-bg, rgba(248, 248, 237, 0.06));
+  scroll-snap-align: start;
+}
+
+.bc-flavour-card__media {
+  aspect-ratio: 1 / 1;
+}
+
+.bc-flavour-card__body {
+  padding: 16px 16px 20px;
+}
+
+.bc-flavour-card__name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-family: var(--bc-font-display);
+  font-size: 20px;
   font-weight: 800;
-  line-height: 1.2;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--bc-lime);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--bc-cream);
+}
+
+.bc-flavour-card__dot {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--bc-radius-pill);
+  background: var(--bc-flavour-accent, var(--bc-cherry));
+}
+
+.bc-flavour-card__tagline {
+  margin: 10px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--bc-flavour-tagline, var(--bc-lime));
+}
+
+.bc-flavour-card__text {
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  text-wrap: pretty;
+  color: var(--bc-body-color, var(--bc-cream-65));
 }
 
 .bc-taste__rows {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin: 14px 0 0;
+  gap: 10px;
+  margin: 16px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -949,7 +1056,10 @@ bc-sticky-cta {
   display: none;
 }
 
-.bc-field + .bc-field {
+.bc-field + .bc-field,
+/* The name/e-mail pair sits in a .bc-fieldrow wrapper for the desktop two-up, so
+   the field after it no longer has a .bc-field sibling to key off. */
+.bc-fieldrow + .bc-field {
   margin-top: 14px;
 }
 
@@ -994,6 +1104,92 @@ bc-sticky-cta {
   border-color: var(--bc-error);
 }
 
+/* ---- Smaakkeuze (radiogroep) -------------------------------- */
+
+.bc-pick {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.bc-pick__legend {
+  padding: 0;
+}
+
+.bc-pick__option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  margin-top: 8px;
+  padding: 13px 14px;
+  /* Altijd 2px, ook onzichtbaar: een rand die pas bij selectie ontstaat
+     verschuift de rij. */
+  border: 2px solid transparent;
+  border-radius: 14px;
+  background: var(--bc-cream);
+  color: var(--bc-ink);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  cursor: pointer;
+  transition: border-color var(--bc-dur-fast) var(--bc-ease), background var(--bc-dur-fast) var(--bc-ease);
+}
+
+.bc-pick__option:hover {
+  border-color: var(--bc-ink-30);
+}
+
+.bc-pick__option:has(.bc-pick__input:checked) {
+  border-color: var(--bc-ink);
+  background: var(--bc-paper);
+}
+
+.bc-pick__option:has(.bc-pick__input:focus-visible) {
+  outline: 3px solid var(--bc-ink);
+  outline-offset: 2px;
+}
+
+/* De radio blijft in de tabvolgorde en houdt zijn toetsenbordgedrag; alleen de
+   systeemtekening is weg. Nooit vervangen door display:none. */
+.bc-pick__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bc-pick__dot {
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--bc-radius-pill);
+  background: var(--bc-flavour-accent, var(--bc-cherry));
+}
+
+.bc-pick__name {
+  flex: 1 1 auto;
+}
+
+.bc-pick__check {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--bc-radius-pill);
+  background: var(--bc-ink);
+  color: var(--bc-cream);
+  opacity: 0;
+  transition: opacity var(--bc-dur-fast) var(--bc-ease);
+}
+
+.bc-pick__option:has(.bc-pick__input:checked) .bc-pick__check {
+  opacity: 1;
+}
+
 .bc-trap {
   position: absolute;
   width: 1px;
@@ -1020,6 +1216,15 @@ bc-sticky-cta {
 
 .bc-signup__submit {
   margin-top: 16px;
+}
+
+/* De verzendknop is de enige conversieknop op de pagina en krijgt daarom een
+   eigen kleurpaar uit de sectie-instellingen, los van .bc-btn--dark. De focusring
+   blijft de ink-ring van .bc-btn: die ligt buiten de knop, op de lichte
+   formulierkaart, en moet dus tegen de kaart contrasteren — niet tegen de knop. */
+.bc-signup__submit .bc-btn {
+  background: var(--bc-submit-bg, var(--bc-ink));
+  color: var(--bc-submit-color, var(--bc-lime));
 }
 
 .bc-signup__fine {
@@ -1147,6 +1352,20 @@ bc-sticky-cta {
 .bc-survey__option[aria-pressed='true'] {
   border: 2px solid var(--bc-ink);
   background: var(--bc-cream);
+}
+
+/* Smaken staan onder elkaar met hun kleurstip: het zijn namen, geen korte
+   antwoorden die naast elkaar passen. */
+.bc-survey__options--flavour {
+  grid-template-columns: 1fr;
+}
+
+.bc-survey__option--flavour {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  text-align: left;
 }
 
 .bc-thanks__done {
@@ -1490,6 +1709,13 @@ bc-sticky-cta {
   padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
 }
 
+/* The bar is a single full-width button on a phone: a second line of copy would
+   eat the viewport it is already borrowing. On desktop there is room next to the
+   button, and an unlabelled bar reads as an orphaned control. */
+.bc-sticky__copy {
+  display: none;
+}
+
 .bc-sticky .bc-btn {
   min-height: 54px;
 }
@@ -1501,4 +1727,655 @@ bc-sticky-cta {
   .bc-survey__option {
     transition: none;
   }
+}
+
+/* ============================================================
+   Desktop layer
+   Source: Claude Design, "Energy Matters Waitlist" desktop bundle.
+
+   ONE breakpoint, 950px. Below it the page is the mobile design: a 520px column
+   centred on white, which is what a phone and a portrait tablet both get. At
+   950px the column cap drops away, every section's inner wrapper picks up the
+   1200px container, and the sections that were built as one stack become the
+   two-column layouts from the desktop design.
+
+   950px rather than something lower because that is where the desktop design's
+   own columns stop being cramped: its text/media pair is 440px + 420px + gap, so
+   anything narrower would wrap back to a stack anyway. Landscape tablets and up
+   get desktop; portrait tablets keep the phone layout, deliberately.
+
+   Rules here only ever ADD to the mobile design. Nothing above this comment is
+   overridden except where the desktop layout genuinely demands it, and every
+   such override is grouped under the section it belongs to.
+   ============================================================ */
+
+@media (min-width: 950px) {
+  /* ---- Page shell ------------------------------------------- */
+
+  .bc-page {
+    /* Gutters scale with the viewport, matching the design's
+       clamp(20px, 5vw, 64px) but with a floor that keeps the two columns clear
+       of the edge at the breakpoint itself. */
+    --bc-gutter: clamp(32px, 5vw, 64px);
+
+    max-width: none;
+    font-size: 16px;
+  }
+
+  /* Every section is full-bleed background + centred content. One list so the
+     containers can never drift apart. */
+  .bc-inner,
+  .bc-header__inner,
+  .bc-hero__inner,
+  .bc-flavours__head,
+  .bc-flavours__scroller,
+  .bc-signup__inner,
+  .bc-final__inner,
+  .bc-footer__inner,
+  .bc-sticky__inner,
+  .bc-divider {
+    max-width: var(--bc-col-wide);
+    margin-inline: auto;
+  }
+
+  .bc-inner {
+    padding-block: clamp(56px, 6vw, 88px);
+  }
+
+  /* ---- Typography ------------------------------------------- */
+
+  /* The section settings give a mobile minimum and maximum. Above 950px the
+     mobile clamp has long since resolved to its maximum, so that maximum is the
+     desktop floor and the type grows from there with the viewport. The 1.32
+     ceiling is the ratio the desktop design uses throughout (50 -> 66, 38 -> 50,
+     48 -> 64), so a merchant who changes the mobile size still gets a
+     proportional desktop size and never has to set two numbers. */
+  .bc-h1 {
+    font-size: clamp(
+      var(--bc-h1-size, 50px),
+      4.6vw,
+      calc(var(--bc-h1-size, 50px) * 1.32)
+    );
+  }
+
+  .bc-h2 {
+    font-size: clamp(
+      var(--bc-h2-size, 38px),
+      4vw,
+      calc(var(--bc-h2-size, 38px) * 1.32)
+    );
+  }
+
+  .bc-eyebrow {
+    font-size: 12px;
+  }
+
+  .bc-body {
+    margin-top: 16px;
+    font-size: 17px;
+  }
+
+  /* ---- Split primitive -------------------------------------- */
+
+  .bc-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: clamp(32px, 4vw, 56px);
+    /* Vertical rhythm inside a column comes from the elements' own margins, as
+       it does on mobile. A row gap would double it. */
+    row-gap: 0;
+    align-items: center;
+  }
+
+  .bc-split__body,
+  .bc-split__aside {
+    display: block;
+    min-width: 0;
+  }
+
+  /* Long-form copy never runs the full half-column: ~56 characters is the
+     comfortable measure at 17px. */
+  .bc-split__body .bc-body {
+    max-width: 56ch;
+  }
+
+  /* ---- Announcement + header -------------------------------- */
+
+  .bc-announce {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+
+  .bc-header__inner {
+    padding-block: 12px;
+  }
+
+  .bc-wordmark {
+    font-size: 19px;
+  }
+
+  .bc-btn--sm {
+    padding: 13px 20px;
+    font-size: 13.5px;
+  }
+
+  /* ---- 1 · Hero --------------------------------------------- */
+
+  .bc-hero__inner {
+    padding-block: clamp(40px, 5vw, 64px);
+  }
+
+  .bc-hero .bc-body {
+    max-width: 52ch;
+  }
+
+  /* Full-width was a thumb decision. At this width it would be a 500px lozenge. */
+  .bc-hero .bc-btn--full,
+  .bc-final .bc-btn--full {
+    width: auto;
+  }
+
+  .bc-hero__cta {
+    margin-top: 26px;
+  }
+
+  .bc-hero__note,
+  .bc-hero__link {
+    text-align: left;
+  }
+
+  .bc-hero__note {
+    font-size: 13.5px;
+  }
+
+  /* Two fixed columns is a phone compromise; at this width the chips read as one
+     row of tags. */
+  .bc-chips {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 22px;
+  }
+
+  /* On mobile the hero image bleeds into the bottom edge of the section, hence
+     the two square corners. In a column it is a card again. */
+  .bc-hero__media {
+    margin-top: 0;
+    border-radius: 32px;
+  }
+
+  .bc-media__tag {
+    bottom: 14px;
+    left: 14px;
+    padding: 8px 14px;
+    font-size: 12.5px;
+  }
+
+  /* ---- 2 · Ticker ------------------------------------------- */
+
+  .bc-ticker {
+    padding: 14px 0;
+  }
+
+  .bc-ticker__group {
+    gap: 22px;
+    padding-right: 22px;
+    font-size: 17px;
+  }
+
+  /* ---- 3 · Recognition -------------------------------------- */
+
+  .bc-collage {
+    margin-top: 0;
+    gap: 12px;
+  }
+
+  /* ---- 4 · Solution & 5 · Pillars --------------------------- */
+
+  /* Both sections lead with a heading block over a card row. The heading keeps a
+     readable measure while the cards use the full container. */
+  .bc-solution .bc-inner > .bc-eyebrow,
+  .bc-solution .bc-inner > .bc-h2,
+  .bc-solution .bc-inner > .bc-body,
+  .bc-pillars .bc-inner > .bc-eyebrow,
+  .bc-pillars .bc-inner > .bc-h2 {
+    max-width: 640px;
+  }
+
+  .bc-cards {
+    display: grid;
+    /* auto-fit rather than a fixed 3: the block count is a merchant decision. */
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 36px;
+  }
+
+  .bc-card__media {
+    aspect-ratio: 16 / 10;
+  }
+
+  .bc-card__body {
+    padding: 20px 24px 24px;
+  }
+
+  .bc-card__title {
+    font-size: 22px;
+  }
+
+  .bc-card__text,
+  .bc-pillar__text {
+    font-size: 15px;
+  }
+
+  .bc-pillar__title {
+    font-size: 24px;
+  }
+
+  .bc-pillar .bc-card__body {
+    padding: 20px 24px 24px;
+  }
+
+  /* ---- 6 · Ingredients -------------------------------------- */
+
+  /* Three grid children, not two: the claims box belongs under the intro on
+     desktop but must stay below the accordion list on mobile, so it is placed
+     rather than wrapped. */
+  .bc-ingredients .bc-inner {
+    /* The accordion spans both rows and is by far the tallest child. A flexible
+       second row takes it out of the intrinsic sizing of the first (grid skips
+       intrinsic contributions from items spanning a flexible track), so the
+       claims box sits directly under the intro instead of being pushed down by
+       half the accordion's height. */
+    grid-template-rows: auto 1fr;
+    align-items: start;
+  }
+
+  .bc-ingredients .bc-split__body {
+    grid-column: 1;
+    grid-row: 1;
+    max-width: 460px;
+  }
+
+  .bc-ingredients .bc-claims {
+    grid-column: 1;
+    grid-row: 2;
+    max-width: 460px;
+    margin-top: 24px;
+    padding: 16px 18px;
+  }
+
+  .bc-ingredients .bc-split__aside {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+
+  .bc-ingredients__list {
+    margin-top: 0;
+  }
+
+  .bc-ingredient {
+    padding: 0 18px;
+  }
+
+  .bc-ingredient > summary {
+    padding: 16px 0;
+  }
+
+  .bc-ingredient__badge {
+    width: 40px;
+    height: 40px;
+  }
+
+  .bc-ingredient__name {
+    font-size: 16px;
+  }
+
+  .bc-ingredient__text {
+    padding: 0 0 16px 54px;
+    font-size: 14.5px;
+  }
+
+  /* ---- 7 · Flavours ----------------------------------------- */
+
+  /* The note moves alongside the heading and baselines with it. Three text rows
+     at most (eyebrow, heading, body), so the span is exact, not a guess. */
+  .bc-flavours__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 32px;
+    row-gap: 0;
+    align-items: end;
+    padding-block: clamp(56px, 6vw, 88px) 0;
+  }
+
+  .bc-flavours__head > * {
+    grid-column: 1;
+    max-width: 620px;
+  }
+
+  .bc-flavours__note {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    align-self: end;
+    max-width: 300px;
+    margin-top: 0;
+    font-size: 15px;
+  }
+
+  /* All three cards fit: the scroller stops scrolling and becomes a grid. The
+     region keeps its label and tab stop — harmless, and it is still the scroll
+     container on the way back down to mobile. */
+  .bc-flavours__scroller {
+    margin-top: 36px;
+    padding: 0 var(--bc-gutter) clamp(56px, 6vw, 88px);
+    overflow-x: visible;
+    scroll-snap-type: none;
+  }
+
+  .bc-flavours__track {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .bc-flavours__track::after {
+    content: none;
+  }
+
+  .bc-flavour-card {
+    flex: none;
+  }
+
+  .bc-flavour-card__body {
+    padding: 18px 20px 22px;
+  }
+
+  .bc-flavour-card__name {
+    font-size: 22px;
+  }
+
+  /* ---- 8 · Daily rhythm ------------------------------------- */
+
+  .bc-week {
+    margin-top: 0;
+    gap: 8px;
+  }
+
+  .bc-week__day {
+    padding: 14px 4px;
+    border-radius: 14px;
+  }
+
+  .bc-week__check {
+    width: 26px;
+    height: 26px;
+  }
+
+  .bc-week__note {
+    font-size: 14px;
+  }
+
+  /* ---- 9 · Story -------------------------------------------- */
+
+  /* Images left of the copy, per the desktop design. They carry no interactive
+     content, so leading with them visually costs the reading order nothing. */
+  .bc-story .bc-split__aside {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .bc-story .bc-split__body {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .bc-story__media {
+    margin-top: 0;
+    gap: 12px;
+  }
+
+  /* The staggered pair is the design's; it stops the two portraits reading as
+     one split image. */
+  .bc-story__item:nth-child(2) {
+    margin-top: 28px;
+  }
+
+  /* ---- 10 · Signup ------------------------------------------ */
+
+  .bc-signup__inner {
+    padding-block: clamp(56px, 6vw, 88px);
+    align-items: start;
+  }
+
+  .bc-signup .bc-body,
+  .bc-perks {
+    max-width: 480px;
+  }
+
+  .bc-perks {
+    margin-top: 24px;
+    gap: 10px;
+  }
+
+  .bc-perk {
+    padding: 14px 16px;
+  }
+
+  .bc-perk__icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  /* Two equal columns is a phone compromise. With room to spare the tags size to
+     their own text, like every other chip on the page. */
+  .bc-signup__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 0;
+  }
+
+  /* The form is the point of the page: it hugs the right edge of the container
+     at the width it was designed for rather than stretching to the column. */
+  .bc-signup .bc-split__aside {
+    justify-self: end;
+    width: 100%;
+    max-width: 520px;
+  }
+
+  .bc-signup__panel {
+    margin-top: 0;
+    padding: 26px;
+  }
+
+  .bc-fieldrow {
+    display: flex;
+    gap: 12px;
+  }
+
+  .bc-fieldrow > .bc-field {
+    flex: 1 1 180px;
+    min-width: 0;
+  }
+
+  .bc-fieldrow > .bc-field + .bc-field {
+    margin-top: 0;
+  }
+
+  .bc-thanks__title {
+    font-size: 22px;
+  }
+
+  /* ---- 11 · Package ----------------------------------------- */
+
+  /* Media and body are already the card's two children, so the card itself
+     becomes the grid — no wrapper needed. */
+  .bc-package {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    margin-top: 36px;
+    border-radius: 32px;
+  }
+
+  /* As a stretched grid item the media takes its height from the body column;
+     the ratio would fight that, and a short body would leave a stamp-sized
+     image. */
+  .bc-package__media {
+    aspect-ratio: auto;
+    min-height: 380px;
+  }
+
+  .bc-package__flag {
+    top: 16px;
+    left: 16px;
+  }
+
+  .bc-package__body {
+    padding: clamp(28px, 3vw, 40px);
+  }
+
+  .bc-package__title {
+    font-size: 24px;
+  }
+
+  .bc-package__item {
+    font-size: 15px;
+  }
+
+  .bc-package__mark {
+    width: 24px;
+    height: 24px;
+  }
+
+  .bc-package__fact dd {
+    font-size: 28px;
+  }
+
+  /* ---- 12 · FAQ --------------------------------------------- */
+
+  /* A question list is one column at any width; the design narrows the container
+     instead of stretching the rows. */
+  .bc-faq .bc-inner {
+    max-width: 880px;
+  }
+
+  .bc-faq__list {
+    margin-top: 24px;
+  }
+
+  .bc-faq__item > summary {
+    padding: 18px 0;
+  }
+
+  .bc-faq__q {
+    font-size: 16px;
+  }
+
+  .bc-faq__a {
+    padding-bottom: 18px;
+    font-size: 15px;
+  }
+
+  /* ---- 13 · Final CTA --------------------------------------- */
+
+  .bc-final__inner {
+    padding-block: clamp(56px, 6vw, 88px);
+  }
+
+  .bc-final__media {
+    border-radius: 32px;
+  }
+
+  .bc-final .bc-h2 {
+    margin-top: 0;
+  }
+
+  .bc-final__cta {
+    margin-top: 24px;
+  }
+
+  /* ---- Footer ----------------------------------------------- */
+
+  /* Wordmark and tagline stack on the left, links in the middle, the legal block
+     on the right — placed rather than wrapped, four children is not worth a
+     wrapper. */
+  .bc-footer__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 0.8fr) minmax(0, 1.3fr);
+    column-gap: 32px;
+    row-gap: 0;
+    align-items: start;
+    padding-block: 44px 120px;
+  }
+
+  .bc-footer .bc-wordmark {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 18px;
+  }
+
+  .bc-footer__tagline {
+    grid-column: 1;
+    grid-row: 2;
+    margin-top: 12px;
+    font-size: 13px;
+  }
+
+  .bc-footer__nav {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    margin-top: 0;
+  }
+
+  .bc-footer__links {
+    gap: 0 16px;
+  }
+
+  .bc-footer__links a {
+    font-size: 13px;
+  }
+
+  .bc-footer__legal {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    margin-top: 0;
+    font-size: 12px;
+  }
+
+  /* ---- Sticky CTA ------------------------------------------- */
+
+  .bc-sticky__inner {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 12px var(--bc-gutter) calc(12px + env(safe-area-inset-bottom));
+  }
+
+  .bc-sticky__copy {
+    display: block;
+    min-width: 0;
+  }
+
+  .bc-sticky__title {
+    display: block;
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--bc-ink);
+  }
+
+  .bc-sticky__sub {
+    display: block;
+    margin-top: 2px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--bc-grape);
+  }
+
+  .bc-sticky .bc-btn--full {
+    width: auto;
+    min-width: 240px;
+    margin-left: auto;
+  }
+
 }

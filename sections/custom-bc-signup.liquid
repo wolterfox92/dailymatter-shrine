@@ -22,17 +22,31 @@
 
   assign perk_count = 0
   assign tag_count = 0
+  assign flavour_count = 0
   for block in section.blocks
     case block.type
       when 'perk'
         assign perk_count = perk_count | plus: 1
       when 'tag'
         assign tag_count = tag_count | plus: 1
+      when 'flavour'
+        assign flavour_count = flavour_count | plus: 1
     endcase
   endfor
 
   assign q1_options = s.q1_options | split: ','
   assign q2_options = s.q2_options | split: ','
+
+  comment
+    De smaakvraag staat óf in het formulier (vóór de knop, zoals het ontwerp) óf
+    na de aanmelding als extra enquêtevraag. Beide schrijven naar hetzelfde
+    Klaviyo-profielveld; de eerste kost een klik vóór de conversie, de tweede
+    niets. Zonder smaakblokken is er niets te kiezen.
+  endcomment
+  assign show_flavour = false
+  if s.flavour_enabled and flavour_count > 0 and s.flavour_question != blank
+    assign show_flavour = true
+  endif
 -%}
 
 {%- style -%}
@@ -41,6 +55,8 @@
     --bc-eyebrow-color: {{ s.eyebrow_color }};
     --bc-heading-color: {{ s.heading_color }};
     --bc-body-color: {{ s.body_color }};
+    --bc-submit-bg: {{ s.submit_bg_color }};
+    --bc-submit-color: {{ s.submit_text_color }};
     --bc-h2-size: clamp({{ s.heading_size_min }}px, 10vw, {{ s.heading_size_max }}px);
   }
 
@@ -55,223 +71,304 @@
   }
 {%- endstyle -%}
 
+{%- comment -%}
+  The .bc-split__body / __aside wrappers are transparent on mobile
+  (display: contents, see custom-bc.css) and become the two desktop columns:
+  the offer on the left, the form on the right.
+{%- endcomment -%}
 <section class="bc-signup" id="bc-signup">
-  <div class="bc-signup__inner">
-    {%- if request.design_mode and is_configured == false -%}
-      <p class="bc-signup__error">
-        Waitlist nog niet gekoppeld: vul de Klaviyo public API key (site ID) en het
-        lijst-ID in bij de instellingen van deze sectie. Zonder die twee kan het
-        formulier geen aanmeldingen versturen.
-      </p>
-    {%- endif -%}
+  <div class="bc-signup__inner bc-split">
+    <div class="bc-split__body">
+      {%- if request.design_mode and is_configured == false -%}
+        <p class="bc-signup__error">
+          Waitlist nog niet gekoppeld: vul de Klaviyo public API key (site ID) en het
+          lijst-ID in bij de instellingen van deze sectie. Zonder die twee kan het
+          formulier geen aanmeldingen versturen.
+        </p>
+      {%- endif -%}
 
-    {%- if s.eyebrow != blank -%}
-      <p class="bc-eyebrow">{{ s.eyebrow | escape }}</p>
-    {%- endif -%}
+      {%- if s.eyebrow != blank -%}
+        <p class="bc-eyebrow">{{ s.eyebrow | escape }}</p>
+      {%- endif -%}
 
-    {%- if s.heading != blank -%}
-      <h2 class="bc-h2">{{ s.heading | escape }}</h2>
-    {%- endif -%}
+      {%- if s.heading != blank -%}
+        <h2 class="bc-h2">{{ s.heading | escape }}</h2>
+      {%- endif -%}
 
-    {%- if s.body != blank -%}
-      <div class="bc-body">{{ s.body }}</div>
-    {%- endif -%}
+      {%- if s.body != blank -%}
+        <div class="bc-body">{{ s.body }}</div>
+      {%- endif -%}
 
-    {%- if perk_count > 0 or tag_count > 0 -%}
-      <ul class="bc-perks" role="list">
-        {%- for block in section.blocks -%}
-          {%- if block.type == 'perk' and block.settings.title != blank -%}
-            <li class="bc-perk" {{ block.shopify_attributes }}>
-              <span class="bc-perk__icon">
-                {% render 'custom-bc-icon', icon: block.settings.icon, size: 17 %}
-              </span>
-              <span>
-                <span class="bc-perk__title">{{ block.settings.title | escape }}</span>
-                {%- if block.settings.subtitle != blank -%}
-                  <span class="bc-perk__sub">{{ block.settings.subtitle | escape }}</span>
-                {%- endif -%}
-              </span>
+      {%- if perk_count > 0 or tag_count > 0 -%}
+        <ul class="bc-perks" role="list">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'perk' and block.settings.title != blank -%}
+              <li class="bc-perk" {{ block.shopify_attributes }}>
+                <span class="bc-perk__icon">
+                  {% render 'custom-bc-icon', icon: block.settings.icon, size: 17 %}
+                </span>
+                <span>
+                  <span class="bc-perk__title">{{ block.settings.title | escape }}</span>
+                  {%- if block.settings.subtitle != blank -%}
+                    <span class="bc-perk__sub">{{ block.settings.subtitle | escape }}</span>
+                  {%- endif -%}
+                </span>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- if tag_count > 0 -%}
+            <li>
+              <ul class="bc-signup__tags" role="list">
+                {%- for block in section.blocks -%}
+                  {%- if block.type == 'tag' and block.settings.text != blank -%}
+                    <li class="bc-chip" {{ block.shopify_attributes }}>
+                      {% render 'custom-bc-icon', icon: block.settings.icon, size: 15 %}
+                      {{ block.settings.text | escape }}
+                    </li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
             </li>
           {%- endif -%}
-        {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
 
-        {%- if tag_count > 0 -%}
-          <li>
-            <ul class="bc-signup__tags" role="list">
-              {%- for block in section.blocks -%}
-                {%- if block.type == 'tag' and block.settings.text != blank -%}
-                  <li class="bc-chip" {{ block.shopify_attributes }}>
-                    {% render 'custom-bc-icon', icon: block.settings.icon, size: 15 %}
-                    {{ block.settings.text | escape }}
-                  </li>
-                {%- endif -%}
-              {%- endfor -%}
-            </ul>
-          </li>
-        {%- endif -%}
-      </ul>
-    {%- endif -%}
+    <div class="bc-split__aside">
+      <bc-signup-form
+        data-company-id="{{ s.klaviyo_public_key | escape }}"
+        data-list-id="{{ s.klaviyo_list_id | escape }}"
+        data-custom-source="{{ s.klaviyo_custom_source | escape }}"
+        data-success-title="{{ s.success_title | escape }}"
+        data-success-title-named="{{ s.success_title_named | escape }}"
+      >
+        <div class="bc-signup__panel" data-bc-panel>
+          <form novalidate data-bc-form>
+            {%- comment -%}
+              Transparent on mobile, where the two fields stack; a flex row from
+              950px up, matching the desktop design.
+            {%- endcomment -%}
+            <div class="bc-fieldrow">
+              {%- if s.show_name -%}
+                <div class="bc-field">
+                  <label class="bc-label" for="BcName-{{ section.id }}">{{ s.name_label | escape }}</label>
+                  <input
+                    class="bc-input"
+                    id="BcName-{{ section.id }}"
+                    type="text"
+                    name="first_name"
+                    autocomplete="given-name"
+                    placeholder="{{ s.name_placeholder | escape }}"
+                  >
+                </div>
+              {%- endif -%}
 
-    <bc-signup-form
-      data-company-id="{{ s.klaviyo_public_key | escape }}"
-      data-list-id="{{ s.klaviyo_list_id | escape }}"
-      data-custom-source="{{ s.klaviyo_custom_source | escape }}"
-      data-success-title="{{ s.success_title | escape }}"
-      data-success-title-named="{{ s.success_title_named | escape }}"
-    >
-      <div class="bc-signup__panel" data-bc-panel>
-        <form novalidate data-bc-form>
-          {%- if s.show_name -%}
-            <div class="bc-field">
-              <label class="bc-label" for="BcName-{{ section.id }}">{{ s.name_label | escape }}</label>
-              <input
-                class="bc-input"
-                id="BcName-{{ section.id }}"
-                type="text"
-                name="first_name"
-                autocomplete="given-name"
-                placeholder="{{ s.name_placeholder | escape }}"
-              >
-            </div>
-          {%- endif -%}
-
-          <div class="bc-field">
-            <label class="bc-label" for="BcEmail-{{ section.id }}">{{ s.email_label | escape }}</label>
-            <input
-              class="bc-input"
-              id="BcEmail-{{ section.id }}"
-              type="email"
-              name="email"
-              autocomplete="email"
-              inputmode="email"
-              spellcheck="false"
-              autocapitalize="off"
-              required
-              placeholder="{{ s.email_placeholder | escape }}"
-              aria-describedby="BcStatus-{{ section.id }}"
-            >
-          </div>
-
-          {%- comment -%}
-            Honeypot. Off-screen and out of the tab order: bots fill it, people
-            don't. A filled value makes the JS fake a success and send nothing.
-          {%- endcomment -%}
-          <div class="bc-trap" aria-hidden="true">
-            <label for="BcCompany-{{ section.id }}">Bedrijf</label>
-            <input id="BcCompany-{{ section.id }}" type="text" name="company" tabindex="-1" autocomplete="off">
-          </div>
-
-          {%- if s.show_consent -%}
-            <div class="bc-signup__consent">
-              <input
-                class="bc-signup__checkbox"
-                id="BcConsent-{{ section.id }}"
-                type="checkbox"
-                name="consent"
-                {% if s.consent_required %}
+              <div class="bc-field">
+                <label class="bc-label" for="BcEmail-{{ section.id }}">{{ s.email_label | escape }}</label>
+                <input
+                  class="bc-input"
+                  id="BcEmail-{{ section.id }}"
+                  type="email"
+                  name="email"
+                  autocomplete="email"
+                  inputmode="email"
+                  spellcheck="false"
+                  autocapitalize="off"
                   required
-                {% endif %}
-              >
-              <label class="bc-signup__consent-label" for="BcConsent-{{ section.id }}">
-                {{ s.consent_label | escape }}
-              </label>
+                  placeholder="{{ s.email_placeholder | escape }}"
+                  aria-describedby="BcStatus-{{ section.id }}"
+                >
+              </div>
             </div>
-          {%- endif -%}
 
-          <p
-            class="bc-signup__error"
-            id="BcStatus-{{ section.id }}"
-            role="status"
-            aria-live="polite"
-            data-bc-status
-            data-error-text="{{ s.error_text | escape }}"
-            data-invalid-text="{{ s.invalid_email_text | escape }}"
-            data-consent-text="{{ s.consent_error_text | escape }}"
-          ></p>
+            {%- if show_flavour and s.flavour_placement == 'form' -%}
+              {%- comment -%}
+                Radiogroep, geen knoppenrij: één keuze uit een vaste lijst is
+                precies wat radio's zijn. Pijltjestoetsen werken daardoor vanzelf
+                en de keuze reist mee in de FormData. Geen vooraf aangevinkte
+                optie — dat zou de inventarisatie naar de eerste smaak trekken.
+              {%- endcomment -%}
+              <fieldset
+                class="bc-field bc-pick"
+                data-bc-flavour
+                data-property="{{ s.flavour_property | escape }}"
+              >
+                <legend class="bc-label bc-pick__legend">{{ s.flavour_question | escape }}</legend>
 
-          <div class="bc-signup__submit">
-            <button class="bc-btn bc-btn--dark bc-btn--full" type="submit" data-bc-submit>
-              {{- s.button_label | escape -}}
-              {% render 'custom-bc-icon', icon: 'arrow_forward', size: 22 %}
-            </button>
-          </div>
+                {%- for block in section.blocks -%}
+                  {%- if block.type == 'flavour' and block.settings.name != blank -%}
+                    <label
+                      class="bc-pick__option"
+                      style="--bc-flavour-accent: {{ block.settings.accent_color }};"
+                      {{ block.shopify_attributes }}
+                    >
+                      <input
+                        class="bc-pick__input"
+                        type="radio"
+                        name="flavour"
+                        value="{{ block.settings.name | escape }}"
+                        {% if s.flavour_required %}
+                          required
+                        {% endif %}
+                      >
+                      <span class="bc-pick__dot" aria-hidden="true"></span>
+                      <span class="bc-pick__name">{{ block.settings.name | escape }}</span>
+                      <span class="bc-pick__check" aria-hidden="true">
+                        {% render 'custom-bc-icon', icon: 'check', size: 14 %}
+                      </span>
+                    </label>
+                  {%- endif -%}
+                {%- endfor -%}
+              </fieldset>
+            {%- endif -%}
 
-          {%- if s.fine_print != blank -%}
-            <div class="bc-signup__fine">{{ s.fine_print }}</div>
-          {%- endif -%}
-        </form>
-      </div>
+            {%- comment -%}
+              Honeypot. Off-screen and out of the tab order: bots fill it, people
+              don't. A filled value makes the JS fake a success and send nothing.
+            {%- endcomment -%}
+            <div class="bc-trap" aria-hidden="true">
+              <label for="BcCompany-{{ section.id }}">Bedrijf</label>
+              <input id="BcCompany-{{ section.id }}" type="text" name="company" tabindex="-1" autocomplete="off">
+            </div>
 
-      <div class="bc-signup__panel bc-thanks" data-bc-thanks hidden>
-        <div class="bc-thanks__head">
-          <span class="bc-thanks__mark">
-            {% render 'custom-bc-icon', icon: 'check', size: 22 %}
-          </span>
-          {%- comment -%}
-            custom-bc-signup.js writes the visitor's first name into this heading.
-            That makes it page text, and Clarity's default masking only covers form
-            fields, numbers and email addresses — so without this attribute the name
-            is readable in every session replay.
-          {%- endcomment -%}
-          <h3
-            class="bc-thanks__title"
-            tabindex="-1"
-            data-bc-thanks-title
-            data-clarity-mask="true"
-          >
-            {{- s.success_title | escape -}}
-          </h3>
+            {%- if s.show_consent -%}
+              <div class="bc-signup__consent">
+                <input
+                  class="bc-signup__checkbox"
+                  id="BcConsent-{{ section.id }}"
+                  type="checkbox"
+                  name="consent"
+                  {% if s.consent_required %}
+                    required
+                  {% endif %}
+                >
+                <label class="bc-signup__consent-label" for="BcConsent-{{ section.id }}">
+                  {{ s.consent_label | escape }}
+                </label>
+              </div>
+            {%- endif -%}
+
+            <p
+              class="bc-signup__error"
+              id="BcStatus-{{ section.id }}"
+              role="status"
+              aria-live="polite"
+              data-bc-status
+              data-error-text="{{ s.error_text | escape }}"
+              data-invalid-text="{{ s.invalid_email_text | escape }}"
+              data-consent-text="{{ s.consent_error_text | escape }}"
+              data-flavour-text="{{ s.flavour_error_text | escape }}"
+            ></p>
+
+            <div class="bc-signup__submit">
+              <button class="bc-btn bc-btn--full" type="submit" data-bc-submit>
+                {{- s.button_label | escape -}}
+                {% render 'custom-bc-icon', icon: 'arrow_forward', size: 22 %}
+              </button>
+            </div>
+
+            {%- if s.fine_print != blank -%}
+              <div class="bc-signup__fine">{{ s.fine_print }}</div>
+            {%- endif -%}
+          </form>
         </div>
 
-        {%- if s.q1_enabled and s.q1_question != blank and q1_options.size > 0 -%}
-          <fieldset class="bc-survey" data-bc-survey data-property="{{ s.q1_property | escape }}" hidden>
-            <legend class="bc-survey__legend">{{ s.q1_question | escape }}</legend>
-            <div class="bc-survey__options">
-              {%- for option in q1_options -%}
-                {%- assign option_label = option | strip -%}
-                {%- if option_label != blank -%}
-                  <button
-                    class="bc-survey__option"
-                    type="button"
-                    aria-pressed="false"
-                    data-bc-option
-                    value="{{ option_label | escape }}"
-                  >
-                    {{- option_label | escape -}}
-                  </button>
-                {%- endif -%}
-              {%- endfor -%}
-            </div>
-          </fieldset>
-        {%- endif -%}
+        <div class="bc-signup__panel bc-thanks" data-bc-thanks hidden>
+          <div class="bc-thanks__head">
+            <span class="bc-thanks__mark">
+              {% render 'custom-bc-icon', icon: 'check', size: 22 %}
+            </span>
+            {%- comment -%}
+              custom-bc-signup.js writes the visitor's first name into this heading.
+              That makes it page text, and Clarity's default masking only covers form
+              fields, numbers and email addresses — so without this attribute the name
+              is readable in every session replay.
+            {%- endcomment -%}
+            <h3
+              class="bc-thanks__title"
+              tabindex="-1"
+              data-bc-thanks-title
+              data-clarity-mask="true"
+            >
+              {{- s.success_title | escape -}}
+            </h3>
+          </div>
 
-        {%- if s.q2_enabled and s.q2_question != blank and q2_options.size > 0 -%}
-          <fieldset class="bc-survey" data-bc-survey data-property="{{ s.q2_property | escape }}" hidden>
-            <legend class="bc-survey__legend">{{ s.q2_question | escape }}</legend>
-            <div class="bc-survey__options">
-              {%- for option in q2_options -%}
-                {%- assign option_label = option | strip -%}
-                {%- if option_label != blank -%}
-                  <button
-                    class="bc-survey__option"
-                    type="button"
-                    aria-pressed="false"
-                    data-bc-option
-                    value="{{ option_label | escape }}"
-                  >
-                    {{- option_label | escape -}}
-                  </button>
-                {%- endif -%}
-              {%- endfor -%}
-            </div>
-          </fieldset>
-        {%- endif -%}
+          {%- if show_flavour and s.flavour_placement == 'after' -%}
+            <fieldset class="bc-survey" data-bc-survey data-property="{{ s.flavour_property | escape }}" hidden>
+              <legend class="bc-survey__legend">{{ s.flavour_question | escape }}</legend>
+              <div class="bc-survey__options bc-survey__options--flavour">
+                {%- for block in section.blocks -%}
+                  {%- if block.type == 'flavour' and block.settings.name != blank -%}
+                    <button
+                      class="bc-survey__option bc-survey__option--flavour"
+                      type="button"
+                      aria-pressed="false"
+                      style="--bc-flavour-accent: {{ block.settings.accent_color }};"
+                      data-bc-option
+                      value="{{ block.settings.name | escape }}"
+                      {{ block.shopify_attributes }}
+                    >
+                      <span class="bc-pick__dot" aria-hidden="true"></span>
+                      {{- block.settings.name | escape -}}
+                    </button>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            </fieldset>
+          {%- endif -%}
 
-        {%- if s.success_text != blank -%}
-          <div class="bc-thanks__done" data-bc-done hidden>{{ s.success_text }}</div>
-        {%- endif -%}
-      </div>
-    </bc-signup-form>
+          {%- if s.q1_enabled and s.q1_question != blank and q1_options.size > 0 -%}
+            <fieldset class="bc-survey" data-bc-survey data-property="{{ s.q1_property | escape }}" hidden>
+              <legend class="bc-survey__legend">{{ s.q1_question | escape }}</legend>
+              <div class="bc-survey__options">
+                {%- for option in q1_options -%}
+                  {%- assign option_label = option | strip -%}
+                  {%- if option_label != blank -%}
+                    <button
+                      class="bc-survey__option"
+                      type="button"
+                      aria-pressed="false"
+                      data-bc-option
+                      value="{{ option_label | escape }}"
+                    >
+                      {{- option_label | escape -}}
+                    </button>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            </fieldset>
+          {%- endif -%}
+
+          {%- if s.q2_enabled and s.q2_question != blank and q2_options.size > 0 -%}
+            <fieldset class="bc-survey" data-bc-survey data-property="{{ s.q2_property | escape }}" hidden>
+              <legend class="bc-survey__legend">{{ s.q2_question | escape }}</legend>
+              <div class="bc-survey__options">
+                {%- for option in q2_options -%}
+                  {%- assign option_label = option | strip -%}
+                  {%- if option_label != blank -%}
+                    <button
+                      class="bc-survey__option"
+                      type="button"
+                      aria-pressed="false"
+                      data-bc-option
+                      value="{{ option_label | escape }}"
+                    >
+                      {{- option_label | escape -}}
+                    </button>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            </fieldset>
+          {%- endif -%}
+
+          {%- if s.success_text != blank -%}
+            <div class="bc-thanks__done" data-bc-done hidden>{{ s.success_text }}</div>
+          {%- endif -%}
+        </div>
+      </bc-signup-form>
+    </div>
   </div>
 </section>
 
@@ -303,7 +400,8 @@
       "type": "text",
       "id": "klaviyo_custom_source",
       "label": "Bron (custom source)",
-      "default": "Black Cherry waitlist"
+      "info": "Komt als $source op het Klaviyo-profiel. Houd hem gelijk aan de lijstnaam; een tweede spelling splitst je rapportage.",
+      "default": "Waitinglist Energy Matters"
     },
     {
       "type": "header",
@@ -345,7 +443,7 @@
       "type": "richtext",
       "id": "body",
       "label": "Tekst",
-      "default": "<p>Black Cherry wordt de eerste smaak van Energy Foundation. Meld je aan en krijg als eerste toegang zodra de founding batch beschikbaar is.</p>"
+      "default": "<p>Black Cherry wordt de eerste smaak van Energy Matters. Meld je aan en krijg als eerste toegang zodra de founding batch beschikbaar is.</p>"
     },
     {
       "type": "header",
@@ -418,6 +516,58 @@
     },
     {
       "type": "header",
+      "content": "Smaakvoorkeur",
+      "info": "De smaken komen uit de blokken van deze sectie. Houd ze gelijk aan de sectie 'BC · Smaken'."
+    },
+    {
+      "type": "checkbox",
+      "id": "flavour_enabled",
+      "label": "Smaakvraag tonen",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "flavour_placement",
+      "label": "Plek",
+      "info": "In het formulier is duidelijker; na aanmelding kost het geen klik vóór de conversie.",
+      "options": [
+        { "value": "form", "label": "In het formulier, vóór de knop" },
+        { "value": "after", "label": "Na aanmelding, als eerste vraag" }
+      ],
+      "default": "form",
+      "visible_if": "{{ section.settings.flavour_enabled }}"
+    },
+    {
+      "type": "text",
+      "id": "flavour_question",
+      "label": "Vraag",
+      "default": "Welke smaak probeer je het liefst als eerste?",
+      "visible_if": "{{ section.settings.flavour_enabled }}"
+    },
+    {
+      "type": "text",
+      "id": "flavour_property",
+      "label": "Klaviyo profielveld",
+      "default": "waitlist_flavour",
+      "visible_if": "{{ section.settings.flavour_enabled }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "flavour_required",
+      "label": "Keuze verplicht",
+      "info": "Uit laten staan houdt de drempel laag: wie niets kiest, meldt zich gewoon aan.",
+      "default": false,
+      "visible_if": "{{ section.settings.flavour_enabled and section.settings.flavour_placement == 'form' }}"
+    },
+    {
+      "type": "text",
+      "id": "flavour_error_text",
+      "label": "Melding bij geen keuze",
+      "default": "Kies een smaak om je aan te melden.",
+      "visible_if": "{{ section.settings.flavour_enabled and section.settings.flavour_placement == 'form' and section.settings.flavour_required }}"
+    },
+    {
+      "type": "header",
       "content": "Na aanmelding"
     },
     {
@@ -453,7 +603,7 @@
       "type": "text",
       "id": "q1_question",
       "label": "Vraag",
-      "default": "Hoe waarschijnlijk is het dat je Energy Foundation zou proberen?",
+      "default": "Hoe waarschijnlijk is het dat je Energy Matters zou proberen?",
       "visible_if": "{{ section.settings.q1_enabled }}"
     },
     {
@@ -570,6 +720,19 @@
       "id": "perk_text_color",
       "label": "Voordeel tekst",
       "default": "#243511"
+    },
+    {
+      "type": "color",
+      "id": "submit_bg_color",
+      "label": "Knop achtergrond",
+      "info": "De aanmeldknop onder het formulier.",
+      "default": "#243511"
+    },
+    {
+      "type": "color",
+      "id": "submit_text_color",
+      "label": "Knop tekst",
+      "default": "#cbff78"
     }
   ],
   "blocks": [
@@ -603,6 +766,26 @@
           "id": "subtitle",
           "label": "Ondertitel",
           "default": "Alleen voor de first drop-lijst"
+        }
+      ]
+    },
+    {
+      "type": "flavour",
+      "name": "Smaak",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Naam",
+          "info": "Wordt precies zo naar Klaviyo geschreven.",
+          "default": "Red Cherry"
+        },
+        {
+          "type": "color",
+          "id": "accent_color",
+          "label": "Kleurstip",
+          "default": "#d94a5c"
         }
       ]
     },
@@ -654,7 +837,10 @@
           }
         },
         { "type": "tag", "settings": { "icon": "key", "text": "Early access" } },
-        { "type": "tag", "settings": { "icon": "mark_email_read", "text": "First batch updates" } }
+        { "type": "tag", "settings": { "icon": "mark_email_read", "text": "First batch updates" } },
+        { "type": "flavour", "settings": { "name": "Red Cherry", "accent_color": "#d94a5c" } },
+        { "type": "flavour", "settings": { "name": "Peach-A-Licious", "accent_color": "#ffb974" } },
+        { "type": "flavour", "settings": { "name": "Tropical Pineapple", "accent_color": "#f2df5c" } }
       ]
     }
   ]

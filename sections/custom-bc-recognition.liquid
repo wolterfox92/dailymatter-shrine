@@ -25,57 +25,67 @@
   }
 {%- endstyle -%}
 
+{%- comment -%}
+  The .bc-split__body / __aside wrappers are transparent on mobile
+  (display: contents, see custom-bc.css) and become the two desktop columns.
+{%- endcomment -%}
 <section class="bc-recognition">
-  <div class="bc-inner">
-    {%- if s.eyebrow != blank -%}
-      <p class="bc-eyebrow">{{ s.eyebrow | escape }}</p>
-    {%- endif -%}
+  <div class="bc-inner bc-split">
+    <div class="bc-split__body">
+      {%- if s.eyebrow != blank -%}
+        <p class="bc-eyebrow">{{ s.eyebrow | escape }}</p>
+      {%- endif -%}
 
-    {%- if s.heading != blank -%}
-      <h2 class="bc-h2">{{ s.heading | escape }}</h2>
-    {%- endif -%}
+      {%- if s.heading != blank -%}
+        <h2 class="bc-h2">{{ s.heading | escape }}</h2>
+      {%- endif -%}
 
-    {%- if s.body != blank -%}
-      <div class="bc-body">{{ s.body }}</div>
-    {%- endif -%}
+      {%- if s.body != blank -%}
+        <div class="bc-body">{{ s.body }}</div>
+      {%- endif -%}
 
-    {%- if s.lead != blank -%}
-      <div class="bc-body bc-body--lead">{{ s.lead }}</div>
-    {%- endif -%}
+      {%- if s.lead != blank -%}
+        <div class="bc-body bc-body--lead">{{ s.lead }}</div>
+      {%- endif -%}
+    </div>
 
     {%- if image_count > 0 -%}
-      <ul class="bc-collage" role="list">
-        {%- for block in section.blocks -%}
-          {%- if block.type == 'image' -%}
-            {%- liquid
-              assign img = block.settings.image
-              assign img_alt = img.alt | default: block.settings.alt_fallback | strip_html | escape
-              assign wide_class = ''
-              if block.settings.wide
-                assign wide_class = ' bc-collage__item--wide'
-              endif
-            -%}
-            <li class="bc-media bc-collage__item{{ wide_class }}" {{ block.shopify_attributes }}>
-              {%- if img != blank -%}
-                {{-
-                  img
-                  | image_url: width: 1040
-                  | image_tag:
-                    width: img.width,
-                    height: img.height,
-                    alt: img_alt,
-                    sizes: '(min-width: 552px) 520px, 100vw',
-                    widths: '260, 390, 520, 780, 1040',
-                    loading: 'lazy',
-                    decoding: 'async'
-                -}}
-              {%- else -%}
-                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-              {%- endif -%}
-            </li>
-          {%- endif -%}
-        {%- endfor -%}
-      </ul>
+      <div class="bc-split__aside">
+        <ul class="bc-collage" role="list">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'image' -%}
+              {%- liquid
+                assign img = block.settings.image
+                assign img_alt = img.alt | default: block.settings.alt_fallback | strip_html | escape
+                assign wide_class = ''
+                assign img_sizes = '(min-width: 1264px) 249px, (min-width: 950px) 21vw, (min-width: 552px) 255px, 50vw'
+                if block.settings.wide
+                  assign wide_class = ' bc-collage__item--wide'
+                  assign img_sizes = '(min-width: 1264px) 508px, (min-width: 950px) 42vw, (min-width: 552px) 520px, 100vw'
+                endif
+              -%}
+              <li class="bc-media bc-collage__item{{ wide_class }}" {{ block.shopify_attributes }}>
+                {%- if img != blank -%}
+                  {{-
+                    img
+                    | image_url: width: 1040
+                    | image_tag:
+                      width: img.width,
+                      height: img.height,
+                      alt: img_alt,
+                      sizes: img_sizes,
+                      widths: '260, 390, 520, 780, 1040',
+                      loading: 'lazy',
+                      decoding: 'async'
+                  -}}
+                {%- else -%}
+                  {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
     {%- endif -%}
   </div>
 </section>

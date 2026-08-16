@@ -34,73 +34,81 @@
   }
 {%- endstyle -%}
 
+{%- comment -%}
+  The .bc-split__body / __aside wrappers are transparent on mobile
+  (display: contents, see custom-bc.css) and become the two desktop columns.
+{%- endcomment -%}
 <section class="bc-hero">
-  <div class="bc-hero__inner">
-    {%- if s.eyebrow != blank -%}
-      <p class="bc-eyebrow">{{ s.eyebrow | escape }}</p>
-    {%- endif -%}
-
-    {%- if s.heading != blank -%}
-      <h1 class="bc-h1">{{ s.heading | escape }}</h1>
-    {%- endif -%}
-
-    {%- if s.body != blank -%}
-      <div class="bc-body">{{ s.body }}</div>
-    {%- endif -%}
-
-    {%- if s.cta_label != blank -%}
-      <div class="bc-hero__cta">
-        <a class="bc-btn bc-btn--primary bc-btn--full" href="{{ s.cta_link | default: '#bc-signup' }}">
-          {{- s.cta_label | escape -}}
-          {% render 'custom-bc-icon', icon: 'arrow_downward', size: 22 %}
-        </a>
-      </div>
-    {%- endif -%}
-
-    {%- if s.note != blank -%}
-      <div class="bc-hero__note">{{ s.note }}</div>
-    {%- endif -%}
-
-    {%- if s.link_label != blank -%}
-      <div class="bc-hero__link">
-        <a href="{{ s.link_url | default: '#bc-ingredients' }}">{{ s.link_label | escape }}</a>
-      </div>
-    {%- endif -%}
-
-    {%- if chip_count > 0 -%}
-      <ul class="bc-chips" role="list">
-        {%- for block in section.blocks -%}
-          {%- if block.type == 'chip' and block.settings.text != blank -%}
-            <li class="bc-chip" {{ block.shopify_attributes }}>
-              {% render 'custom-bc-icon', icon: block.settings.icon, size: 15 %}
-              {{ block.settings.text | escape }}
-            </li>
-          {%- endif -%}
-        {%- endfor -%}
-      </ul>
-    {%- endif -%}
-
-    <div class="bc-media bc-hero__media">
-      {%- if image != blank -%}
-        {{-
-          image
-          | image_url: width: 1040
-          | image_tag:
-            width: image.width,
-            height: image.height,
-            alt: image_alt,
-            sizes: '(min-width: 552px) 520px, 100vw',
-            widths: '390, 520, 780, 1040',
-            loading: 'eager',
-            decoding: 'async'
-        -}}
-      {%- else -%}
-        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+  <div class="bc-hero__inner bc-split">
+    <div class="bc-split__body">
+      {%- if s.eyebrow != blank -%}
+        <p class="bc-eyebrow">{{ s.eyebrow | escape }}</p>
       {%- endif -%}
 
-      {%- if s.media_tag != blank -%}
-        <span class="bc-media__tag">{{ s.media_tag | escape }}</span>
+      {%- if s.heading != blank -%}
+        <h1 class="bc-h1">{{ s.heading | escape }}</h1>
       {%- endif -%}
+
+      {%- if s.body != blank -%}
+        <div class="bc-body">{{ s.body }}</div>
+      {%- endif -%}
+
+      {%- if s.cta_label != blank -%}
+        <div class="bc-hero__cta">
+          <a class="bc-btn bc-btn--primary bc-btn--full" href="{{ s.cta_link | default: '#bc-signup' }}">
+            {{- s.cta_label | escape -}}
+            {% render 'custom-bc-icon', icon: 'arrow_downward', size: 22 %}
+          </a>
+        </div>
+      {%- endif -%}
+
+      {%- if s.note != blank -%}
+        <div class="bc-hero__note">{{ s.note }}</div>
+      {%- endif -%}
+
+      {%- if s.link_label != blank -%}
+        <div class="bc-hero__link">
+          <a href="{{ s.link_url | default: '#bc-ingredients' }}">{{ s.link_label | escape }}</a>
+        </div>
+      {%- endif -%}
+
+      {%- if chip_count > 0 -%}
+        <ul class="bc-chips" role="list">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'chip' and block.settings.text != blank -%}
+              <li class="bc-chip" {{ block.shopify_attributes }}>
+                {% render 'custom-bc-icon', icon: block.settings.icon, size: 15 %}
+                {{ block.settings.text | escape }}
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+
+    <div class="bc-split__aside">
+      <div class="bc-media bc-hero__media">
+        {%- if image != blank -%}
+          {{-
+            image
+            | image_url: width: 1040
+            | image_tag:
+              width: image.width,
+              height: image.height,
+              alt: image_alt,
+              sizes: '(min-width: 1264px) 508px, (min-width: 950px) 42vw, (min-width: 552px) 520px, 100vw',
+              widths: '390, 520, 780, 1040',
+              loading: 'eager',
+              decoding: 'async'
+          -}}
+        {%- else -%}
+          {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+        {%- endif -%}
+
+        {%- if s.media_tag != blank -%}
+          <span class="bc-media__tag">{{ s.media_tag | escape }}</span>
+        {%- endif -%}
+      </div>
     </div>
   </div>
 </section>
@@ -113,7 +121,7 @@
       "type": "text",
       "id": "eyebrow",
       "label": "Eyebrow",
-      "default": "Energy Foundation · Black Cherry"
+      "default": "Energy Matters · Black Cherry"
     },
     {
       "type": "text",

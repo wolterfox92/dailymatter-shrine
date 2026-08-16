@@ -29,43 +29,51 @@
   }
 {%- endstyle -%}
 
+{%- comment -%}
+  The .bc-split__body / __aside wrappers are transparent on mobile
+  (display: contents, see custom-bc.css) and become the two desktop columns.
+{%- endcomment -%}
 <section class="bc-daily">
-  <div class="bc-inner">
-    {%- if s.eyebrow != blank -%}
-      <p class="bc-eyebrow">{{ s.eyebrow | escape }}</p>
-    {%- endif -%}
+  <div class="bc-inner bc-split">
+    <div class="bc-split__body">
+      {%- if s.eyebrow != blank -%}
+        <p class="bc-eyebrow">{{ s.eyebrow | escape }}</p>
+      {%- endif -%}
 
-    {%- if s.heading != blank -%}
-      <h2 class="bc-h2">{{ s.heading | escape }}</h2>
-    {%- endif -%}
+      {%- if s.heading != blank -%}
+        <h2 class="bc-h2">{{ s.heading | escape }}</h2>
+      {%- endif -%}
 
-    {%- if s.body != blank -%}
-      <div class="bc-body">{{ s.body }}</div>
-    {%- endif -%}
+      {%- if s.body != blank -%}
+        <div class="bc-body">{{ s.body }}</div>
+      {%- endif -%}
 
-    {%- if s.lead != blank -%}
-      <div class="bc-body bc-body--lead">{{ s.lead }}</div>
-    {%- endif -%}
+      {%- if s.lead != blank -%}
+        <div class="bc-body bc-body--lead">{{ s.lead }}</div>
+      {%- endif -%}
+    </div>
 
-    {%- if days.size > 0 -%}
-      <ul class="bc-week" role="list">
-        {%- for day in days -%}
-          {%- assign day_label = day | strip -%}
-          {%- if day_label != blank -%}
-            <li class="bc-week__day">
-              <span class="bc-week__label">{{ day_label | escape }}</span>
-              <span class="bc-week__check">
-                {% render 'custom-bc-icon', icon: 'check', size: 13 %}
-              </span>
-            </li>
-          {%- endif -%}
-        {%- endfor -%}
-      </ul>
-    {%- endif -%}
+    <div class="bc-split__aside">
+      {%- if days.size > 0 -%}
+        <ul class="bc-week" role="list">
+          {%- for day in days -%}
+            {%- assign day_label = day | strip -%}
+            {%- if day_label != blank -%}
+              <li class="bc-week__day">
+                <span class="bc-week__label">{{ day_label | escape }}</span>
+                <span class="bc-week__check">
+                  {% render 'custom-bc-icon', icon: 'check', size: 13 %}
+                </span>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
 
-    {%- if s.note != blank -%}
-      <p class="bc-week__note">{{ s.note | escape }}</p>
-    {%- endif -%}
+      {%- if s.note != blank -%}
+        <p class="bc-week__note">{{ s.note | escape }}</p>
+      {%- endif -%}
+    </div>
   </div>
 </section>
 
@@ -109,7 +117,7 @@
       "type": "richtext",
       "id": "body",
       "label": "Tekst",
-      "default": "<p>Sommige ingrediënten horen niet alleen bij dat ene moment waarop je ze nodig denkt te hebben. Creatine wordt bijvoorbeeld dagelijks gebruikt om de hoeveelheid creatine in de spieren op peil te houden. Daarom is Energy Foundation ontworpen als een eenvoudige dagelijkse routine, niet als een snelle energy shot.</p>"
+      "default": "<p>Sommige ingrediënten horen niet alleen bij dat ene moment waarop je ze nodig denkt te hebben. Creatine wordt bijvoorbeeld dagelijks gebruikt om de hoeveelheid creatine in de spieren op peil te houden. Daarom is Energy Matters ontworpen als een eenvoudige dagelijkse routine, niet als een snelle energy shot.</p>"
     },
     {
       "type": "richtext",

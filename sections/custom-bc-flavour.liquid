@@ -1,49 +1,60 @@
 {%- comment -%}
-  Black Cherry waitlist — section 7 "Black Cherry".
-  Dark cherry panel with the flavour image and a taste profile. The dot scale is
-  decorative; each row also carries its score as text for screen readers, since
-  a row of coloured circles says nothing on its own.
+  Black Cherry waitlist — sectie 7 "Smaken".
+
+  Was één smaak (Black Cherry) als vast paneel; toont nu alle smaken van de
+  eerste batch als horizontale scroller, zodat bezoekers kunnen vergelijken en
+  bij hun aanmelding hun favoriet kunnen doorgeven.
+
+  De scroller is native: flexbox + `overflow-x` + scroll-snap, geen JS en geen
+  library. De volgende kaart piept opzettelijk voorbij de rand — dat is de enige
+  affordance die zegt "hier valt te schuiven". Toetsenbord: de scroller heeft
+  `tabindex="0"` en een label, dus pijltjestoetsen scrollen hem. Dat is de
+  sleep-alternatief die WCAG 2.5.7 vraagt; knoppen zouden JS kosten.
+
+  De smaakassen (Fruity, Sweet, …) staan één keer op sectieniveau: ze moeten
+  over alle kaarten gelijk zijn, anders vergelijk je niets. Elke smaakblok zet
+  alleen de score per as. As leeg = die rij verdwijnt op alle kaarten.
+
+  De bolletjesschaal is decoratief; elke rij draagt zijn score ook als tekst,
+  want een rij gekleurde rondjes zegt niets tegen een screenreader.
 {%- endcomment -%}
 
 {%- liquid
   assign s = section.settings
-  assign image = s.image
-  assign image_alt = image.alt | default: s.heading | strip_html | escape
 
-  assign row_count = 0
+  assign flavour_count = 0
   for block in section.blocks
-    if block.type == 'taste'
-      assign row_count = row_count | plus: 1
+    if block.type == 'flavour'
+      assign flavour_count = flavour_count | plus: 1
     endif
   endfor
 -%}
 
 {%- style -%}
-  #shopify-section-{{ section.id }} .bc-flavour {
+  #shopify-section-{{ section.id }} .bc-flavours {
     background: {{ s.bg_color }};
     --bc-eyebrow-color: {{ s.eyebrow_color }};
     --bc-heading-color: {{ s.heading_color }};
     --bc-body-color: {{ s.body_color }};
+    --bc-flavours-note: {{ s.note_color }};
+    --bc-flavour-card-bg: {{ s.card_bg_color }};
     --bc-flavour-tagline: {{ s.tagline_color }};
+    --bc-media-bg: {{ s.media_bg_color }};
     --bc-h2-size: clamp({{ s.heading_size_min }}px, 9vw, {{ s.heading_size_max }}px);
   }
 
-  #shopify-section-{{ section.id }} .bc-taste__title,
-  #shopify-section-{{ section.id }} .bc-taste__dot--on {
-    color: {{ s.dot_color }};
+  #shopify-section-{{ section.id }} .bc-flavour-card__name,
+  #shopify-section-{{ section.id }} .bc-taste__label {
+    color: {{ s.heading_color }};
   }
 
   #shopify-section-{{ section.id }} .bc-taste__dot--on {
     background: {{ s.dot_color }};
   }
-
-  #shopify-section-{{ section.id }} .bc-taste__label {
-    color: {{ s.heading_color }};
-  }
 {%- endstyle -%}
 
-<section class="bc-flavour">
-  <div class="bc-flavour__inner">
+<section class="bc-flavours">
+  <div class="bc-flavours__head">
     {%- if s.eyebrow != blank -%}
       <p class="bc-eyebrow">{{ s.eyebrow | escape }}</p>
     {%- endif -%}
@@ -56,75 +67,115 @@
       <div class="bc-body">{{ s.body }}</div>
     {%- endif -%}
 
-    {%- if s.tagline != blank -%}
-      <p class="bc-flavour__tagline">{{ s.tagline | escape }}</p>
-    {%- endif -%}
-
-    <div class="bc-media bc-flavour__media">
-      {%- if image != blank -%}
-        {{-
-          image
-          | image_url: width: 1040
-          | image_tag:
-            width: image.width,
-            height: image.height,
-            alt: image_alt,
-            sizes: '(min-width: 552px) 520px, 100vw',
-            widths: '390, 520, 780, 1040',
-            loading: 'lazy',
-            decoding: 'async'
-        -}}
-      {%- else -%}
-        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-      {%- endif -%}
-    </div>
-
-    {%- if row_count > 0 -%}
-      <div class="bc-taste">
-        {%- if s.taste_title != blank -%}
-          <h3 class="bc-taste__title">{{ s.taste_title | escape }}</h3>
-        {%- endif -%}
-
-        <ul class="bc-taste__rows" role="list">
-          {%- for block in section.blocks -%}
-            {%- if block.type == 'taste' and block.settings.label != blank -%}
-              {%- assign score = block.settings.score -%}
-              <li class="bc-taste__row" {{ block.shopify_attributes }}>
-                <span class="bc-taste__label">{{ block.settings.label | escape }}</span>
-                <span class="bc-taste__dots" aria-hidden="true">
-                  {%- for i in (1..5) -%}
-                    {%- if i <= score -%}
-                      <span class="bc-taste__dot bc-taste__dot--on"></span>
-                    {%- else -%}
-                      <span class="bc-taste__dot"></span>
-                    {%- endif -%}
-                  {%- endfor -%}
-                </span>
-                <span class="bc-vh">{{ score }} van 5</span>
-              </li>
-            {%- endif -%}
-          {%- endfor -%}
-        </ul>
-      </div>
+    {%- if s.note != blank -%}
+      <div class="bc-flavours__note">{{ s.note }}</div>
     {%- endif -%}
   </div>
+
+  {%- if flavour_count > 0 -%}
+    <div
+      class="bc-flavours__scroller"
+      role="region"
+      aria-label="{{ s.scroller_label | default: s.heading | escape }}"
+      tabindex="0"
+    >
+      <ul class="bc-flavours__track" role="list">
+        {%- for block in section.blocks -%}
+          {%- if block.type != 'flavour' -%}
+            {%- continue -%}
+          {%- endif -%}
+
+          {%- liquid
+            assign card_image = block.settings.image
+            assign card_alt = card_image.alt | default: block.settings.name | strip_html | escape
+          -%}
+
+          <li
+            class="bc-flavour-card"
+            style="--bc-flavour-accent: {{ block.settings.accent_color }};"
+            {{ block.shopify_attributes }}
+          >
+            <div class="bc-media bc-flavour-card__media">
+              {%- if card_image != blank -%}
+                {{-
+                  card_image
+                  | image_url: width: 760
+                  | image_tag:
+                    width: card_image.width,
+                    height: card_image.height,
+                    alt: card_alt,
+                    sizes: '(min-width: 1264px) 346px, (min-width: 950px) 29vw, (min-width: 552px) 380px, 77vw',
+                    widths: '300, 380, 560, 760',
+                    loading: 'lazy',
+                    decoding: 'async'
+                -}}
+              {%- else -%}
+                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+              {%- endif -%}
+            </div>
+
+            <div class="bc-flavour-card__body">
+              {%- if block.settings.name != blank -%}
+                <h3 class="bc-flavour-card__name">
+                  <span class="bc-flavour-card__dot" aria-hidden="true"></span>
+                  {{ block.settings.name | escape }}
+                </h3>
+              {%- endif -%}
+
+              {%- if block.settings.tagline != blank -%}
+                <p class="bc-flavour-card__tagline">{{ block.settings.tagline | escape }}</p>
+              {%- endif -%}
+
+              {%- if block.settings.text != blank -%}
+                <p class="bc-flavour-card__text">{{ block.settings.text | escape }}</p>
+              {%- endif -%}
+
+              <ul class="bc-taste__rows" role="list">
+                {%- for i in (1..4) -%}
+                  {%- liquid
+                    assign axis_key = 'axis_' | append: i
+                    assign axis_label = section.settings[axis_key]
+                    assign score_key = 'score_' | append: i
+                    assign score = block.settings[score_key]
+                  -%}
+                  {%- if axis_label == blank -%}
+                    {%- continue -%}
+                  {%- endif -%}
+
+                  <li class="bc-taste__row">
+                    <span class="bc-taste__label">{{ axis_label | escape }}</span>
+                    <span class="bc-taste__dots" aria-hidden="true">
+                      {%- for dot in (1..5) -%}
+                        <span class="bc-taste__dot{% if dot <= score %} bc-taste__dot--on{% endif %}"></span>
+                      {%- endfor -%}
+                    </span>
+                    <span class="bc-vh">{{ score }} van 5</span>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
 </section>
 
 {% schema %}
 {
-  "name": "BC · Smaak",
+  "name": "BC · Smaken",
   "settings": [
     {
       "type": "text",
       "id": "eyebrow",
       "label": "Eyebrow",
-      "default": "First flavour"
+      "default": "First drop flavours"
     },
     {
       "type": "text",
       "id": "heading",
       "label": "Heading",
-      "default": "Meet Black Cherry."
+      "default": "Meet the flavours."
     },
     {
       "type": "range",
@@ -150,25 +201,50 @@
       "type": "richtext",
       "id": "body",
       "label": "Tekst",
-      "default": "<p>Diep, fruitig en licht fris. Black Cherry heeft een volle kersensmaak zonder te voelen als siroop, snoep of een overdreven zoete sportdrank.</p>"
+      "default": "<p>Energy Matters lanceert in drie smaken. Alle drie fruitig en licht fris, zonder te voelen als siroop, snoep of een overdreven zoete sportdrank.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "note",
+      "label": "Accentregel",
+      "info": "Staat onder de tekst in de accentkleur. Mag een link naar het formulier bevatten.",
+      "default": "<p>Zeg bij je aanmelding welke jij als eerste wilt proberen.</p>"
     },
     {
       "type": "text",
-      "id": "tagline",
-      "label": "Tagline",
-      "default": "Dark cherry, bright finish."
+      "id": "scroller_label",
+      "label": "Label scroller",
+      "info": "Voor screenreaders en toetsenbord. Leeg = de heading.",
+      "default": "Smaken van de eerste batch"
     },
     {
-      "type": "image_picker",
-      "id": "image",
-      "label": "Afbeelding",
-      "info": "Staand 4:5. Ontwerpbriefing: glas of fles met donkerrode vloeistof, condens en ijs."
+      "type": "header",
+      "content": "Smaakassen",
+      "info": "Gelden voor alle kaarten. Leeg = die rij verdwijnt."
     },
     {
       "type": "text",
-      "id": "taste_title",
-      "label": "Titel smaakprofiel",
-      "default": "Smaakprofiel"
+      "id": "axis_1",
+      "label": "As 1",
+      "default": "Fruity"
+    },
+    {
+      "type": "text",
+      "id": "axis_2",
+      "label": "As 2",
+      "default": "Sweet"
+    },
+    {
+      "type": "text",
+      "id": "axis_3",
+      "label": "As 3",
+      "default": "Fresh"
+    },
+    {
+      "type": "text",
+      "id": "axis_4",
+      "label": "As 4",
+      "default": "Bold"
     },
     {
       "type": "header",
@@ -178,7 +254,19 @@
       "type": "color",
       "id": "bg_color",
       "label": "Achtergrond",
-      "default": "#511a39"
+      "default": "#2a0c21"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Kaart",
+      "default": "#3a1230"
+    },
+    {
+      "type": "color",
+      "id": "media_bg_color",
+      "label": "Achter de afbeelding",
+      "default": "#4a2140"
     },
     {
       "type": "color",
@@ -189,7 +277,7 @@
     {
       "type": "color",
       "id": "heading_color",
-      "label": "Heading",
+      "label": "Heading en smaaknaam",
       "default": "#f8f8ed"
     },
     {
@@ -200,9 +288,15 @@
     },
     {
       "type": "color",
+      "id": "note_color",
+      "label": "Accentregel",
+      "default": "#cbff78"
+    },
+    {
+      "type": "color",
       "id": "tagline_color",
-      "label": "Tagline",
-      "default": "#ff9cff"
+      "label": "Tagline op de kaart",
+      "default": "#cbff78"
     },
     {
       "type": "color",
@@ -213,23 +307,79 @@
   ],
   "blocks": [
     {
-      "type": "taste",
-      "name": "Smaakregel",
+      "type": "flavour",
+      "name": "Smaak",
       "limit": 6,
       "settings": [
         {
           "type": "text",
-          "id": "label",
-          "label": "Label",
-          "default": "Fruity"
+          "id": "name",
+          "label": "Naam",
+          "default": "Red Cherry"
+        },
+        {
+          "type": "color",
+          "id": "accent_color",
+          "label": "Kleurstip",
+          "info": "Staat voor de naam. Geef elke smaak zijn eigen kleur.",
+          "default": "#d94a5c"
+        },
+        {
+          "type": "text",
+          "id": "tagline",
+          "label": "Tagline",
+          "default": "Bold. Fruity. Slightly tart."
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Omschrijving",
+          "default": "Volle kersensmaak, licht fris."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Afbeelding",
+          "info": "Vierkant. Ontwerpbriefing: glas of fles met de vloeistof, condens en ijs."
+        },
+        {
+          "type": "header",
+          "content": "Smaakprofiel"
         },
         {
           "type": "range",
-          "id": "score",
-          "min": 1,
+          "id": "score_1",
+          "min": 0,
           "max": 5,
           "step": 1,
-          "label": "Score",
+          "label": "As 1",
+          "default": 4
+        },
+        {
+          "type": "range",
+          "id": "score_2",
+          "min": 0,
+          "max": 5,
+          "step": 1,
+          "label": "As 2",
+          "default": 3
+        },
+        {
+          "type": "range",
+          "id": "score_3",
+          "min": 0,
+          "max": 5,
+          "step": 1,
+          "label": "As 3",
+          "default": 3
+        },
+        {
+          "type": "range",
+          "id": "score_4",
+          "min": 0,
+          "max": 5,
+          "step": 1,
+          "label": "As 4",
           "default": 4
         }
       ]
@@ -238,12 +388,47 @@
   ],
   "presets": [
     {
-      "name": "BC · Smaak",
+      "name": "BC · Smaken",
       "blocks": [
-        { "type": "taste", "settings": { "label": "Fruity", "score": 4 } },
-        { "type": "taste", "settings": { "label": "Sweet", "score": 3 } },
-        { "type": "taste", "settings": { "label": "Fresh", "score": 3 } },
-        { "type": "taste", "settings": { "label": "Bold", "score": 4 } }
+        {
+          "type": "flavour",
+          "settings": {
+            "name": "Red Cherry",
+            "accent_color": "#d94a5c",
+            "tagline": "Bold. Fruity. Slightly tart.",
+            "text": "Volle kersensmaak, licht fris.",
+            "score_1": 4,
+            "score_2": 3,
+            "score_3": 3,
+            "score_4": 4
+          }
+        },
+        {
+          "type": "flavour",
+          "settings": {
+            "name": "Peach-Apricot",
+            "accent_color": "#ffb974",
+            "tagline": "Soft. Juicy. Smooth.",
+            "text": "Zacht en sappig, met een rijpe perziktoon.",
+            "score_1": 4,
+            "score_2": 4,
+            "score_3": 3,
+            "score_4": 2
+          }
+        },
+        {
+          "type": "flavour",
+          "settings": {
+            "name": "Smaak 3",
+            "accent_color": "#cbff78",
+            "tagline": "Crisp. Light. Clean.",
+            "text": "Fris en licht, met een heldere afdronk.",
+            "score_1": 3,
+            "score_2": 2,
+            "score_3": 5,
+            "score_4": 2
+          }
+        }
       ]
     }
   ]

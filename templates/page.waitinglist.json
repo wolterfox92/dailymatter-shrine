@@ -14,7 +14,7 @@
     "announcement": {
       "type": "custom-bc-announcement",
       "settings": {
-        "text": "Energy Foundation is coming | join & krijg 25% korting + gratis waterfles",
+        "text": "Energy Matters is coming | join & krijg 25% korting + gratis waterfles",
         "link": "#bc-signup",
         "show_icon": true,
         "bg_color": "#25162f",
@@ -162,21 +162,17 @@
       }
     },
     "divider_DUptLE": {
-      "type": "divider",
-      "name": "Divider",
+      "type": "custom-bc-divider",
       "settings": {
-        "visibility": "always-display",
-        "color": "#E1E1E1",
+        "color": "#e1e1e1",
         "height": 1,
         "width": 60,
-        "Full_mobile_width": false,
-        "alignment": "flex-end",
+        "alignment": "center",
         "border_radius": 1,
+        "full_bleed": false,
         "margin_top": 0,
         "margin_bottom": 0,
-        "color_scheme": "background-1",
-        "padding_top": 0,
-        "padding_bottom": 0
+        "bg_color": "#ffffff"
       }
     },
     "color_switch_gMJeaA": {
@@ -286,7 +282,7 @@
         "heading": "Tear, Mix, Energize",
         "heading_size_min": 28,
         "heading_size_max": 38,
-        "body": "<p>Energy Foundation brengt ingrediënten voor <strong>energiehuishouding</strong>, <strong>mentale performance</strong> en <strong>fysieke prestaties</strong> samen in één dagelijkse drinkmix. Scheur een sachet open, meng met koud water en ga verder met je dag.</p>",
+        "body": "<p>Energy Matters brengt ingrediënten voor <strong>energiehuishouding</strong>, <strong>mentale performance</strong> en <strong>fysieke prestaties</strong> samen in één dagelijkse drinkmix. Scheur een sachet open, meng met koud water en ga verder met je dag.</p>",
         "show_numbers": true,
         "bg_color": "#cac0ff",
         "eyebrow_color": "#25162f",
@@ -425,54 +421,71 @@
     "flavour": {
       "type": "custom-bc-flavour",
       "blocks": {
-        "taste-1": {
-          "type": "taste",
+        "flavour-1": {
+          "type": "flavour",
           "settings": {
-            "label": "Fruity",
-            "score": 4
+            "name": "Red Cherry",
+            "accent_color": "#d94a5c",
+            "tagline": "Bold. Fruity. Slightly tart.",
+            "text": "Volle kersensmaak, licht fris.",
+            "score_1": 4,
+            "score_2": 3,
+            "score_3": 3,
+            "score_4": 4
           }
         },
-        "taste-2": {
-          "type": "taste",
+        "flavour-2": {
+          "type": "flavour",
           "settings": {
-            "label": "Sweet",
-            "score": 3
+            "name": "Peach-A-Licious",
+            "accent_color": "#ffb974",
+            "tagline": "Soft. Juicy. Smooth.",
+            "text": "Zacht en sappig, met een rijpe perziktoon.",
+            "score_1": 4,
+            "score_2": 4,
+            "score_3": 3,
+            "score_4": 2
           }
         },
-        "taste-3": {
-          "type": "taste",
+        "flavour-3": {
+          "type": "flavour",
           "settings": {
-            "label": "Fresh",
-            "score": 3
-          }
-        },
-        "taste-4": {
-          "type": "taste",
-          "settings": {
-            "label": "Bold",
-            "score": 4
+            "name": "Tropical Pineapple",
+            "accent_color": "#f2df5c",
+            "tagline": "Sweet. Tropical. Bright.",
+            "text": "Zoet en tropisch, met een frisse afdronk.",
+            "score_1": 5,
+            "score_2": 4,
+            "score_3": 4,
+            "score_4": 2
           }
         }
       },
       "block_order": [
-        "taste-1",
-        "taste-2",
-        "taste-3",
-        "taste-4"
+        "flavour-1",
+        "flavour-2",
+        "flavour-3"
       ],
       "settings": {
-        "eyebrow": "First flavour",
-        "heading": "Meet Red Cherry.",
+        "eyebrow": "First drop flavours",
+        "heading": "Meet the flavours.",
         "heading_size_min": 32,
         "heading_size_max": 44,
-        "body": "<p>Diep, fruitig en licht fris. Red Cherry heeft een volle kersensmaak zonder te voelen als siroop, snoep of een overdreven zoete sportdrank.</p>",
-        "tagline": "",
-        "taste_title": "Smaakprofiel",
-        "bg_color": "#cac0ff",
-        "eyebrow_color": "#25162f",
-        "heading_color": "#25162f",
-        "body_color": "#25162f",
-        "tagline_color": "#ac0000",
+        "body": "<p>Energy Matters lanceert in drie smaken. Alle drie fruitig en licht fris, zonder te voelen als siroop, snoep of een overdreven zoete sportdrank.</p>",
+        "note": "<p><a href=\"#bc-signup\">Zeg bij je aanmelding welke jij als eerste wilt proberen.</a></p>",
+        "scroller_label": "Smaken van de eerste batch",
+        "axis_1": "Fruity",
+        "axis_2": "Sweet",
+        "axis_3": "Fresh",
+        "axis_4": "Bold",
+        "bg_color": "#2a0c21",
+        "card_bg_color": "#3a1230",
+        "media_bg_color": "#4a2140",
+        "eyebrow_color": "#cbff78",
+        "heading_color": "#f8f8ed",
+        "body_color": "#d7ccc9",
+        "note_color": "#cbff78",
+        "tagline_color": "#cbff78",
         "dot_color": "#cbff78"
       }
     },
@@ -483,7 +496,7 @@
         "heading": "Consistency changes the equation.",
         "heading_size_min": 28,
         "heading_size_max": 38,
-        "body": "<p>Sommige ingrediënten horen niet alleen bij dat ene moment waarop je ze nodig denkt te hebben. Creatine wordt bijvoorbeeld dagelijks gebruikt om de hoeveelheid creatine in de spieren op peil te houden. Daarom is Energy Foundation ontworpen als een eenvoudige dagelijkse routine, niet als een snelle energy shot.</p>",
+        "body": "<p>Sommige ingrediënten horen niet alleen bij dat ene moment waarop je ze nodig denkt te hebben. Creatine wordt bijvoorbeeld dagelijks gebruikt om de hoeveelheid creatine in de spieren op peil te houden. Daarom is Energy Matters ontworpen als een eenvoudige dagelijkse routine, niet als een snelle energy shot.</p>",
         "lead": "<p>Resultaat begint bij iets dat makkelijk genoeg is om te blijven doen.</p>",
         "days": "MON, TUE, WED, THU, FRI, SAT, SUN",
         "note": "Iedere dag één sachet. Meer is het niet.",
@@ -562,23 +575,53 @@
             "icon": "mark_email_read",
             "text": "First batch updates"
           }
+        },
+        "flavour-1": {
+          "type": "flavour",
+          "settings": {
+            "name": "Red Cherry",
+            "accent_color": "#d94a5c"
+          }
+        },
+        "flavour-2": {
+          "type": "flavour",
+          "settings": {
+            "name": "Peach-A-Licious",
+            "accent_color": "#ffb974"
+          }
+        },
+        "flavour-3": {
+          "type": "flavour",
+          "settings": {
+            "name": "Tropical Pineapple",
+            "accent_color": "#f2df5c"
+          }
         }
       },
       "block_order": [
         "perk-1",
         "perk-2",
         "tag-1",
-        "tag-2"
+        "tag-2",
+        "flavour-1",
+        "flavour-2",
+        "flavour-3"
       ],
       "settings": {
         "klaviyo_public_key": "V7Badc",
         "klaviyo_list_id": "RXr2FJ",
-        "klaviyo_custom_source": "Black Cherry waitlist",
+        "klaviyo_custom_source": "Waitinglist Energy Matters",
         "eyebrow": "De eerste batch",
         "heading": "Be first in.",
         "heading_size_min": 36,
         "heading_size_max": 48,
-        "body": "<p>Black Cherry wordt de eerste smaak van Energy Foundation. Meld je aan en krijg als eerste toegang zodra de founding batch beschikbaar is.</p>",
+        "body": "<p>Energy Matters lanceert in drie smaken: Red Cherry, Peach-A-Licious en Tropical Pineapple. Meld je aan en krijg als eerste toegang zodra de founding batch beschikbaar is.</p>",
+        "flavour_enabled": true,
+        "flavour_placement": "form",
+        "flavour_question": "Welke smaak probeer je het liefst als eerste?",
+        "flavour_property": "waitlist_flavour",
+        "flavour_required": false,
+        "flavour_error_text": "Kies een smaak om je aan te melden.",
         "show_name": true,
         "name_label": "Voornaam",
         "name_placeholder": "Je voornaam",
@@ -588,12 +631,12 @@
         "show_consent": true,
         "consent_label": "Ja, hou mij per e-mail op de hoogte van de lancering.",
         "consent_required": true,
-        "fine_print": "<p>Geen dagelijkse mails. Alleen relevante updates over Red Cherry en de eerste lancering.</p>",
+        "fine_print": "<p>Geen dagelijkse mails. Alleen relevante updates over Energy Matters en de eerste drop.</p>",
         "success_title": "Je staat op de lijst.",
         "success_title_named": "Je staat op de lijst, [naam].",
-        "success_text": "<p>Dank je. Dit helpt ons de eerste batch precies goed te maken. Je hoort van ons zodra Black Cherry klaarstaat.</p>",
+        "success_text": "<p>Dank je. Dit helpt ons de eerste batch precies goed te maken. Je hoort van ons zodra Energy Matters klaarstaat.</p>",
         "q1_enabled": true,
-        "q1_question": "Hoe waarschijnlijk is het dat je Energy Foundation zou proberen?",
+        "q1_question": "Hoe waarschijnlijk is het dat je Energy Matters zou proberen?",
         "q1_options": "Zeker, Waarschijnlijk, Misschien, Eerst meer informatie",
         "q1_property": "waitlist_intent",
         "q2_enabled": true,
@@ -656,7 +699,7 @@
         "heading_size_min": 28,
         "heading_size_max": 38,
         "flag": "Eerste batch",
-        "card_title": "Energy Foundation — Black Cherry",
+        "card_title": "Energy Matters — Black Cherry",
         "product": "daily-elektrolyte",
         "discount_percent": 25,
         "money_format": "compact",
@@ -685,15 +728,15 @@
         "q-1": {
           "type": "question",
           "settings": {
-            "question": "Wat is Energie Foundation?",
+            "question": "Wat is Energy Matters?",
             "answer": "<p>Een dagelijkse drinkmix met creatine, elektrolyten, magnesium en B-vitaminen. Eén sachet meng je met koud water.</p>"
           }
         },
         "q-2": {
           "type": "question",
           "settings": {
-            "question": "Bevat Energy Foundation cafeïne?",
-            "answer": "<p>Nee. Energy Foundation is cafeïnevrij.</p>"
+            "question": "Bevat Energy Matters cafeïne?",
+            "answer": "<p>Nee. Energy Matters is cafeïnevrij.</p>"
           }
         },
         "q-3": {
@@ -707,7 +750,7 @@
           "type": "question",
           "settings": {
             "question": "Do I need to exercise to use it?",
-            "answer": "<p>Energy Foundation is ontwikkeld voor actieve, volle dagen. De specifieke toegestane creatineclaim is gericht op volwassenen die intensieve inspanning leveren.</p>"
+            "answer": "<p>Energy Matters is ontwikkeld voor actieve, volle dagen. De specifieke toegestane creatineclaim is gericht op volwassenen die intensieve inspanning leveren.</p>"
           }
         },
         "q-5": {
@@ -765,7 +808,7 @@
         "heading": "Make it a daily matter.",
         "heading_size_min": 32,
         "heading_size_max": 42,
-        "body": "<p>Black Cherry komt eraan. Sluit je aan bij de eerste batch: 25% korting op je order en een gratis waterfles t.w.v. € 17,95.</p>",
+        "body": "<p>Energy Matters komt eraan. Sluit je aan bij de eerste batch: 25% korting op je order en een gratis waterfles t.w.v. € 17,95.</p>",
         "cta_label": "Join the first drop",
         "cta_link": "#bc-signup",
         "bg_color": "#ffffff",

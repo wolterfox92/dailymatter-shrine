@@ -1,0 +1,150 @@
+{%- comment -%}
+  Black Cherry waitlist — scheidingslijn.
+
+  Bestaat omdat Shrine's eigen `sections/divider.liquid` op deze pagina niet
+  werkt: die haalt zijn uitlijning uit `.product-info__image-block`
+  (`display:flex; justify-content: var(--image-alignment)`) en zijn breedte uit
+  `.page-width`, en beide staan in `assets/base.css` — dat `custom-landing.liquid`
+  bewust niet laadt. Zonder die regels blijft er een blok-div over die links
+  plakt, ongeacht de uitlijning-instelling.
+
+  Deze sectie brengt daarom al zijn eigen CSS mee en werkt op beide layouts.
+  Twee regels om dat zo te houden:
+
+  - Alleen `px`, nooit `rem`. `theme.liquid` zet `html { font-size: 62.5% }`
+    (1rem = 10px), `custom-landing.liquid` niet (1rem = 16px).
+  - `display: block` op de lijn is geen ruis: `base.css` verbergt lege elementen
+    (`div:empty`), en op de themepagina's zou de lijn anders verdwijnen. Een
+    `<hr>` is bovendien het semantisch juiste element voor een scheiding.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .bc-divider {
+    display: flex;
+    justify-content: {{ s.alignment }};
+    padding: {{ s.margin_top }}px {% if s.full_bleed %}0{% else %}var(--bc-gutter, 16px){% endif %} {{ s.margin_bottom }}px;
+    {%- if s.bg_color != blank %}
+    background: {{ s.bg_color }};
+    {%- endif %}
+  }
+
+  #shopify-section-{{ section.id }} .bc-divider__line {
+    display: block;
+    width: {{ s.width }}%;
+    height: {{ s.height }}px;
+    margin: 0;
+    border: 0;
+    border-radius: {{ s.border_radius }}px;
+    background: {{ s.color }};
+  }
+{%- endstyle -%}
+
+<div class="bc-divider">
+  <hr class="bc-divider__line">
+</div>
+
+{% schema %}
+{
+  "name": "BC · Divider",
+  "settings": [
+    {
+      "type": "color",
+      "id": "color",
+      "label": "Lijnkleur",
+      "default": "#e1e1e1"
+    },
+    {
+      "type": "range",
+      "id": "height",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "label": "Dikte",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "width",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Breedte",
+      "default": 60
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Uitlijning",
+      "options": [
+        { "value": "flex-start", "label": "Links" },
+        { "value": "center", "label": "Midden" },
+        { "value": "flex-end", "label": "Rechts" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "label": "Ronding",
+      "info": "Alleen zichtbaar bij een dikkere lijn.",
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "full_bleed",
+      "label": "Rand tot rand",
+      "info": "Negeert de zijmarge van de pagina. Alleen zichtbaar bij breedte 100%.",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Ruimte"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 64,
+      "step": 4,
+      "unit": "px",
+      "label": "Boven",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 64,
+      "step": 4,
+      "unit": "px",
+      "label": "Onder",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Achtergrond",
+      "info": "Laat gelijk lopen met de sectie erboven of eronder.",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "BC · Divider"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

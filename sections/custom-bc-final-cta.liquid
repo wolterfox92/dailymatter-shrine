@@ -18,43 +18,51 @@
   }
 {%- endstyle -%}
 
+{%- comment -%}
+  The .bc-split__body / __aside wrappers are transparent on mobile
+  (display: contents, see custom-bc.css) and become the two desktop columns.
+{%- endcomment -%}
 <section class="bc-final">
-  <div class="bc-final__inner">
-    <div class="bc-media bc-final__media">
-      {%- if image != blank -%}
-        {{-
-          image
-          | image_url: width: 1040
-          | image_tag:
-            width: image.width,
-            height: image.height,
-            alt: image_alt,
-            sizes: '(min-width: 552px) 520px, 100vw',
-            widths: '390, 520, 780, 1040',
-            loading: 'lazy',
-            decoding: 'async'
-        -}}
-      {%- else -%}
-        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-      {%- endif -%}
+  <div class="bc-final__inner bc-split">
+    <div class="bc-split__aside">
+      <div class="bc-media bc-final__media">
+        {%- if image != blank -%}
+          {{-
+            image
+            | image_url: width: 1040
+            | image_tag:
+              width: image.width,
+              height: image.height,
+              alt: image_alt,
+              sizes: '(min-width: 1264px) 508px, (min-width: 950px) 42vw, (min-width: 552px) 520px, 100vw',
+              widths: '390, 520, 780, 1040',
+              loading: 'lazy',
+              decoding: 'async'
+          -}}
+        {%- else -%}
+          {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+        {%- endif -%}
+      </div>
     </div>
 
-    {%- if s.heading != blank -%}
-      <h2 class="bc-h2">{{ s.heading | escape }}</h2>
-    {%- endif -%}
+    <div class="bc-split__body">
+      {%- if s.heading != blank -%}
+        <h2 class="bc-h2">{{ s.heading | escape }}</h2>
+      {%- endif -%}
 
-    {%- if s.body != blank -%}
-      <div class="bc-body">{{ s.body }}</div>
-    {%- endif -%}
+      {%- if s.body != blank -%}
+        <div class="bc-body">{{ s.body }}</div>
+      {%- endif -%}
 
-    {%- if s.cta_label != blank -%}
-      <div class="bc-final__cta">
-        <a class="bc-btn bc-btn--primary bc-btn--full" href="{{ s.cta_link | default: '#bc-signup' }}">
-          {{- s.cta_label | escape -}}
-          {% render 'custom-bc-icon', icon: 'arrow_upward', size: 22 %}
-        </a>
-      </div>
-    {%- endif -%}
+      {%- if s.cta_label != blank -%}
+        <div class="bc-final__cta">
+          <a class="bc-btn bc-btn--primary bc-btn--full" href="{{ s.cta_link | default: '#bc-signup' }}">
+            {{- s.cta_label | escape -}}
+            {% render 'custom-bc-icon', icon: 'arrow_upward', size: 22 %}
+          </a>
+        </div>
+      {%- endif -%}
+    </div>
   </div>
 </section>
 

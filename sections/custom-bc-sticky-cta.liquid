@@ -18,6 +18,23 @@
     data-after="{{ s.after_selector | escape }}"
   >
     <div class="bc-sticky__inner">
+      {%- comment -%}
+        Desktop only (hidden below 950px in custom-bc.css): on a phone the bar is
+        one full-width button and a second line would eat viewport it is already
+        borrowing. On a wide screen a bare button in an empty bar reads as an
+        orphaned control, so it gets its offer back.
+      {%- endcomment -%}
+      {%- if s.title != blank or s.subtitle != blank -%}
+        <div class="bc-sticky__copy">
+          {%- if s.title != blank -%}
+            <span class="bc-sticky__title">{{ s.title | escape }}</span>
+          {%- endif -%}
+          {%- if s.subtitle != blank -%}
+            <span class="bc-sticky__sub">{{ s.subtitle | escape }}</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
       <a class="bc-btn bc-btn--primary bc-btn--full" href="{{ s.cta_link | default: '#bc-signup' }}">
         {{- s.cta_label | escape -}}
         {% render 'custom-bc-icon', icon: 'arrow_downward', size: 22 %}
@@ -51,6 +68,23 @@
       "label": "Verschijnt na",
       "info": "CSS-selector van het element waar de balk na verschijnt. Standaard de hero.",
       "default": ".bc-hero"
+    },
+    {
+      "type": "header",
+      "content": "Tekst naast de knop"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "info": "Alleen zichtbaar op desktop. Op mobiel is de balk één knop breed.",
+      "default": "Energy Matters — first drop"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Ondertitel",
+      "default": "25% korting + gratis waterfles t.w.v. € 17,95"
     }
   ],
   "presets": [{ "name": "BC · Sticky CTA" }]

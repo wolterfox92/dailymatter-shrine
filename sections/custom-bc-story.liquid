@@ -24,53 +24,63 @@
   }
 {%- endstyle -%}
 
+{%- comment -%}
+  The .bc-split__body / __aside wrappers are transparent on mobile
+  (display: contents, see custom-bc.css) and become the two desktop columns. On
+  desktop the images sit left of the copy, which is a placement in the CSS, not a
+  different DOM order — the copy stays first for reading order.
+{%- endcomment -%}
 <section class="bc-story">
-  <div class="bc-inner">
-    {%- if s.eyebrow != blank -%}
-      <p class="bc-eyebrow">{{ s.eyebrow | escape }}</p>
-    {%- endif -%}
+  <div class="bc-inner bc-split">
+    <div class="bc-split__body">
+      {%- if s.eyebrow != blank -%}
+        <p class="bc-eyebrow">{{ s.eyebrow | escape }}</p>
+      {%- endif -%}
 
-    {%- if s.heading != blank -%}
-      <h2 class="bc-h2">{{ s.heading | escape }}</h2>
-    {%- endif -%}
+      {%- if s.heading != blank -%}
+        <h2 class="bc-h2">{{ s.heading | escape }}</h2>
+      {%- endif -%}
 
-    {%- if s.body != blank -%}
-      <div class="bc-body">{{ s.body }}</div>
-    {%- endif -%}
+      {%- if s.body != blank -%}
+        <div class="bc-body">{{ s.body }}</div>
+      {%- endif -%}
 
-    {%- if s.body_second != blank -%}
-      <div class="bc-body">{{ s.body_second }}</div>
-    {%- endif -%}
+      {%- if s.body_second != blank -%}
+        <div class="bc-body">{{ s.body_second }}</div>
+      {%- endif -%}
+    </div>
 
     {%- if image_count > 0 -%}
-      <ul class="bc-story__media" role="list">
-        {%- for block in section.blocks -%}
-          {%- if block.type == 'image' -%}
-            {%- liquid
-              assign img = block.settings.image
-              assign img_alt = img.alt | default: block.settings.alt_fallback | strip_html | escape
-            -%}
-            <li class="bc-media bc-story__item" {{ block.shopify_attributes }}>
-              {%- if img != blank -%}
-                {{-
-                  img
-                  | image_url: width: 780
-                  | image_tag:
-                    width: img.width,
-                    height: img.height,
-                    alt: img_alt,
-                    sizes: '(min-width: 552px) 260px, 50vw',
-                    widths: '260, 390, 520, 780',
-                    loading: 'lazy',
-                    decoding: 'async'
-                -}}
-              {%- else -%}
-                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-              {%- endif -%}
-            </li>
-          {%- endif -%}
-        {%- endfor -%}
-      </ul>
+      <div class="bc-split__aside">
+        <ul class="bc-story__media" role="list">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'image' -%}
+              {%- liquid
+                assign img = block.settings.image
+                assign img_alt = img.alt | default: block.settings.alt_fallback | strip_html | escape
+              -%}
+              <li class="bc-media bc-story__item" {{ block.shopify_attributes }}>
+                {%- if img != blank -%}
+                  {{-
+                    img
+                    | image_url: width: 780
+                    | image_tag:
+                      width: img.width,
+                      height: img.height,
+                      alt: img_alt,
+                      sizes: '(min-width: 1264px) 249px, (min-width: 950px) 21vw, (min-width: 552px) 260px, 50vw',
+                      widths: '260, 390, 520, 780',
+                      loading: 'lazy',
+                      decoding: 'async'
+                  -}}
+                {%- else -%}
+                  {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
     {%- endif -%}
   </div>
 </section>

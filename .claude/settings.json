@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(shopify theme publish)",
+      "Bash(shopify theme publish:*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/protect-shrine-core.mjs\""
+          }
+        ]
+      }
+    ]
+  }
+}

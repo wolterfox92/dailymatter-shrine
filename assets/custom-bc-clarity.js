@@ -34,6 +34,7 @@ const CTA_SOURCES = [
 const ERROR_EVENTS = {
   email: 'signup_err_email',
   consent: 'signup_err_consent',
+  flavour: 'signup_err_flavour',
   config: 'signup_err_api',
   api: 'signup_err_api',
 };
@@ -156,14 +157,30 @@ document.addEventListener('bc:signup-error', (event) => {
   upgrade('signup_error');
 });
 
+/* De smaakkeuze in het formulier is een dimensie, geen actie: als tag filtert hij
+   recordings ("wie Tropical Pineapple koos, haakte af bij …"), als event zou hij bij
+   dit verkeer drie losse tellingen van niets opleveren. De echte inventarisatie
+   staat in Klaviyo. Een smaaknaam is geen persoonsgegeven. */
+document.addEventListener('change', (event) => {
+  const input = event.target;
+  if (!(input instanceof Element)) return;
+  if (!input.matches('[data-bc-flavour] input[name="flavour"]')) return;
+
+  tag('flavour', input.value);
+});
+
 /* ---- Interest signals --------------------------------------------------- */
 
 document.addEventListener('click', (event) => {
   const target = event.target;
   if (!(target instanceof Element)) return;
 
-  if (target.closest('[data-bc-survey] [data-bc-option]')) {
+  const option = target.closest('[data-bc-survey] [data-bc-option]');
+  if (option) {
     track('survey_answer');
+    // Staat de smaakvraag ná de aanmelding, dan komt de keuze hier binnen. Zelfde
+    // tag als de variant in het formulier, zodat de plek de meting niet verandert.
+    if (option.matches('.bc-survey__option--flavour')) tag('flavour', option.value);
     return;
   }
 
