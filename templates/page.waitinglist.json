@@ -152,7 +152,7 @@
         "heading": "Energie? Het begint bij een goede basis.",
         "heading_size_min": 28,
         "heading_size_max": 38,
-        "body": "<p>Werk, studie, sport, vrienden en alles wat daar tussendoor gebeurt. Goed voor jezelf zorgen helpt, maar wordt al snel nóg iets om bij te houden. Meerdere potten, losse scheppen en ingewikkelde routines passen niet altijd in het echte leven.</p>",
+        "body": "<p>Werk, studie, sport, vrienden en alles wat daar tussendoor gebeurt. Goed voor jezelf zorgen helpt, maar wordt al snel nóg iets om bij te houden.</p><p>Door de dag heen gebruikt je lichaam continu vocht, mineralen en voedingsstoffen. Je beweegt, denkt, zweet, werkt en gaat door. Ondertussen vragen processen die bijdragen aan je normale energiehuishouding iedere dag opnieuw om de juiste bouwstenen.</p>",
         "lead": "<p>Daarom brengen we de dagelijkse basis voor energie, focus en fysieke prestaties samen in één sachet. </p>",
         "bg_color": "#ffffff",
         "eyebrow_color": "#634c61",
@@ -175,6 +175,7 @@
       "block_order": [
         "image_gREGa7"
       ],
+      "disabled": true,
       "settings": {
         "eyebrow": "Everyday energy",
         "heading": "Drukke dagen kennen we allemaal",
