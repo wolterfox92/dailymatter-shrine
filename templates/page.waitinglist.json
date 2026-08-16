@@ -36,6 +36,20 @@
     "hero": {
       "type": "custom-bc-hero",
       "blocks": {
+        "chip-4": {
+          "type": "chip",
+          "settings": {
+            "icon": "check",
+            "text": "Dagelijkse energie"
+          }
+        },
+        "chip-3": {
+          "type": "chip",
+          "settings": {
+            "icon": "check",
+            "text": "Mentale scherpte"
+          }
+        },
         "chip-1": {
           "type": "chip",
           "settings": {
@@ -49,27 +63,13 @@
             "icon": "check",
             "text": "Boost fysieke prestaties"
           }
-        },
-        "chip-3": {
-          "type": "chip",
-          "settings": {
-            "icon": "check",
-            "text": "Mentale scherpte"
-          }
-        },
-        "chip-4": {
-          "type": "chip",
-          "settings": {
-            "icon": "check",
-            "text": "Dagelijkse energie"
-          }
         }
       },
       "block_order": [
-        "chip-1",
-        "chip-2",
+        "chip-4",
         "chip-3",
-        "chip-4"
+        "chip-1",
+        "chip-2"
       ],
       "settings": {
         "eyebrow": "",
