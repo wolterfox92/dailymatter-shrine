@@ -374,8 +374,8 @@
           "settings": {
             "icon": "fitness_center",
             "name": "Creatine Monohydraat",
-            "meta": "For intense efforts · 5 g per sachet",
-            "text": "<p>Creatine helpt fysieke prestaties te verhogen bij herhaalde, korte en intensieve inspanningen.** Het werkt niet als een directe stimulant: het effect komt door dagelijks gebruik.</p>"
+            "meta": "Boost fysieke prestaties",
+            "text": "<p>Creatine helpt je spieren snel energie beschikbaar te maken tijdens korte, intensieve inspanningen. Iedere dagelijkse dosering bevat 5 g creatinemonohydraat, goed voor 4,41 g creatine.</p><p><strong>Per sachet:</strong><br/>5g Creatine Monohydraat</p>"
           }
         },
         "ing-6": {
@@ -383,8 +383,8 @@
           "settings": {
             "icon": "grain",
             "name": "Sodium + potassium",
-            "meta": "Electrolytes included · [·· mg]",
-            "text": "<p>Iedere sachet bevat natrium en kalium: twee bekende elektrolyten.</p>"
+            "meta": "Dagelijkse elektrolyten",
+            "text": "<p>Natrium en kalium zijn elektrolyten: mineralen die van nature betrokken zijn bij de vocht- en mineralenbalans van je lichaam. Daarom zitten ze naast magnesium als vaste basis in Energy Matters.</p><p><strong>Per sachet:<br/></strong>300 mg natrium<br/>250 mg kalium<br/>690 mg chloride totaal</p>"
           }
         },
         "ing-2": {
@@ -392,8 +392,8 @@
           "settings": {
             "icon": "spa",
             "name": "Magnesium Bisglycinaat",
-            "meta": "For energy and less fatigue · [·· mg]",
-            "text": "<p>Magnesium ondersteunt een normale energiehuishouding en helpt vermoeidheid te verminderen. Het draagt daarnaast bij aan het normaal functioneren van het zenuwstelsel en aan een normale psychologische functie.</p>"
+            "meta": "Voor energie + elektrolyten balans",
+            "text": "<p>Magnesium doet meerdere dingen tegelijk. Het draagt bij aan je energiestofwisseling, helpt vermoeidheid verminderen en ondersteunt een normale elektrolytenbalans. We gebruiken magnesium bisglycinaat als bron van magnesium.</p><p><strong>Per sachet:<br/></strong>125mg Magnesium Bisglycinaat</p><p><em>*Magnesium draagt bij aan een normaal energieleverend metabolisme, de vermindering van vermoeidheid en moeheid en een goede elektrolytenbalans.</em></p><h3></h3>"
           }
         },
         "ing-3": {
@@ -401,8 +401,8 @@
           "settings": {
             "icon": "psychology",
             "name": "Vitamine B5",
-            "meta": "For mental performance · [·· mg · ··% RI]",
-            "text": "<p>Vitamine B5 draagt bij aan normale mentale prestaties, ondersteunt de energiehuishouding en helpt vermoeidheid te verminderen.</p>"
+            "meta": "Mentale presetaties",
+            "text": "<p>Vitamine B5, ook wel pantotheenzuur, ondersteunt niet alleen je normale energiehuishouding, maar draagt ook bij aan normale mentale prestaties. Precies daarom verdient het een plek in een formule voor je hele dag.</p><p><em>*Vitamine B5 draagt bij aan een normaal energieleverend metabolisme, normale mentale prestaties en de vermindering van vermoeidheid en moeheid.</em></p>"
           }
         },
         "ing-4": {
