@@ -38,6 +38,7 @@
       "blocks": {
         "chip-4": {
           "type": "chip",
+          "disabled": true,
           "settings": {
             "icon": "check",
             "text": "Dagelijkse energie"
@@ -45,6 +46,7 @@
         },
         "chip-3": {
           "type": "chip",
+          "disabled": true,
           "settings": {
             "icon": "check",
             "text": "Mentale scherpte"
@@ -52,6 +54,7 @@
         },
         "chip-1": {
           "type": "chip",
+          "disabled": true,
           "settings": {
             "icon": "check",
             "text": "Minder vermoeidheid"
@@ -59,6 +62,7 @@
         },
         "chip-2": {
           "type": "chip",
+          "disabled": true,
           "settings": {
             "icon": "check",
             "text": "Boost fysieke prestaties"
@@ -129,6 +133,8 @@
       "settings": {
         "speed": 12,
         "separator_icon": "bolt",
+        "text_size_mobile": 15,
+        "text_size_desktop": 17,
         "bg_color": "#ffffff",
         "text_color": "#9787e9"
       }
@@ -574,6 +580,73 @@
         "body_color": "#2f1616"
       }
     },
+    "package": {
+      "type": "custom-bc-package",
+      "blocks": {
+        "item-1": {
+          "type": "item",
+          "settings": {
+            "icon": "check",
+            "text": "30 dagelijkse sachets · één per dag"
+          }
+        },
+        "item-2": {
+          "type": "item",
+          "settings": {
+            "icon": "check",
+            "text": "Meng met 500 ml koud water"
+          }
+        },
+        "item-3": {
+          "type": "item",
+          "settings": {
+            "icon": "check",
+            "text": "Zonder cafeïne · zonder toegevoegde suikers*"
+          }
+        },
+        "item-4": {
+          "type": "item",
+          "settings": {
+            "icon": "check",
+            "text": "GRATIS Daily Matters bottle t.w.v. 17,95"
+          }
+        }
+      },
+      "block_order": [
+        "item-1",
+        "item-2",
+        "item-3",
+        "item-4"
+      ],
+      "settings": {
+        "eyebrow": "What you'll get",
+        "heading": "Your 30-day foundation.",
+        "heading_size_min": 28,
+        "heading_size_max": 38,
+        "flag": "Eerste batch",
+        "card_title": "Energy Matters — Black Cherry",
+        "product": "daily-elektrolyte",
+        "discount_percent": 25,
+        "money_format": "compact",
+        "price_title": "Jouw prijs als early adopter",
+        "now_label": "Prijs voor de wachtlijst",
+        "compare_label": "Normale prijs",
+        "saving_prefix": "Je bespaart",
+        "price_label": "",
+        "delivery_title": "Verwachte levering",
+        "delivery_label": "November 2026",
+        "bg_color": "#ffffff",
+        "eyebrow_color": "#25162f",
+        "heading_color": "#25162f",
+        "card_bg_color": "#cac0ff",
+        "flag_bg_color": "#25162f",
+        "flag_text_color": "#f8f8ed",
+        "price_now_color": "#25162f",
+        "price_was_color": "#25162f",
+        "badge_bg_color": "#cbff78",
+        "badge_text_color": "#25162f"
+      }
+    },
     "signup": {
       "type": "custom-bc-signup",
       "blocks": {
@@ -686,75 +759,8 @@
         "perk_icon_bg_color": "#25162f",
         "perk_icon_color": "#cbff78",
         "perk_text_color": "#25162f",
-        "submit_bg_color": "#CCFA78",
-        "submit_text_color": "#221B3B"
-      }
-    },
-    "package": {
-      "type": "custom-bc-package",
-      "blocks": {
-        "item-1": {
-          "type": "item",
-          "settings": {
-            "icon": "check",
-            "text": "30 dagelijkse sachets · één per dag"
-          }
-        },
-        "item-2": {
-          "type": "item",
-          "settings": {
-            "icon": "check",
-            "text": "Meng met 500 ml koud water"
-          }
-        },
-        "item-3": {
-          "type": "item",
-          "settings": {
-            "icon": "check",
-            "text": "Zonder cafeïne · zonder toegevoegde suikers*"
-          }
-        },
-        "item-4": {
-          "type": "item",
-          "settings": {
-            "icon": "check",
-            "text": "GRATIS Daily Matters bottle t.w.v. 17,95"
-          }
-        }
-      },
-      "block_order": [
-        "item-1",
-        "item-2",
-        "item-3",
-        "item-4"
-      ],
-      "settings": {
-        "eyebrow": "What you'll get",
-        "heading": "Your 30-day foundation.",
-        "heading_size_min": 28,
-        "heading_size_max": 38,
-        "flag": "Eerste batch",
-        "card_title": "Energy Matters — Black Cherry",
-        "product": "daily-elektrolyte",
-        "discount_percent": 25,
-        "money_format": "compact",
-        "price_title": "Jouw prijs als early adopter",
-        "now_label": "Prijs voor de wachtlijst",
-        "compare_label": "Normale prijs",
-        "saving_prefix": "Je bespaart",
-        "price_label": "",
-        "delivery_title": "Verwachte levering",
-        "delivery_label": "November 2026",
-        "bg_color": "#ffffff",
-        "eyebrow_color": "#25162f",
-        "heading_color": "#25162f",
-        "card_bg_color": "#cac0ff",
-        "flag_bg_color": "#25162f",
-        "flag_text_color": "#f8f8ed",
-        "price_now_color": "#25162f",
-        "price_was_color": "#25162f",
-        "badge_bg_color": "#cbff78",
-        "badge_text_color": "#25162f"
+        "submit_bg_color": "#ccfa78",
+        "submit_text_color": "#221b3b"
       }
     },
     "faq": {
