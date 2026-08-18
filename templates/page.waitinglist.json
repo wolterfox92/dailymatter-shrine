@@ -504,12 +504,12 @@
         "flavour-3"
       ],
       "settings": {
-        "eyebrow": "First drop flavours",
-        "heading": "Meet the flavours.",
+        "eyebrow": "Meet the flavours.",
+        "heading": "Energy Matters",
         "heading_size_min": 32,
         "heading_size_max": 44,
-        "body": "<p>Energy Matters lanceert in drie smaken. Alle drie fruitig en licht fris, zonder te voelen als siroop, snoep of een overdreven zoete sportdrank.</p>",
-        "note": "<p><a href=\"#bc-signup\">Zeg bij je aanmelding welke jij als eerste wilt proberen.</a></p>",
+        "body": "<p>Because there’s a lot worth showing up for.</p><p>Energy Matters lanceert in drie smaken. Alle drie fruitig en licht fris, zonder te voelen als siroop, snoep of een overdreven zoete sportdrank.</p>",
+        "note": "",
         "scroller_label": "Smaken van de eerste batch",
         "axis_1": "Fruity",
         "axis_2": "Sweet",
