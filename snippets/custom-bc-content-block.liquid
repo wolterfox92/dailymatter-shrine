@@ -1,0 +1,114 @@
+{%- doc -%}
+  Rendert één inhoudsblok met de gedeelde bc-primitives (.bc-eyebrow, .bc-h2,
+  .bc-body, .bc-media, .bc-btn).
+
+  De markup staat los van de sectie zodat meerdere BC-secties dezelfde
+  blokkenset kunnen aanbieden zonder de opmaak te kopiëren. De schema's zelf
+  moeten per sectie herhaald worden: Shopify kan schema-JSON niet delen.
+
+  App-blokken ('@app') horen hier niet: die rendert de sectie zelf, omdat
+  "render block" alleen binnen een sectie ondersteund is.
+
+  @param {object} block - Een blok uit section.blocks.
+  @param {string} [context] - 'column' als het blok in een desktopkolom staat
+    (helft van de container), anders volle sectiebreedte. Bepaalt alleen het
+    sizes-attribuut van afbeeldingen.
+
+  @example
+  {% render 'custom-bc-content-block', block: block, context: 'column' %}
+{%- enddoc -%}
+
+{%- liquid
+  assign b = block.settings
+-%}
+
+{%- case block.type -%}
+  {%- when 'eyebrow' -%}
+    {%- if b.text != blank -%}
+      <p class="bc-eyebrow" {{ block.shopify_attributes }}>{{ b.text | escape }}</p>
+    {%- endif -%}
+
+  {%- when 'heading' -%}
+    {%- if b.text != blank -%}
+      {%- if b.level == 'h3' -%}
+        <h3 class="bc-h3" {{ block.shopify_attributes }}>{{ b.text | escape }}</h3>
+      {%- else -%}
+        <h2 class="bc-h2" {{ block.shopify_attributes }}>{{ b.text | escape }}</h2>
+      {%- endif -%}
+    {%- endif -%}
+
+  {%- when 'text' -%}
+    {%- if b.text != blank -%}
+      <div class="bc-body" {{ block.shopify_attributes }}>{{ b.text }}</div>
+    {%- endif -%}
+
+  {%- when 'lead' -%}
+    {%- if b.text != blank -%}
+      <div class="bc-body bc-body--lead" {{ block.shopify_attributes }}>{{ b.text }}</div>
+    {%- endif -%}
+
+  {%- when 'image' -%}
+    {%- liquid
+      assign img = b.image
+
+      # Alt vooraf samenstellen: een filter binnen een image_tag-argument werkt
+      # op de hele tag en sloopt de <img>.
+      assign img_alt = img.alt | default: b.alt_fallback | strip_html | escape
+
+      # In een kolom is het beeld op desktop een halve container (~570px), in
+      # één kolom óf de volle 1200px óf de leesmaat van 640px.
+      assign img_sizes = '(min-width: 1264px) 570px, (min-width: 950px) 45vw, (min-width: 552px) 520px, 100vw'
+      assign width_class = ''
+      unless context == 'column'
+        if b.width == 'measure'
+          assign img_sizes = '(min-width: 1264px) 640px, (min-width: 950px) 55vw, (min-width: 552px) 520px, 100vw'
+          assign width_class = ' bc-content__img--measure'
+        else
+          assign img_sizes = '(min-width: 1264px) 1200px, (min-width: 950px) 92vw, (min-width: 552px) 520px, 100vw'
+        endif
+      endunless
+    -%}
+    <div class="bc-media bc-content__img bc-media--{{ b.ratio }}{{ width_class }}" {{ block.shopify_attributes }}>
+      {%- if img != blank -%}
+        {{-
+          img
+          | image_url: width: 1400
+          | image_tag:
+            width: img.width,
+            height: img.height,
+            alt: img_alt,
+            sizes: img_sizes,
+            widths: '260, 390, 520, 780, 1040, 1400',
+            loading: 'lazy',
+            decoding: 'async'
+        -}}
+      {%- else -%}
+        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+    </div>
+
+  {%- when 'button' -%}
+    {%- if b.label != blank -%}
+      <div class="bc-content__cta" {{ block.shopify_attributes }}>
+        <a
+          class="bc-btn bc-btn--{{ b.style }}{% if b.full_width %} bc-btn--full{% endif %}"
+          href="{{ b.link | default: '#bc-signup' }}"
+        >
+          {{- b.label | escape -}}
+        </a>
+      </div>
+    {%- endif -%}
+
+  {%- when 'spacer' -%}
+    {%- comment -%}
+      Leeg element: op deze pagina veilig omdat layout/custom-landing.liquid
+      Shrine's base.css niet laadt, en daarmee ook de `div:empty { display:
+      none }` regel niet.
+    {%- endcomment -%}
+    <div
+      class="bc-content__space"
+      style="--bc-space: {{ b.height }}px"
+      aria-hidden="true"
+      {{ block.shopify_attributes }}
+    ></div>
+{%- endcase -%}

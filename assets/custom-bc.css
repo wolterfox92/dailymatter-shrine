@@ -162,6 +162,20 @@ bc-sticky-cta {
   line-height: 0.98;
 }
 
+/* Tussenkop binnen een sectie. Zit bewust niet in de .bc-h1/.bc-h2 groep: die
+   twee dragen de marge van hun vaste plek in het ontwerp, de h3 wordt alleen
+   in de vrije contentflow gebruikt en haalt zijn ritme daar vandaan. */
+.bc-h3 {
+  margin: 0;
+  font-family: var(--bc-font-display);
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: pretty;
+  color: var(--bc-heading-color, var(--bc-ink));
+}
+
 .bc-body {
   margin: 14px 0 0;
   font-size: 15px;
@@ -416,6 +430,79 @@ bc-sticky-cta {
 
 .bc-acc[open] .bc-acc__chev {
   transform: rotate(180deg);
+}
+
+/* ============================================================
+   Vrije content (custom-bc-content)
+   ------------------------------------------------------------
+   Deze sectie zet de blokken in de volgorde uit de editor neer, dus de
+   primitives kunnen hier niet uitgaan van de vaste opbouw (eyebrow -> kop ->
+   tekst) waar hun eigen marges vanuit gaan. Vandaar één basisritme voor
+   opeenvolgende blokken, met uitzonderingen voor de paren die het ontwerp
+   strak op elkaar zet.
+
+   Alles staat op twee klassen diep, zodat de desktoplaag onderaan dit bestand
+   (die .bc-body en vrienden opnieuw zet) deze marges niet overschrijft.
+   ============================================================ */
+
+.bc-content .bc-content__col > * + * {
+  margin-top: 22px;
+}
+
+.bc-content .bc-content__col > .bc-eyebrow + .bc-h2,
+.bc-content .bc-content__col > .bc-eyebrow + .bc-h3 {
+  margin-top: 8px;
+}
+
+.bc-content .bc-content__col > .bc-h2 + .bc-body,
+.bc-content .bc-content__col > .bc-h3 + .bc-body {
+  margin-top: 14px;
+}
+
+.bc-content .bc-content__col > .bc-body + .bc-body--lead {
+  margin-top: 10px;
+}
+
+/* Het ritme loopt per kolom (child combinator), dus het eerste blok van de
+   rechterkolom krijgt geen marge. Op mobiel staat dat blok gewoon onder de
+   linkerkolom en heeft het er wel één nodig; de desktoplaag zet hem weer op
+   nul zodra de kolommen naast elkaar staan. */
+.bc-content .bc-split__aside > :first-child {
+  margin-top: 22px;
+}
+
+/* Een ruimte-blok zet zijn eigen hoogte; het basisritme zou daar aan beide
+   kanten nog eens 22px bovenop doen. */
+.bc-content .bc-content__col > .bc-content__space,
+.bc-content .bc-content__col > .bc-content__space + * {
+  margin-top: 0;
+}
+
+.bc-content__space {
+  height: var(--bc-space, 24px);
+}
+
+.bc-content__img {
+  border-radius: var(--bc-radius-lg);
+}
+
+/* Verhoudingen voor losse beelden. Zonder modifier houdt het beeld zijn eigen
+   verhouding: .bc-media img krijgt height:100% van een auto-hoge ouder, wat
+   op auto uitkomt. */
+.bc-media--square {
+  aspect-ratio: 1 / 1;
+}
+
+.bc-media--portrait {
+  aspect-ratio: 4 / 5;
+}
+
+.bc-media--photo {
+  aspect-ratio: 3 / 2;
+}
+
+.bc-media--wide {
+  aspect-ratio: 16 / 10;
 }
 
 /* ============================================================
@@ -1857,6 +1944,12 @@ bc-sticky-cta {
     min-width: 0;
   }
 
+  /* Gecentreerd is de standaard (zie .bc-split). Bij ongelijke kolommen leest
+     bovenaan uitlijnen beter, vandaar de modifier. */
+  .bc-split--top {
+    align-items: start;
+  }
+
   /* Long-form copy never runs the full half-column: ~56 characters is the
      comfortable measure at 17px. */
   .bc-split__body .bc-body {
@@ -2400,6 +2493,40 @@ bc-sticky-cta {
     width: auto;
     min-width: 240px;
     margin-left: auto;
+  }
+
+  /* ---- Vrije content ---------------------------------------- */
+
+  .bc-h3 {
+    font-size: 26px;
+  }
+
+  .bc-content .bc-content__col > * + * {
+    margin-top: 26px;
+  }
+
+  .bc-content .bc-split__aside > :first-child {
+    margin-top: 0;
+  }
+
+  /* In één kolom loopt de tekst nooit de volle 1200px: dezelfde leesmaat als de
+     kopblokken van Oplossing en Pijlers. Beeld volgt die maat alleen als de
+     merchant dat kiest. */
+  .bc-content--single .bc-content__col > .bc-eyebrow,
+  .bc-content--single .bc-content__col > .bc-h2,
+  .bc-content--single .bc-content__col > .bc-h3,
+  .bc-content--single .bc-content__col > .bc-body {
+    max-width: 640px;
+  }
+
+  .bc-content__img--measure {
+    max-width: 640px;
+  }
+
+  /* Volle breedte was een duimbeslissing; hier zou het een lozenge van 1200px
+     worden. */
+  .bc-content .bc-btn--full {
+    width: auto;
   }
 
 }

@@ -1,0 +1,410 @@
+{%- comment -%}
+  Black Cherry waitlist — vrije tekst- en beeldsectie.
+
+  Alle inhoud zit in blokken, niets in vaste sectie-instellingen, zodat de
+  volgorde in de editor de volgorde op de pagina is. De opmaak per blok komt
+  uit snippets/custom-bc-content-block.liquid, zodat andere BC-secties later
+  dezelfde blokkenset kunnen aanbieden.
+
+  Twee kolommen op desktop werkt met dezelfde .bc-split primitive als de andere
+  secties: de wrappers zijn op mobiel display:contents, dus daar staat alles
+  gewoon onder elkaar — eerst de linker-, dan de rechterblokken. Staat één van
+  beide kolommen leeg, dan valt de sectie terug op één doorlopende kolom in
+  plaats van een halfbezet raster.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+
+  assign left_count = 0
+  assign right_count = 0
+  for block in section.blocks
+    if block.settings.column == 'right'
+      assign right_count = right_count | plus: 1
+    else
+      assign left_count = left_count | plus: 1
+    endif
+  endfor
+
+  assign is_split = false
+  if s.layout == 'split' and left_count > 0 and right_count > 0
+    assign is_split = true
+  endif
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .bc-content {
+    background: {{ s.bg_color }};
+    --bc-eyebrow-color: {{ s.eyebrow_color }};
+    --bc-heading-color: {{ s.heading_color }};
+    --bc-body-color: {{ s.body_color }};
+    --bc-lead-color: {{ s.lead_color }};
+    --bc-h2-size: clamp({{ s.heading_size_min }}px, 7.6vw, {{ s.heading_size_max }}px);
+  }
+{%- endstyle -%}
+
+<section class="bc-content bc-content--{% if is_split %}split{% else %}single{% endif %}">
+  {%- if is_split -%}
+    <div class="bc-inner bc-split{% if s.split_align == 'start' %} bc-split--top{% endif %}">
+      <div class="bc-split__body bc-content__col">
+        {%- for block in section.blocks -%}
+          {%- unless block.settings.column == 'right' -%}
+            {%- if block.type == '@app' -%}
+              {% render block %}
+            {%- else -%}
+              {% render 'custom-bc-content-block', block: block, context: 'column' %}
+            {%- endif -%}
+          {%- endunless -%}
+        {%- endfor -%}
+      </div>
+
+      <div class="bc-split__aside bc-content__col">
+        {%- for block in section.blocks -%}
+          {%- if block.settings.column == 'right' -%}
+            {% render 'custom-bc-content-block', block: block, context: 'column' %}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- else -%}
+    <div class="bc-inner bc-content__col">
+      {%- for block in section.blocks -%}
+        {%- if block.type == '@app' -%}
+          {% render block %}
+        {%- else -%}
+          {% render 'custom-bc-content-block', block: block %}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "BC · Tekst & beeld",
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout op desktop",
+      "info": "Op mobiel staat alles altijd onder elkaar in de blokvolgorde. Bij twee kolommen kiest elk blok links of rechts, en komen op mobiel eerst alle linker- en daarna alle rechterblokken.",
+      "options": [
+        { "value": "single", "label": "Eén kolom" },
+        { "value": "split", "label": "Twee kolommen" }
+      ],
+      "default": "single"
+    },
+    {
+      "type": "select",
+      "id": "split_align",
+      "label": "Kolommen uitlijnen",
+      "info": "Alleen bij twee kolommen.",
+      "options": [
+        { "value": "center", "label": "Gecentreerd" },
+        { "value": "start", "label": "Bovenaan" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Koppen"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_min",
+      "min": 20,
+      "max": 44,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading minimum",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "heading_size_max",
+      "min": 26,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading maximum",
+      "default": 38
+    },
+    {
+      "type": "header",
+      "content": "Kleuren"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Achtergrond",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow",
+      "default": "#634c61"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#180223"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Tekst",
+      "default": "#52415a"
+    },
+    {
+      "type": "color",
+      "id": "lead_color",
+      "label": "Uitgelichte zin",
+      "default": "#180223"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "eyebrow",
+      "name": "Eyebrow",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Tekst",
+          "default": "Kort label"
+        },
+        {
+          "type": "select",
+          "id": "column",
+          "label": "Kolom op desktop",
+          "info": "Alleen als de sectie op twee kolommen staat.",
+          "options": [
+            { "value": "left", "label": "Links" },
+            { "value": "right", "label": "Rechts" }
+          ],
+          "default": "left"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "name": "Kop",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Tekst",
+          "default": "Een kop voor dit stuk."
+        },
+        {
+          "type": "select",
+          "id": "level",
+          "label": "Niveau",
+          "info": "H2 is de sectiekop, H3 een tussenkop daarbinnen. Sla geen niveaus over.",
+          "options": [
+            { "value": "h2", "label": "H2 · sectiekop" },
+            { "value": "h3", "label": "H3 · tussenkop" }
+          ],
+          "default": "h2"
+        },
+        {
+          "type": "select",
+          "id": "column",
+          "label": "Kolom op desktop",
+          "info": "Alleen als de sectie op twee kolommen staat.",
+          "options": [
+            { "value": "left", "label": "Links" },
+            { "value": "right", "label": "Rechts" }
+          ],
+          "default": "left"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Tekst",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Tekst",
+          "default": "<p>Vervang deze tekst. Meerdere alinea's mogen in één tekstblok, maar losse blokken kun je verslepen — handig als er een afbeelding tussen moet.</p>"
+        },
+        {
+          "type": "select",
+          "id": "column",
+          "label": "Kolom op desktop",
+          "info": "Alleen als de sectie op twee kolommen staat.",
+          "options": [
+            { "value": "left", "label": "Links" },
+            { "value": "right", "label": "Rechts" }
+          ],
+          "default": "left"
+        }
+      ]
+    },
+    {
+      "type": "lead",
+      "name": "Uitgelichte zin",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Tekst",
+          "default": "<p>Eén zin die eruit springt.</p>"
+        },
+        {
+          "type": "select",
+          "id": "column",
+          "label": "Kolom op desktop",
+          "info": "Alleen als de sectie op twee kolommen staat.",
+          "options": [
+            { "value": "left", "label": "Links" },
+            { "value": "right", "label": "Rechts" }
+          ],
+          "default": "left"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Afbeelding",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Afbeelding"
+        },
+        {
+          "type": "select",
+          "id": "ratio",
+          "label": "Verhouding",
+          "options": [
+            { "value": "auto", "label": "Zoals aangeleverd" },
+            { "value": "square", "label": "Vierkant · 1:1" },
+            { "value": "portrait", "label": "Staand · 4:5" },
+            { "value": "photo", "label": "Liggend · 3:2" },
+            { "value": "wide", "label": "Breed · 16:10" }
+          ],
+          "default": "wide"
+        },
+        {
+          "type": "select",
+          "id": "width",
+          "label": "Breedte op desktop",
+          "info": "Alleen bij één kolom. Tekstbreedte houdt het beeld even breed als de alinea's.",
+          "options": [
+            { "value": "measure", "label": "Tekstbreedte" },
+            { "value": "full", "label": "Volle breedte" }
+          ],
+          "default": "measure"
+        },
+        {
+          "type": "text",
+          "id": "alt_fallback",
+          "label": "Alt-tekst (terugval)",
+          "info": "Gebruikt als de afbeelding zelf geen alt-tekst heeft."
+        },
+        {
+          "type": "select",
+          "id": "column",
+          "label": "Kolom op desktop",
+          "info": "Alleen als de sectie op twee kolommen staat.",
+          "options": [
+            { "value": "left", "label": "Links" },
+            { "value": "right", "label": "Rechts" }
+          ],
+          "default": "left"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "Knop",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Tekst",
+          "default": "Join the first drop"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "info": "Leeg laten linkt naar het aanmeldformulier (#bc-signup)."
+        },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Stijl",
+          "options": [
+            { "value": "primary", "label": "Lime" },
+            { "value": "dark", "label": "Donker" }
+          ],
+          "default": "primary"
+        },
+        {
+          "type": "checkbox",
+          "id": "full_width",
+          "label": "Volle breedte op mobiel",
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "column",
+          "label": "Kolom op desktop",
+          "info": "Alleen als de sectie op twee kolommen staat.",
+          "options": [
+            { "value": "left", "label": "Links" },
+            { "value": "right", "label": "Rechts" }
+          ],
+          "default": "left"
+        }
+      ]
+    },
+    {
+      "type": "spacer",
+      "name": "Ruimte",
+      "settings": [
+        {
+          "type": "range",
+          "id": "height",
+          "min": 4,
+          "max": 80,
+          "step": 4,
+          "unit": "px",
+          "label": "Hoogte",
+          "default": 24
+        },
+        {
+          "type": "select",
+          "id": "column",
+          "label": "Kolom op desktop",
+          "info": "Alleen als de sectie op twee kolommen staat.",
+          "options": [
+            { "value": "left", "label": "Links" },
+            { "value": "right", "label": "Rechts" }
+          ],
+          "default": "left"
+        }
+      ]
+    },
+    { "type": "@app" }
+  ],
+  "presets": [
+    {
+      "name": "BC · Tekst & beeld",
+      "blocks": [
+        { "type": "eyebrow" },
+        { "type": "heading" },
+        { "type": "text" },
+        { "type": "image" },
+        { "type": "text" }
+      ]
+    }
+  ]
+}
+{% endschema %}
