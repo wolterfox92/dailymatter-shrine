@@ -353,6 +353,13 @@ bc-sticky-cta {
   aspect-ratio: 16 / 9;
 }
 
+/* Oplossing-sectie toont vierkante stapbeelden; de pillars-kaarten op dezelfde
+   pagina houden hun 16/9 (mobiel) en 16/10 (desktop). Hogere specificiteit dan
+   de desktop-override verderop, dus deze regel geldt op elke breedte. */
+.bc-solution .bc-card__media {
+  aspect-ratio: 1 / 1;
+}
+
 .bc-card__body {
   padding: 16px 18px 18px;
 }
@@ -721,6 +728,127 @@ bc-sticky-cta {
   grid-column: span 2;
   aspect-ratio: 16 / 10;
   border-radius: var(--bc-radius-lg);
+}
+
+/* ============================================================
+   4b · Voordelen (multi column)
+   ============================================================ */
+
+/* Dezelfde native opzet als de smakenslider: overflow + scroll-snap, geen JS.
+   De scroller is de focusbare laag zodat pijltjestoetsen het alternatief voor
+   vegen zijn (label en tabindex staan in de Liquid); de tegels zelf bevatten
+   niets klikbaars. Negatieve marge plus eigen padding laat de rij tot de rand
+   van de sectie doorlopen terwijl de eerste tegel op de kop uitlijnt. */
+.bc-benefits__scroller {
+  margin: 22px calc(var(--bc-gutter) * -1) 0;
+  padding: 0 var(--bc-gutter);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--bc-gutter);
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.bc-benefits__scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.bc-benefits__scroller:focus-visible {
+  outline: 2px solid var(--bc-benefit-text, var(--bc-ink));
+  outline-offset: -2px;
+}
+
+.bc-benefits__track {
+  --bc-benefits-gap: 8px;
+
+  display: flex;
+  gap: var(--bc-benefits-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Aan het eind van de scroll telt alleen de border box van de tegels mee, dus
+   worden de padding van de scroller en een marge op de laatste tegel allebei
+   genegeerd. Een echt element niet. De gap levert het eerste stuk al. */
+.bc-benefits__track::after {
+  content: "";
+  flex: 0 0 calc(var(--bc-gutter) - var(--bc-benefits-gap));
+}
+
+/* Alle tegels even breed, zonder krimpen: dat is wat de rij een slider maakt in
+   plaats van een raster. 56% laat de volgende tegel net voorbij de rand piepen
+   — de enige affordance dat er meer staat; de cap houdt hem op een brede
+   telefoon of portretttablet in verhouding. */
+.bc-benefit {
+  display: flex;
+  flex: 0 0 min(56%, 240px);
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 12px;
+  border-radius: var(--bc-radius-md);
+  background: var(--bc-benefit-bg, var(--bc-cream));
+  text-align: center;
+  scroll-snap-align: start;
+}
+
+.bc-benefit__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--bc-radius-pill);
+  background: var(--bc-lime);
+  color: var(--bc-green-ink);
+}
+
+/* Volle breedte in plaats van fit-content: de titel breekt dan af op de breedte
+   van de tegel, niet op zijn eigen max-content. */
+.bc-benefit__label {
+  width: 100%;
+  min-width: 0;
+}
+
+.bc-benefit__title {
+  margin: 0;
+  font-family: var(--bc-font-sans);
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+  color: var(--bc-benefit-text, var(--bc-ink));
+}
+
+/* Doorschijnend in plaats van een eigen kleurinstelling: zo blijft de bijtekst
+   leesbaar op elke tegelkleur die de merchant kiest, zonder tweede setting. */
+.bc-benefit__text {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  text-wrap: pretty;
+  color: var(--bc-benefit-text, var(--bc-ink));
+  opacity: 0.75;
+}
+
+.bc-benefit__text > :first-child {
+  margin-top: 0;
+}
+
+.bc-benefit__text > :last-child {
+  margin-bottom: 0;
+}
+
+.bc-benefits__note {
+  margin: 12px 0 0;
+  font-size: 11.5px;
+  line-height: 1.6;
+  text-wrap: pretty;
+  color: var(--bc-grape);
 }
 
 /* ============================================================
@@ -2089,6 +2217,56 @@ bc-sticky-cta {
 
   .bc-pillar .bc-card__body {
     padding: 20px 24px 24px;
+  }
+
+  /* ---- 4b · Voordelen --------------------------------------- */
+
+  /* Zelfde leesmaat voor het kopblok als bij Oplossing en Pijlers; het raster
+     zelf gebruikt de volle container. */
+  .bc-benefits .bc-inner > .bc-eyebrow,
+  .bc-benefits .bc-inner > .bc-h2,
+  .bc-benefits .bc-inner > .bc-body {
+    max-width: 640px;
+  }
+
+  .bc-benefits__scroller {
+    margin-top: 32px;
+  }
+
+  .bc-benefits__track {
+    --bc-benefits-gap: 12px;
+  }
+
+  /* Passen ze alle vijf, dan is er niets te scrollen en zou de spacer alleen een
+     gat aan de rechterkant maken. */
+  .bc-benefits__track::after {
+    content: none;
+  }
+
+  /* Groeien in plaats van een vaste breedte: de tegels verdelen de rij gelijk
+     over de volle container. Zet een merchant er zoveel in dat 190px niet meer
+     past, dan scrollt de rij weer — krimpen zou de tekst onleesbaar maken. */
+  .bc-benefit {
+    flex: 1 0 190px;
+    gap: 12px;
+    padding: 20px 18px;
+  }
+
+  .bc-benefit__badge {
+    width: 38px;
+    height: 38px;
+  }
+
+  .bc-benefit__title {
+    font-size: 15px;
+  }
+
+  .bc-benefit__text {
+    font-size: 13.5px;
+  }
+
+  .bc-benefits__note {
+    font-size: 12.5px;
   }
 
   /* ---- 6 · Ingredients -------------------------------------- */

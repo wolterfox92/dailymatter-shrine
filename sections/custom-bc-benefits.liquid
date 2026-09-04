@@ -1,0 +1,248 @@
+{%- comment -%}
+  Black Cherry waitlist — multi column "What one daily sachet does".
+
+  Eén rij korte voordelen: icooncirkel gecentreerd boven het label. Bewust
+  dezelfde bouwstenen als de ingrediëntenlijst (lime badge) en de weekstrip,
+  zodat de sectie tussen Oplossing en Pijlers niet als een vreemd element leest.
+
+  De rij is een horizontale scroller met even brede tegels, dezelfde native
+  opzet als de smakenslider: scroll-snap en overflow, geen JavaScript. De
+  scroller is zelf focusbaar met een label, zodat pijltjestoetsen het
+  alternatief voor vegen zijn — de tegels bevatten niets klikbaars.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+
+  assign item_count = 0
+  for block in section.blocks
+    if block.type == 'benefit' and block.settings.title != blank
+      assign item_count = item_count | plus: 1
+    endif
+  endfor
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .bc-benefits {
+    background: {{ s.bg_color }};
+    --bc-eyebrow-color: {{ s.eyebrow_color }};
+    --bc-heading-color: {{ s.heading_color }};
+    --bc-body-color: {{ s.body_color }};
+    --bc-h2-size: clamp({{ s.heading_size_min }}px, 7.6vw, {{ s.heading_size_max }}px);
+    --bc-benefit-bg: {{ s.tile_bg_color }};
+    --bc-benefit-text: {{ s.tile_text_color }};
+  }
+
+  #shopify-section-{{ section.id }} .bc-benefit__badge {
+    background: {{ s.badge_bg_color }};
+    color: {{ s.badge_icon_color }};
+  }
+{%- endstyle -%}
+
+<section class="bc-benefits">
+  <div class="bc-inner">
+    {%- if s.eyebrow != blank -%}
+      <p class="bc-eyebrow">{{ s.eyebrow | escape }}</p>
+    {%- endif -%}
+
+    {%- if s.heading != blank -%}
+      <h2 class="bc-h2">{{ s.heading | escape }}</h2>
+    {%- endif -%}
+
+    {%- if s.body != blank -%}
+      <div class="bc-body">{{ s.body }}</div>
+    {%- endif -%}
+
+    {%- if item_count > 0 -%}
+      <div
+        class="bc-benefits__scroller"
+        role="region"
+        aria-label="{{ s.scroller_label | default: s.heading | escape }}"
+        tabindex="0"
+      >
+        <ul class="bc-benefits__track" role="list">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'benefit' and block.settings.title != blank -%}
+              <li class="bc-benefit" {{ block.shopify_attributes }}>
+                <span class="bc-benefit__badge">
+                  {% render 'custom-bc-icon', icon: block.settings.icon, size: 18 %}
+                </span>
+                <div class="bc-benefit__label">
+                  <h3 class="bc-benefit__title">{{ block.settings.title | escape }}</h3>
+                  {%- if block.settings.text != blank -%}
+                    <div class="bc-benefit__text">{{ block.settings.text }}</div>
+                  {%- endif -%}
+                </div>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+
+    {%- if s.note != blank -%}
+      <p class="bc-benefits__note">{{ s.note | escape }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "BC · Voordelen",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Daily benefits"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "What one daily sachet does"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_min",
+      "min": 20,
+      "max": 44,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading minimum",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "heading_size_max",
+      "min": 26,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading maximum",
+      "default": 38
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Tekst"
+    },
+    {
+      "type": "text",
+      "id": "scroller_label",
+      "label": "Label van de slider",
+      "info": "Voor schermlezers. Leeg = de heading van de sectie."
+    },
+    {
+      "type": "text",
+      "id": "note",
+      "label": "Voetnoot",
+      "info": "Kleine regel onder het raster, bijvoorbeeld voor claimverwijzingen."
+    },
+    {
+      "type": "header",
+      "content": "Kleuren"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Achtergrond",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow",
+      "default": "#634c61"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#180223"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Tekst",
+      "default": "#52415a"
+    },
+    {
+      "type": "color",
+      "id": "tile_bg_color",
+      "label": "Tegel achtergrond",
+      "info": "Zet gelijk aan de sectieachtergrond voor een raster zonder tegels.",
+      "default": "#f8f8ed"
+    },
+    {
+      "type": "color",
+      "id": "tile_text_color",
+      "label": "Tegel tekst",
+      "default": "#180223"
+    },
+    {
+      "type": "color",
+      "id": "badge_bg_color",
+      "label": "Icooncirkel achtergrond",
+      "default": "#cbff78"
+    },
+    {
+      "type": "color",
+      "id": "badge_icon_color",
+      "label": "Icooncirkel icoon",
+      "default": "#243511"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Voordeel",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icoon",
+          "options": [
+            { "value": "bolt", "label": "Bliksem" },
+            { "value": "brightness_5", "label": "Zon" },
+            { "value": "fitness_center", "label": "Halter" },
+            { "value": "spa", "label": "Blad" },
+            { "value": "water_drop", "label": "Druppel" },
+            { "value": "psychology", "label": "Hoofd" },
+            { "value": "grain", "label": "Korrels" },
+            { "value": "local_florist", "label": "Bloem" },
+            { "value": "check", "label": "Vinkje" }
+          ],
+          "default": "check"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titel",
+          "default": "Dagelijkse energie"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Tekst",
+          "info": "Optioneel. Laat leeg voor een compact raster."
+        }
+      ]
+    },
+    { "type": "@app" }
+  ],
+  "presets": [
+    {
+      "name": "BC · Voordelen",
+      "blocks": [
+        { "type": "benefit", "settings": { "icon": "bolt", "title": "Dagelijkse energie" } },
+        { "type": "benefit", "settings": { "icon": "brightness_5", "title": "Minder vermoeidheid" } },
+        { "type": "benefit", "settings": { "icon": "fitness_center", "title": "Boost fysieke prestaties" } },
+        { "type": "benefit", "settings": { "icon": "spa", "title": "Ondersteun herstel" } },
+        { "type": "benefit", "settings": { "icon": "water_drop", "title": "Blijf gehydrateerd" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

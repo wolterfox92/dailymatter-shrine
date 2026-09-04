@@ -331,6 +331,52 @@
         "badge_text_color": "#25162f"
       }
     },
+    "benefits": {
+      "type": "custom-bc-benefits",
+      "blocks": {
+        "benefit-1": {
+          "type": "benefit",
+          "settings": { "icon": "bolt", "title": "Dagelijkse energie" }
+        },
+        "benefit-2": {
+          "type": "benefit",
+          "settings": { "icon": "brightness_5", "title": "Minder vermoeidheid" }
+        },
+        "benefit-3": {
+          "type": "benefit",
+          "settings": { "icon": "fitness_center", "title": "Boost fysieke prestaties" }
+        },
+        "benefit-4": {
+          "type": "benefit",
+          "settings": { "icon": "spa", "title": "Ondersteun herstel" }
+        },
+        "benefit-5": {
+          "type": "benefit",
+          "settings": { "icon": "water_drop", "title": "Blijf gehydrateerd" }
+        }
+      },
+      "block_order": [
+        "benefit-1",
+        "benefit-2",
+        "benefit-3",
+        "benefit-4",
+        "benefit-5"
+      ],
+      "settings": {
+        "eyebrow": "Daily benefits",
+        "heading": "What one daily sachet does",
+        "heading_size_min": 28,
+        "heading_size_max": 38,
+        "bg_color": "#ffffff",
+        "eyebrow_color": "#634c61",
+        "heading_color": "#25162f",
+        "body_color": "#52415a",
+        "tile_bg_color": "#f5efe7",
+        "tile_text_color": "#25162f",
+        "badge_bg_color": "#cbff78",
+        "badge_icon_color": "#25162f"
+      }
+    },
     "pillars": {
       "type": "custom-bc-pillars",
       "blocks": {
@@ -923,6 +969,7 @@
     "divider_DUptLE",
     "color_switch_gMJeaA",
     "solution",
+    "benefits",
     "pillars",
     "ingredients",
     "flavour",
