@@ -849,6 +849,7 @@
     "final-cta": {
       "type": "custom-bc-final-cta",
       "settings": {
+        "image": "shopify://shop_images/Model_in_buitenlucht_met_sachet.webp",
         "heading": "Make it a daily matter.",
         "heading_size_min": 32,
         "heading_size_max": 42,
