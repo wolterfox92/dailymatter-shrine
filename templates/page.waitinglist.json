@@ -632,6 +632,14 @@
     "package": {
       "type": "custom-bc-package",
       "blocks": {
+        "image-1": {
+          "type": "image",
+          "settings": {}
+        },
+        "image-2": {
+          "type": "image",
+          "settings": {}
+        },
         "item-1": {
           "type": "item",
           "settings": {
@@ -662,6 +670,8 @@
         }
       },
       "block_order": [
+        "image-1",
+        "image-2",
         "item-1",
         "item-2",
         "item-3",

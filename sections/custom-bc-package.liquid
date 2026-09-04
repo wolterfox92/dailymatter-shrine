@@ -9,6 +9,18 @@
     what a waitlist page needs before the product exists.
 
   Delivery stays a text setting either way: "[najaar 2026]" is a guess, not a date.
+
+  De beelden zitten in blokken, zodat er meerdere in kunnen. Ze staan in een
+  horizontale scroller met dezelfde native opzet als de smaken- en
+  voordelenslider: scroll-snap en overflow, geen JavaScript. Bij één beeld
+  scrollt er niets en krijgt de scroller ook geen tabstop.
+
+  De losse afbeeldingsinstelling blijft bestaan als terugval voor wie nog geen
+  blokken heeft, net zoals de handmatige prijs terugvalt op het productveld.
+
+  De pijlknoppen zijn de enige laag met JavaScript (assets/custom-bc-slider.js).
+  Ze zijn puur affordance: zonder dat bestand blijft de slider gewoon werken via
+  vegen en pijltjestoetsen, en blijven de knoppen verborgen.
 {%- endcomment -%}
 
 {%- liquid
@@ -17,9 +29,12 @@
   assign image_alt = image.alt | default: s.card_title | strip_html | escape
 
   assign item_count = 0
+  assign image_count = 0
   for block in section.blocks
     if block.type == 'item'
       assign item_count = item_count | plus: 1
+    elsif block.type == 'image' and block.settings.image != blank
+      assign image_count = image_count | plus: 1
     endif
   endfor
 
@@ -98,23 +113,89 @@
     {%- endif -%}
 
     <div class="bc-package">
-      <div class="bc-media bc-package__media">
-        {%- if image != blank -%}
-          {{-
-            image
-            | image_url: width: 1040
-            | image_tag:
-              width: image.width,
-              height: image.height,
-              alt: image_alt,
-              sizes: '(min-width: 1264px) 482px, (min-width: 950px) 40vw, (min-width: 552px) 520px, 100vw',
-              widths: '390, 520, 780, 1040',
-              loading: 'lazy',
-              decoding: 'async'
-          -}}
-        {%- else -%}
-          {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-        {%- endif -%}
+      <div class="bc-package__media">
+        <bc-slider class="bc-slider">
+        {%- comment -%}
+          Label en tabstop alleen als er echt te scrollen valt: bij één beeld is
+          een focusbare regio een stop zonder doel.
+        {%- endcomment -%}
+        <div
+          class="bc-package__slider"
+          data-slider-scroller
+          {%- if image_count > 1 %}
+            role="region"
+            aria-label="{{ s.card_title | escape }}"
+            tabindex="0"
+          {%- endif %}
+        >
+          <ul class="bc-package__track" role="list">
+            {%- if image_count > 0 -%}
+              {%- for block in section.blocks -%}
+                {%- if block.type == 'image' and block.settings.image != blank -%}
+                  {%- liquid
+                    assign slide = block.settings.image
+                    assign slide_alt = slide.alt | default: s.card_title | strip_html | escape
+                  -%}
+                  <li class="bc-media bc-package__slide" {{ block.shopify_attributes }}>
+                    {{-
+                      slide
+                      | image_url: width: 1040
+                      | image_tag:
+                        width: slide.width,
+                        height: slide.height,
+                        alt: slide_alt,
+                        sizes: '(min-width: 1264px) 482px, (min-width: 950px) 40vw, (min-width: 552px) 520px, 100vw',
+                        widths: '390, 520, 780, 1040',
+                        loading: 'lazy',
+                        decoding: 'async'
+                    -}}
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
+            {%- else -%}
+              <li class="bc-media bc-package__slide">
+                {%- if image != blank -%}
+                  {{-
+                    image
+                    | image_url: width: 1040
+                    | image_tag:
+                      width: image.width,
+                      height: image.height,
+                      alt: image_alt,
+                      sizes: '(min-width: 1264px) 482px, (min-width: 950px) 40vw, (min-width: 552px) 520px, 100vw',
+                      widths: '390, 520, 780, 1040',
+                      loading: 'lazy',
+                      decoding: 'async'
+                  -}}
+                {%- else -%}
+                  {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
+              </li>
+            {%- endif -%}
+          </ul>
+        </div>
+
+          {%- if image_count > 1 -%}
+            <div class="bc-slider__nav">
+              <button
+                type="button"
+                class="bc-slider__btn"
+                data-slider-prev
+                aria-label="{{ s.prev_label | escape }}"
+              >
+                {% render 'custom-bc-icon', icon: 'arrow_back', size: 20 %}
+              </button>
+              <button
+                type="button"
+                class="bc-slider__btn"
+                data-slider-next
+                aria-label="{{ s.next_label | escape }}"
+              >
+                {% render 'custom-bc-icon', icon: 'arrow_forward', size: 20 %}
+              </button>
+            </div>
+          {%- endif -%}
+        </bc-slider>
 
         {%- if s.flag != blank -%}
           <span class="bc-package__flag">{{ s.flag | escape }}</span>
@@ -198,6 +279,13 @@
   </div>
 </section>
 
+{%- comment -%}
+  Alleen inladen als er iets te schuiven valt.
+{%- endcomment -%}
+{%- if image_count > 1 -%}
+  <script src="{{ 'custom-bc-slider.js' | asset_url }}" defer></script>
+{%- endif -%}
+
 {% schema %}
 {
   "name": "BC · Wat je krijgt",
@@ -241,8 +329,8 @@
     {
       "type": "image_picker",
       "id": "image",
-      "label": "Afbeelding",
-      "info": "16:10. Ontwerpbriefing: de founding box met 30 sachets en Black Cherry-branding."
+      "label": "Afbeelding (terugval)",
+      "info": "Alleen gebruikt als er geen afbeeldingsblokken zijn. Vierkant bijgesneden."
     },
     {
       "type": "text",
@@ -255,6 +343,20 @@
       "id": "card_title",
       "label": "Titel",
       "default": "Energy Matters — Black Cherry"
+    },
+    {
+      "type": "text",
+      "id": "prev_label",
+      "label": "Omschrijving pijl terug",
+      "info": "Niet zichtbaar, alleen voor schermlezers.",
+      "default": "Vorige afbeelding"
+    },
+    {
+      "type": "text",
+      "id": "next_label",
+      "label": "Omschrijving pijl verder",
+      "info": "Niet zichtbaar, alleen voor schermlezers.",
+      "default": "Volgende afbeelding"
     },
     {
       "type": "header",
@@ -401,6 +503,19 @@
   ],
   "blocks": [
     {
+      "type": "image",
+      "name": "Afbeelding",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Afbeelding",
+          "info": "1:1. Wordt vierkant bijgesneden. Ontwerpbriefing: de founding box met 30 sachets en Black Cherry-branding."
+        }
+      ]
+    },
+    {
       "type": "item",
       "name": "Regel",
       "limit": 8,
@@ -431,6 +546,7 @@
     {
       "name": "BC · Wat je krijgt",
       "blocks": [
+        { "type": "image" },
         { "type": "item", "settings": { "icon": "check", "text": "30 dagelijkse sachets · één per dag" } },
         { "type": "item", "settings": { "icon": "check", "text": "Meng met 500 ml koud water" } },
         {

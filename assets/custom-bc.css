@@ -1630,8 +1630,108 @@ bc-sticky-cta {
   background: var(--bc-package-bg, var(--bc-cherry-tint));
 }
 
+/* Vierkant op elke breedte, ook op desktop: dat is een ontwerpkeuze, geen
+   gevolg van de kolombreedte. .bc-media zit op de slides, dus de positionering
+   voor het label staat hier. */
 .bc-package__media {
-  aspect-ratio: 16 / 10;
+  position: relative;
+  aspect-ratio: 1 / 1;
+}
+
+/* Zelfde native opzet als de smaken- en voordelenslider: overflow + scroll-snap,
+   geen JS. Label en tabindex staan in de Liquid en komen er alleen bij meer dan
+   één beeld; de focusring hoort daar dan wel bij. */
+.bc-package__slider {
+  height: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.bc-package__slider::-webkit-scrollbar {
+  display: none;
+}
+
+.bc-package__slider:focus-visible {
+  outline: 2px solid var(--bc-cream);
+  outline-offset: -2px;
+}
+
+.bc-package__track {
+  display: flex;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Volle breedte per slide: dit is één beeldvlak dat wisselt, geen rij kaarten,
+   dus geen peek. Het label ligt eroverheen en mag niet meescrollen. */
+.bc-package__slide {
+  flex: 0 0 100%;
+  height: 100%;
+  scroll-snap-align: start;
+}
+
+/* ---- Sliderpijlen ------------------------------------------- */
+
+.bc-slider {
+  display: block;
+  position: relative;
+  height: 100%;
+}
+
+/* Zonder de peek die de smakenslider heeft laat een beeldvlak niets zien van wat
+   ernaast staat. Deze knoppen zijn die affordance. Ze staan pas aan als
+   custom-bc-slider.js ze heeft opgepakt: knoppen die niets doen zijn erger dan
+   geen knoppen, en vegen werkt hoe dan ook. */
+bc-slider:not([data-ready]) .bc-slider__nav {
+  display: none;
+}
+
+.bc-slider__nav {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.bc-slider__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: var(--bc-radius-pill);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--bc-ink);
+  /* Iets zwaarder dan --bc-shadow-chip: deze knop ligt op merchantbeeld dat ook
+     licht kan zijn, en dan valt een witte cirkel zonder rand weg. Het pijltje
+     zelf is ink op wit en houdt zijn contrast hoe dan ook. */
+  box-shadow: 0 2px 10px rgba(24, 2, 35, 0.18);
+  cursor: pointer;
+  transition: filter var(--bc-dur-fast) var(--bc-ease), opacity var(--bc-dur-base) var(--bc-ease);
+}
+
+.bc-slider__btn:hover {
+  filter: brightness(0.94);
+}
+
+.bc-slider__btn:focus-visible {
+  outline: 3px solid var(--bc-ink);
+  outline-offset: 2px;
+}
+
+/* Uitgeschakeld in plaats van verborgen: de knop blijft op zijn plek staan, dus
+   de rij springt niet aan het begin en eind van de slider. */
+.bc-slider__btn[disabled] {
+  opacity: 0.42;
+  cursor: default;
 }
 
 .bc-package__flag {
@@ -2511,17 +2611,25 @@ bc-sticky-cta {
     border-radius: 32px;
   }
 
-  /* As a stretched grid item the media takes its height from the body column;
-     the ratio would fight that, and a short body would leave a stamp-sized
-     image. */
+  /* De vierkante verhouding uit de basislaag bepaalt hier de rijhoogte: het beeld
+     is hoger dan de tekstkolom, dus de kaart is precies zo hoog als het beeld en
+     blijft het 1:1. Zou de tekstkolom ooit langer worden (veel regels, smalle
+     desktop), dan rekt het beeld mee in plaats van een strook kaartkleur onder
+     zich te laten. Daarvoor is de expliciete breedte nodig: zonder die zou
+     aspect-ratio de hoogte terugvertalen naar breedte en uit de kolom lopen. */
   .bc-package__media {
-    aspect-ratio: auto;
-    min-height: 380px;
+    align-self: stretch;
+    width: 100%;
   }
 
   .bc-package__flag {
     top: 16px;
     left: 16px;
+  }
+
+  .bc-slider__nav {
+    right: 16px;
+    bottom: 16px;
   }
 
   .bc-package__body {
