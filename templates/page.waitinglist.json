@@ -26,7 +26,7 @@
       "settings": {
         "logo": "shopify://shop_images/Logo_DM.svg",
         "logo_height": 33,
-        "wordmark": "DAILY MATTERS",
+        "wordmark": "",
         "show_registered": true,
         "cta_label": "Join the first drop",
         "cta_link": "#bc-signup",
@@ -86,7 +86,7 @@
         "note": "<p><strong>25% korting</strong> + een <strong>gratis waterfles</strong> t.w.v. € 17,95.</p>",
         "link_label": "",
         "link_url": "",
-        "image": "shopify://shop_images/ChatGPT_Image_Aug_1_2026_11_16_30_AM123.webp",
+        "image": "shopify://shop_images/ChatGPT_Image_Aug_21_2026_10_31_42_AM.webp",
         "media_tag": "In drie smaken beschikbaar",
         "bg_color": "#cac0ff",
         "eyebrow_color": "#25162f",
@@ -494,7 +494,7 @@
             "score_1": 4,
             "score_2": 4,
             "score_3": 5,
-            "score_4": 2
+            "score_4": 3
           }
         }
       },
